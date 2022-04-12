@@ -10,7 +10,7 @@ It is designed to be exceptionally small, fast, and capable of the same popular 
 
 ## Examples
 
-`nimble`'s classes are designed to feel familiar to developers that use bsv.js v1 or bitcore-lib.
+`nimble`'s classes are going to feel familiar to developers that use bsv.js v1 or bitcore-lib.
 
 Generate a new random private key
 
@@ -50,7 +50,7 @@ console.log(transaction.hash)
 
 ## Advanced API
 
-`nimble` also provides a lower-level API for advanced developers. Every class above is wrapper around underlying functions that the user may discover and use directly.
+`nimble` also provides a lower-level API for advanced developers. Every class above is wrapper around underlying functions that you may discover and use directly.
 
 Hash a message with SHA-256
 
@@ -78,25 +78,37 @@ To enable, set the global testnet flag to `true`:
 nimble.testnet = true
 ```
 
-## Using pieces of nimble
+## Using nimble piecemeal
 
-You can consume nimble in parts and only take the functions or classes your app needs. When used with a bundler like webpack, this leads to even smaller builds and faster load times. We've handily separated out each consumable into separate modules. Just append the subpath to the class or function in your `require()` or `import` paths:
+For smaller builds and faster load times, you may consume only parts of the nimble library instead of the whole thing.
+
+We've handily separated out each function or class into their own modules. Append the subpath to the class or function in your `require()` or `import` paths:
 
 ```
-const decodeHex = require('nimble/functions/decode-hex')
 const decodeTx = require('nimble/functions/decode-tx')
 const calculateTxid = require('nimble/functions/calculate-txid')
 
-const buffer = decodeHex(rawtx)
 const tx = decodeTx(buffer)
 const txid = calculateTxid(tx)
 ```
 
-For optimal size when using a bundler, set the global variable `VARIANT` to either `"node"` or `"browser"`
+You can also optimize the size further by telling your bundler where you intend for nimble to be used by setting the global variable `VARIANT` to either `"node"` or `"browser"`
 
 ## Comparison to other libraries
 
-nimble shares much of its API with bitcore-lib from which MoneyButton's bsv.js v1 library was based on. However, it is smaller and faster for everyday scenarios. This is possible because of its smaller footprint, as well as use of WebAssembly to optimize hashing and elliptic curve math. In addition, nimble may be consumed piecemeal, as individual functions or classes, rather than an entire library. bsv-wasm takes longer to load, sometimes signficantly so, but once it loads it is faster than nimble. bsv-wasm has many optimizations that increase its size. While some of these may be incorporated into nimble someday, nimble strives more for a more balanced approach. In addition, nimble synchronously loads so that it is easier to use in scripts, and does not require the user to call free() after they are done with objects.
+nimble makes different trade-offs than other libraries.
+
+### Size
+
+nimble's primary advantage is its size. All other bsv libraries measure hundreds of kilobytes, but sitting at only 64 kb, nimble is the smallest and fastest-loading library today. After gzipping too, nimble is only 23 kb and the library may even be consumed in pieces. Size was optimized for because smaller size leads to faster loading and app responsiveness.
+
+### Ease of use
+
+nimble's class API is most similar to the bsv.js v1 library. This is intentional. Many people express that they prefer the bsv.js v1 API over the v2 API even though the v2 API can do more. A few of the bsv v1 constructors have been changed to static functions like `nimble.PrivateKey.fromRandom()` instead of `new bsv.PrivateKey()`, but overall many of the convenient methods and data structures are the same. For advanced users, lower-level functions are still available that are similar to bsv.js v2. Compared to bsv-wasm, nimble keeps its source of truth in the JavaScript side rather than WASM. This means you don't have to free memory manually. Also, nimble keeps all of its WASM modules under 4 kb so that the library can load synchronously without need of an async function wrapper.
+
+### Speed
+
+In terms of performance, nimble should always be faster than bsv.js and certainly fast enough for everyday use. But it is not faster than bsv-wasm.js, which optimizes for speed above other metrics. That speed comes at a cost however because bsv-wasm's size and loading time is much longer than nimble. The bsv-wasm uses a highly-optimized library for its elliptic curve math. It should be possible to incorporate many of those techniques into nimble over time, narrowing the performance gap, but not at the expense of size or being able to synchronously load the library.
 
 **Size Comparison**
 
