@@ -41,7 +41,7 @@ const rawtx = transaction.toString()
 Calculate and existing transaction's txid
 
 ```
-const transaction = new nimble.Transaction('<rawtx>')
+const transaction = nimble.Transaction.fromString('<rawtx>')
 
 console.log(transaction.hash)
 ```
