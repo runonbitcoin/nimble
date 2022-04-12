@@ -1,6 +1,6 @@
 # nimble
 
-[![tests](https://github.com/runonbitcoin/nimble/workflows/tests/badge.svg)](https://github.com/runonbitcoin/nimble/actions) [![codecov](https://codecov.io/gh/runonbitcoin/nimble/branch/main/graph/badge.svg?token=QX3hHriydo)](https://codecov.io/gh/runonbitcoin/nimble)
+[![tests](https://github.com/runonbitcoin/nimble/workflows/tests/badge.svg)](https://github.com/runonbitcoin/nimble/actions) [![codecov](https://codecov.io/gh/runonbitcoin/nimble/branch/main/graph/badge.svg?token=DEA91M2f1o)](https://codecov.io/gh/runonbitcoin/nimble)
 
 ## Introduction
 
