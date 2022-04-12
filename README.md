@@ -96,19 +96,17 @@ You can also optimize the size further by telling your bundler where you intend 
 
 ## Comparison to other libraries
 
-nimble makes different trade-offs than other libraries.
-
 ### Size
 
-nimble's primary advantage is its size. All other bsv libraries measure hundreds of kilobytes, but sitting at only 64 kb, nimble is the smallest and fastest-loading library today. After gzipping too, nimble is only 23 kb and the library may even be consumed in pieces. Size was optimized for because smaller size leads to faster loading and app responsiveness.
+nimble's main advantage is its size. All other bsv libraries measure hundreds of kilobytes, but sitting at only 64 kb, nimble is the smallest and fastest-loading library among them by a large margin. After gzipping, nimble is further reduced to only 23 kb and the library may even be consumed in pieces. Size was optimized because it leads to faster loading and app responsiveness.
 
 ### Ease of use
 
-nimble's class API is most similar to the bsv.js v1 library. This is intentional. Many people express that they prefer the bsv.js v1 API over the v2 API even though the v2 API can do more. A few of the bsv v1 constructors have been changed to static functions like `nimble.PrivateKey.fromRandom()` instead of `new bsv.PrivateKey()`, but overall many of the convenient methods and data structures are the same. For advanced users, lower-level functions are still available that are similar to bsv.js v2. Compared to bsv-wasm, nimble keeps its source of truth in the JavaScript side rather than WASM. This means you don't have to free memory manually. Also, nimble keeps all of its WASM modules under 4 kb so that the library can load synchronously without need of an async function wrapper.
+nimble's classes are very similar to the bsv.js v1 library. This is intentional. Many developers expressed that they prefer the bsv1 API over bsv2 because it is easier to use even though the bsv2 offers more. A few of the bsv v1 constructors though have been changed to static functions like `nimble.PrivateKey.fromRandom()` instead of `new bsv.PrivateKey()`, borrowing from bsv2 and bsv-wasm. However overall, many of the convenient methods and data structures are the same. For advanced users, nimble still has lower-level functions that are similar to bsv.js v2. Compared to bsv-wasm, nimble keeps its source of truth in JavaScript rather than in WASM. This means you don't have to free memory manually. Also, nimble WASM modules are all under 4 kb enabling the library can load synchronously without need of an async function wrapper.
 
 ### Speed
 
-In terms of performance, nimble should always be faster than bsv.js and certainly fast enough for everyday use. But it is not faster than bsv-wasm.js, which optimizes for speed above other metrics. That speed comes at a cost however because bsv-wasm's size and loading time is much longer than nimble. The bsv-wasm uses a highly-optimized library for its elliptic curve math. It should be possible to incorporate many of those techniques into nimble over time, narrowing the performance gap, but not at the expense of size or being able to synchronously load the library.
+nimble should always be faster than bsv.js and certainly fast enough for everyday use. But it is not faster than bsv-wasm.js, which optimizes for speed above other metrics. This is a trade-off. bsv-wasm's speed comes at a cost though as its size and loading time is much longer than nimble. It should be possible to incorporate some of those techniques used by bsv-wasm into nimble over time to narrow the performance gap, but probably not at the expense of size or being able to synchronously load the library. In our view, it's fast enough.
 
 **Size Comparison**
 
