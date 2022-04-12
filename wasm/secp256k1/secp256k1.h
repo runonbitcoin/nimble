@@ -1,7 +1,3 @@
-/**
- * secp256k1.h
- */
-
 #include "bn.h"
 
 #define PT_LEN (BN_LEN * 2)

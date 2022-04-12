@@ -1,7 +1,3 @@
-/**
- * secp256k1-test.c
- */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>

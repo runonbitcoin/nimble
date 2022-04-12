@@ -3,9 +3,7 @@
 let decodeBase64 = null
 
 if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
-  /**
-   * Credit to https://raw.githubusercontent.com/beatgammit/base64-js
-   */
+  // Credit to https://raw.githubusercontent.com/beatgammit/base64-js
 
   const REV_LOOKUP = []
 

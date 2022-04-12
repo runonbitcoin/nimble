@@ -1,9 +1,3 @@
-/**
- * address.js
- *
- * Immutable class for a Bitcoin address
- */
-
 const encodeAddress = require('../functions/encode-address')
 const decodeAddress = require('../functions/decode-address')
 const calculatePublicKeyHash = require('../functions/calculate-public-key-hash')

@@ -1,9 +1,3 @@
-/**
- * private-key.js
- *
- * Tests for PrivateKey
- */
-
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
@@ -11,22 +5,10 @@ const { PrivateKey } = nimble
 const { encodeBase58Check } = nimble.functions
 const bsv = require('bsv')
 
-// ------------------------------------------------------------------------------------------------
-// PrivateKey
-// ------------------------------------------------------------------------------------------------
-
 describe('PrivateKey', () => {
-  // --------------------------------------------------------------------------
-  // constructor
-  // --------------------------------------------------------------------------
-
   describe('constructor', () => {
     // TODO
   })
-
-  // --------------------------------------------------------------------------
-  // fromString
-  // --------------------------------------------------------------------------
 
   describe('fromString', () => {
     it('parses WIF', () => {
@@ -37,20 +19,14 @@ describe('PrivateKey', () => {
       expect([...privateKey.number]).to.deep.equal([...bsvPrivateKey.toBuffer()])
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not a string', () => {
       expect(() => PrivateKey.fromString()).to.throw('Cannot create PrivateKey: not a string')
     })
-
-    // ------------------------------------------------------------------------
 
     it('throws if invalid WIF', () => {
       const invalidPrivateKey = encodeBase58Check(0, [])
       expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('Cannot create PrivateKey: bad payload')
     })
-
-    // ------------------------------------------------------------------------
 
     it('is immutable', () => {
       const wif = PrivateKey.fromRandom().toString()
@@ -59,10 +35,6 @@ describe('PrivateKey', () => {
     })
   })
 
-  // --------------------------------------------------------------------------
-  // fromRandom
-  // --------------------------------------------------------------------------
-
   describe('fromRandom', () => {
     it('generates random', () => {
       const privateKey1 = PrivateKey.fromRandom()
@@ -70,17 +42,11 @@ describe('PrivateKey', () => {
       expect(privateKey1.number).not.to.deep.equal(privateKey2.number)
     })
 
-    // ------------------------------------------------------------------------
-
     it('is immutable', () => {
       const privateKey = PrivateKey.fromRandom()
       expect(Object.isFrozen(privateKey)).to.equal(true)
     })
   })
-
-  // --------------------------------------------------------------------------
-  // toString
-  // --------------------------------------------------------------------------
 
   describe('toString', () => {
     it('returns WIF', () => {
@@ -88,8 +54,6 @@ describe('PrivateKey', () => {
       const privateKey = PrivateKey.fromString(bsvPrivateKey.toString())
       expect(privateKey.toString()).to.equal(bsvPrivateKey.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('caches wif string', () => {
       const privateKey = PrivateKey.fromRandom()
@@ -102,10 +66,6 @@ describe('PrivateKey', () => {
     })
   })
 
-  // --------------------------------------------------------------------------
-  // toPublicKey
-  // --------------------------------------------------------------------------
-
   describe('toPublicKey', () => {
     it('calculates public key', () => {
       const bsvPrivateKey = new bsv.PrivateKey()
@@ -114,8 +74,6 @@ describe('PrivateKey', () => {
       const publicKey = privateKey.toPublicKey()
       expect(publicKey.toString()).to.equal(bsvPublicKey.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('caches public key', () => {
       const privateKey = PrivateKey.fromRandom()
@@ -129,10 +87,6 @@ describe('PrivateKey', () => {
     })
   })
 
-  // --------------------------------------------------------------------------
-  // toAddress
-  // --------------------------------------------------------------------------
-
   describe('toAddress', () => {
     it('mainnet', () => {
       const bsvPrivateKey = new bsv.PrivateKey()
@@ -141,8 +95,6 @@ describe('PrivateKey', () => {
       const address = privateKey.toAddress()
       expect(address.toString()).to.equal(bsvAddress.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('testnet', () => {
       const bsvPrivateKey = new bsv.PrivateKey('testnet')
@@ -153,5 +105,3 @@ describe('PrivateKey', () => {
     })
   })
 })
-
-// ------------------------------------------------------------------------------------------------

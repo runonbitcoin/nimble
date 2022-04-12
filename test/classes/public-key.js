@@ -1,31 +1,13 @@
-/**
- * public-key.js
- *
- * Tests for PublicKey
- */
-
 const { describe, it } = require('mocha')
 const nimble = require('../env/nimble')
 const { PublicKey, PrivateKey } = nimble
 const bsv = require('bsv')
 const { expect } = require('chai')
 
-// ------------------------------------------------------------------------------------------------
-// PublicKey
-// ------------------------------------------------------------------------------------------------
-
 describe('PublicKey', () => {
-  // --------------------------------------------------------------------------
-  // constructor
-  // --------------------------------------------------------------------------
-
   describe('constructor', () => {
     // TODO
   })
-
-  // --------------------------------------------------------------------------
-  // fromString
-  // --------------------------------------------------------------------------
 
   describe('fromString', () => {
     it('parses string', () => {
@@ -38,21 +20,15 @@ describe('PublicKey', () => {
       expect([...publicKey.point.y]).to.deep.equal([...bsvPublicKey.point.y.toArray()])
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not a string', () => {
       expect(() => PublicKey.fromString()).to.throw('Cannot create PublicKey: not a hex string')
       expect(() => PublicKey.fromString(null)).to.throw('Cannot create PublicKey: not a hex string')
       expect(() => PublicKey.fromString({})).to.throw('Cannot create PublicKey: not a hex string')
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if too short', () => {
       expect(() => PublicKey.fromString('01')).to.throw('Cannot create PublicKey: too short')
     })
-
-    // ------------------------------------------------------------------------
 
     it('is immutable', () => {
       const privateKey = PrivateKey.fromRandom()
@@ -60,10 +36,6 @@ describe('PublicKey', () => {
       expect(Object.isFrozen(publicKey)).to.equal(true)
     })
   })
-
-  // --------------------------------------------------------------------------
-  // fromPrivateKey
-  // --------------------------------------------------------------------------
 
   describe('fromPrivateKey', () => {
     it('creates from private key', () => {
@@ -74,13 +46,9 @@ describe('PublicKey', () => {
       expect(bsvPublicKey.toString()).equal(publicKey.toString())
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not a private key', () => {
       expect(() => PublicKey.fromPrivateKey()).to.throw('Not a PrivateKey: ')
     })
-
-    // ------------------------------------------------------------------------
 
     it('caches public key', () => {
       const privateKey = PrivateKey.fromRandom()
@@ -93,18 +61,12 @@ describe('PublicKey', () => {
       expect(publicKey1).to.equal(publicKey2)
     })
 
-    // ------------------------------------------------------------------------
-
     it('is immutable', () => {
       const privateKey = PrivateKey.fromRandom()
       const publicKey = PublicKey.fromPrivateKey(privateKey)
       expect(Object.isFrozen(publicKey)).to.equal(true)
     })
   })
-
-  // --------------------------------------------------------------------------
-  // toString
-  // --------------------------------------------------------------------------
 
   describe('toString', () => {
     it('compressed', () => {
@@ -116,8 +78,6 @@ describe('PublicKey', () => {
       expect(publicKey.toString()).to.equal(bsvPublicKey.toString())
     })
 
-    // ------------------------------------------------------------------------
-
     it('uncompressed', () => {
       const bsvPrivateKey = new bsv.PrivateKey()
       const bsvPublicKey = new bsv.PublicKey(bsvPrivateKey.toPublicKey().point, { compressed: false })
@@ -126,8 +86,6 @@ describe('PublicKey', () => {
       expect(publicKey.compressed).to.equal(false)
       expect(publicKey.toString()).to.equal(bsvPublicKey.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('caches string', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
@@ -140,10 +98,6 @@ describe('PublicKey', () => {
     })
   })
 
-  // --------------------------------------------------------------------------
-  // toAddress
-  // --------------------------------------------------------------------------
-
   describe('toAddress', () => {
     it('mainnet', () => {
       const bsvPrivateKey = new bsv.PrivateKey()
@@ -153,8 +107,6 @@ describe('PublicKey', () => {
       expect(address.testnet).to.equal(false)
       expect(address.toString()).to.equal(bsvAddress.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('testnet', () => {
       const bsvPrivateKey = new bsv.PrivateKey('testnet')
@@ -166,5 +118,3 @@ describe('PublicKey', () => {
     })
   })
 })
-
-// ------------------------------------------------------------------------------------------------

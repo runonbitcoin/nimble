@@ -1,17 +1,7 @@
-/**
- * index.js
- *
- * Entry point for test modules
- */
-
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('./env/nimble')
 const { PrivateKey } = nimble
-
-// ------------------------------------------------------------------------------------------------
-// Tests
-// ------------------------------------------------------------------------------------------------
 
 describe('classes', () => {
   require('./classes/address')
@@ -66,15 +56,7 @@ describe('functions', () => {
   require('./functions/write-varint')
 })
 
-// ------------------------------------------------------------------------------------------------
-// nimble
-// ------------------------------------------------------------------------------------------------
-
 describe('nimble', () => {
-  // --------------------------------------------------------------------------
-  // testnet
-  // --------------------------------------------------------------------------
-
   describe('testnet', () => {
     it('enabled', () => {
       nimble.testnet = true
@@ -82,8 +64,6 @@ describe('nimble', () => {
       expect(PrivateKey.fromRandom().toPublicKey().testnet).to.equal(true)
       expect(PrivateKey.fromRandom().toAddress().testnet).to.equal(true)
     })
-
-    // ------------------------------------------------------------------------
 
     it('disabled', () => {
       nimble.testnet = false
@@ -93,5 +73,3 @@ describe('nimble', () => {
     })
   })
 })
-
-// ------------------------------------------------------------------------------------------------

@@ -1,8 +1,4 @@
-/**
- * ripemd160.c
- *
- * Derived from: https://github.com/sipa/Coin25519/blob/master/src/crypto/ripemd160.c, pbulic domain license
- */
+// Derived from: https://github.com/sipa/Coin25519/blob/master/src/crypto/ripemd160.c, public domain license
 
 // #include <assert.h>
 #include <stdint.h>

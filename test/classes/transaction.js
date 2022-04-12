@@ -1,9 +1,3 @@
-/**
- * transaction.js
- *
- * Tests for lib/transaction.js
- */
-
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
@@ -11,15 +5,7 @@ const { Transaction, PrivateKey } = nimble
 const { createP2PKHLockScript } = nimble.functions
 const bsv = require('bsv')
 
-// ------------------------------------------------------------------------------------------------
-// Transaction
-// ------------------------------------------------------------------------------------------------
-
 describe('Transaction', () => {
-  // --------------------------------------------------------------------------
-  // constructor
-  // --------------------------------------------------------------------------
-
   describe('constructor', () => {
     it('creates empty transaction', () => {
       const tx = new Transaction()
@@ -29,17 +15,11 @@ describe('Transaction', () => {
       expect(tx.locktime).to.equal(new bsv.Transaction().nLockTime)
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if any arguments are passed', () => {
       const hex = new Transaction().toString()
       expect(() => new Transaction(hex)).to.throw()
     })
   })
-
-  // --------------------------------------------------------------------------
-  // fromHex
-  // --------------------------------------------------------------------------
 
   describe('fromHex', () => {
     it('parses hex string', () => {
@@ -63,24 +43,16 @@ describe('Transaction', () => {
       expect(tx2.outputs[0].satoshis).to.equal(tx.outputs[0].satoshis)
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not a hex string', () => {
       const buffer = new Transaction().toBuffer()
       expect(() => Transaction.fromHex(buffer)).to.throw()
     })
-
-    // ------------------------------------------------------------------------
 
     it('throws if invalid', () => {
       const badHex = new Transaction().toString() + '00'
       expect(() => Transaction.fromHex(badHex)).to.throw()
     })
   })
-
-  // --------------------------------------------------------------------------
-  // fromBuffer
-  // --------------------------------------------------------------------------
 
   describe('fromBuffer', () => {
     it('parses buffer', () => {
@@ -104,24 +76,16 @@ describe('Transaction', () => {
       expect(tx2.outputs[0].satoshis).to.equal(tx.outputs[0].satoshis)
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not a buffer', () => {
       const hex = new Transaction().toString()
       expect(() => Transaction.fromBuffer(hex)).to.throw()
     })
-
-    // ------------------------------------------------------------------------
 
     it('throws if invalid', () => {
       const badBuffer = [0].concat(new Transaction().toBuffer())
       expect(() => Transaction.fromBuffer(badBuffer)).to.throw()
     })
   })
-
-  // --------------------------------------------------------------------------
-  // from
-  // --------------------------------------------------------------------------
 
   describe('from', () => {
     it('adds transaction output', () => {
@@ -134,8 +98,6 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].sequence).to.equal(0)
       expect(tx2.inputs[0].output).to.equal(tx1.outputs[0])
     })
-
-    // ------------------------------------------------------------------------
 
     it('adds utxo', () => {
       const pk = PrivateKey.fromRandom()
@@ -155,8 +117,6 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].output.satoshis).to.equal(utxo.satoshis)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const pk = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(pk.toAddress(), 1000)
@@ -164,18 +124,12 @@ describe('Transaction', () => {
       expect(tx2.from(tx1.outputs[0])).to.equal(tx2)
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if not an output or utxo', () => {
       expect(() => new Transaction().from()).to.throw()
       expect(() => new Transaction().from(null)).to.throw()
       expect(() => new Transaction().from({})).to.throw()
     })
   })
-
-  // --------------------------------------------------------------------------
-  // to
-  // --------------------------------------------------------------------------
 
   describe('to', () => {
     it('adds output', () => {
@@ -185,30 +139,20 @@ describe('Transaction', () => {
       expect(tx.outputs[0].satoshis).to.equal(1000)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const pk = PrivateKey.fromRandom()
       const tx = new Transaction()
       expect(tx.to(pk.toAddress(), 1000)).to.equal(tx)
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('throws if not a valid address', () => {
 
     })
-
-    // ------------------------------------------------------------------------
 
     it.skip('throws if not a valid satoshis', () => {
 
     })
   })
-
-  // --------------------------------------------------------------------------
-  // input
-  // --------------------------------------------------------------------------
 
   describe('input', () => {
     it('adds input', () => {
@@ -222,8 +166,6 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].sequence).to.equal(2)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const pk = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(pk.toAddress(), 1000)
@@ -232,16 +174,10 @@ describe('Transaction', () => {
       expect(tx2.input(input)).to.equal(tx2)
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('throws if not a valid input', () => {
       // TODO
     })
   })
-
-  // --------------------------------------------------------------------------
-  // output
-  // --------------------------------------------------------------------------
 
   describe('output', () => {
     it('adds output', () => {
@@ -253,8 +189,6 @@ describe('Transaction', () => {
       expect(tx.outputs[0].satoshis).to.equal(1000)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const tx = new Transaction()
       const pk = PrivateKey.fromRandom()
@@ -263,16 +197,10 @@ describe('Transaction', () => {
       expect(tx.output(output)).to.equal(tx)
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('throws if not a valid output', () => {
       // TODO
     })
   })
-
-  // --------------------------------------------------------------------------
-  // change
-  // --------------------------------------------------------------------------
 
   describe('change', () => {
     it.skip('creates change output', () => {
@@ -287,29 +215,19 @@ describe('Transaction', () => {
       expect(Math.ceil(tx2.toBuffer().length * nimble.feePerKb / 1000)).to.equal(tx2.fee)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const tx = new Transaction()
       expect(tx.change(PrivateKey.fromRandom().toAddress())).to.equal(tx)
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('throws if already has change output', () => {
       // TODO
     })
-
-    // ------------------------------------------------------------------------
 
     it.skip('does not add change output if not enough change', () => {
       // TODO
     })
   })
-
-  // --------------------------------------------------------------------------
-  // sign
-  // --------------------------------------------------------------------------
 
   describe('sign', () => {
     it('signs matching p2pkh scripts', () => {
@@ -319,33 +237,23 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].script.length > 0).to.equal(true)
     })
 
-    // ------------------------------------------------------------------------
-
     it('supports string private key', () => {
       const privateKey = PrivateKey.fromRandom()
       new Transaction().sign(privateKey.toString()) // eslint-disable-line
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('does not sign different addresses', () => {
       // TODO
     })
-
-    // ------------------------------------------------------------------------
 
     it.skip('does not sign without previous outputs', () => {
       // TODO
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const tx = new Transaction()
       expect(tx.sign(PrivateKey.fromRandom())).to.equal(tx)
     })
-
-    // ------------------------------------------------------------------------
 
     it('throws if private key not provided', () => {
       expect(() => new Transaction().sign()).to.throw('Not a private key: ')
@@ -354,10 +262,6 @@ describe('Transaction', () => {
       expect(() => new Transaction().sign('abc')).to.throw('Cannot create PrivateKey: bad checksum')
     })
   })
-
-  // --------------------------------------------------------------------------
-  // finalize
-  // --------------------------------------------------------------------------
 
   describe('finalize', () => {
     it('locks transaction', () => {
@@ -390,29 +294,19 @@ describe('Transaction', () => {
       expect(tx.outputs[0].satoshis).to.equal(1000)
     })
 
-    // ------------------------------------------------------------------------
-
     it('returns self for chaining', () => {
       const tx = new Transaction()
       expect(tx.finalize()).to.equal(tx)
     })
 
-    // ------------------------------------------------------------------------
-
     it.skip('caches txid', () => {
 
     })
-
-    // ------------------------------------------------------------------------
 
     it.skip('throws if called twice', () => {
 
     })
   })
-
-  // --------------------------------------------------------------------------
-  // toString
-  // --------------------------------------------------------------------------
 
   describe('toString', () => {
     it('returns hex string', () => {
@@ -423,10 +317,6 @@ describe('Transaction', () => {
     })
   })
 
-  // --------------------------------------------------------------------------
-  // toBuffer
-  // --------------------------------------------------------------------------
-
   describe('toBuffer', () => {
     it('returns buffer', () => {
       const privateKey = PrivateKey.fromRandom()
@@ -436,5 +326,3 @@ describe('Transaction', () => {
     })
   })
 })
-
-// ------------------------------------------------------------------------------------------------

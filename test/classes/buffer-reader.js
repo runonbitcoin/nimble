@@ -36,8 +36,6 @@ describe('BufferReader', () => {
       expect(() => reader.close()).not.to.throw()
     })
 
-    // ------------------------------------------------------------------------
-
     it('throws if unconsumed data', () => {
       expect(() => new BufferReader([0x00]).close()).to.throw('unconsumed data')
       const reader = new BufferReader([0x00, 0x00, 0x00, 0x00, 0x00])

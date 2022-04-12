@@ -1,6 +1,4 @@
 /**
- * browser.js
- *
  * Runs the tests in a live browser using Selenium.
  *
  * The appropriate webdriver must be installed.
@@ -100,7 +98,7 @@ async function runTests () {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Main
+// main
 // ------------------------------------------------------------------------------------------------
 
 function error (e) {

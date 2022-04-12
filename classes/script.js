@@ -1,9 +1,3 @@
-/**
- * transaction.js
- *
- * Class for a Bitcoin transaction
- */
-
 const createP2PKHLockScript = require('../functions/create-p2pkh-lock-script')
 const isP2PKHLockScript = require('../functions/is-p2pkh-lock-script')
 const extractP2PKHLockScriptPubkeyhash = require('../functions/extract-p2pkh-lock-script-pubkeyhash')

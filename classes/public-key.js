@@ -1,9 +1,3 @@
-/**
- * public-key.js
- *
- * Immutable class for a Bitcoin public key
- */
-
 const encodeHex = require('../functions/encode-hex')
 const decodeHex = require('../functions/decode-hex')
 const decodePublicKey = require('../functions/decode-public-key')

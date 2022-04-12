@@ -1,9 +1,3 @@
-/**
- * private-key.js
- *
- * Immutable class for a Bitcoin private key
- */
-
 const generatePrivateKey = require('../functions/generate-private-key')
 const encodeWIF = require('../functions/encode-wif')
 const decodeWIF = require('../functions/decode-wif')

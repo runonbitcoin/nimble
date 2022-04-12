@@ -1,7 +1,3 @@
-/**
- * ecdsa.h
- */
-
 #include "bn.h"
 
 void ecdsa_init(unsigned long memory_start);

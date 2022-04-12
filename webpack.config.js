@@ -1,6 +1,4 @@
 /**
- * webpack.config.js
- *
  * All the settings to build variants using webpack
  */
 

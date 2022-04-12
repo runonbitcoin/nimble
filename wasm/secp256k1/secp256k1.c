@@ -1,9 +1,3 @@
-/**
- * secp256k1.c
- *
- * Implementation of key SECP256K1 methods
- */
-
 #include <stdint.h>
 #include "bn.h"
 #include "bn2.h"

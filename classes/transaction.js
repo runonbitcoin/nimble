@@ -1,10 +1,3 @@
-/**
- * transaction.js
- *
- * Class for a Bitcoin transaction
- */
-
-const BufferWriter = require('../classes/buffer-writer')
 const generateTxSignature = require('../functions/generate-tx-signature')
 const createP2PKHLockScript = require('../functions/create-p2pkh-lock-script')
 const encodeHex = require('../functions/encode-hex')
@@ -19,10 +12,13 @@ const encodeTx = require('../functions/encode-tx')
 const calculateTxid = require('../functions/calculate-txid')
 const PrivateKey = require('./private-key')
 const Address = require('./address')
+const BufferWriter = require('./buffer-writer')
 
 // ------------------------------------------------------------------------------------------------
 // Globals
 // ------------------------------------------------------------------------------------------------
+
+// These WeakMap caches allow the objects themselves to maintain their immutability
 
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
 

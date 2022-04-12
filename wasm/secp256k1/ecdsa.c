@@ -1,7 +1,3 @@
-/**
- * ecdsa.c
- */
-
 #include "ecdsa.h"
 #include "bn2.h"
 #include "secp256k1.h"

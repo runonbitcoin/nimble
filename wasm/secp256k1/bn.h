@@ -1,6 +1,4 @@
 /**
- * bn.h
- * 
  * Signed big integer library
  *
  * BN = digits bytes (le) + neg byte + len byte
