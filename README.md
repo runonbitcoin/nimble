@@ -118,6 +118,10 @@ nimble's classes are very similar to the bsv.js v1 library. This is intentional.
 
 nimble should always be faster than bsv.js and certainly fast enough for everyday use. But it is not faster than bsv-wasm.js, which optimizes for speed above other metrics. This is a trade-off. bsv-wasm's speed comes at a cost though as its size and loading time is much longer than nimble. It should be possible to incorporate some of those techniques used by bsv-wasm into nimble over time to narrow the performance gap, but probably not at the expense of size or being able to synchronously load the library. In our view, it's fast enough.
 
+### Security
+
+nimble has zero third-party dependencies in its code. This makes it not susceptible to supply chain attacks, as has happened several times in NPM. Its elliptic curve code is based on Vitalik Buterin's `pybitcointools` code which for a long time was the most used python bitcoin library. It also always use a secure random numbers when generating private keys. However, being a new library there is always some risk of a security issue.
+
 **Size Comparison**
 
 | Library  | Size (KB) | Gzipped (KB) |
@@ -173,6 +177,24 @@ nimble should always be faster than bsv.js and certainly fast enough for everyda
 | Seed phrase mnemonics        | ❌ | ✅ | ✅ | ❌ |
 | ECIES                        | ❌ | ✅ | ✅ | ✅ |
 | HD keys                      | ❌ | ✅ | ✅ | ✅ |
+
+### Contributing
+
+To contribute, you may open a pull request. We are very interested in these features:
+
+* HD keys
+* Multisig support
+* Custom elliptic curve math
+
+New features should be implemented as standalone functions first and tested before adding to a class.
+
+Please try to not regress code coverage. Thanks!
+
+### Reporting issues
+
+We're always interested to learn if you discover a bug. Please open a Github issue and add any relevant information or repro steps.
+
+If you find a security issue however, do not open an issue here. Email `security@run.network` or contact @brentgunning on Twitter. That way we can assess the risk first and notify users before fixing.
 
 ## NPM commands
 
