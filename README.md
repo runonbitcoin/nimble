@@ -6,7 +6,7 @@
 
 `nimble` is a practical everyday Javascript library for Bitcoin SV.
 
-It is designed to be exceptionally small, fast, and capable of the same commonly-used features as alternative libraries.
+It is designed to be exceptionally small, fast, and capable of the same popular features as alternative libraries.
 
 ## Examples
 
