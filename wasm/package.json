@@ -1,0 +1,19 @@
+{
+  "name": "run-wasm",
+  "version": "1.0.0",
+  "description": "WASM projects that are used by run",
+  "scripts": {
+    "build": "npm run build:ripemd160 && npm run build:secp256k1 && npm run build:sha1 && npm run build:sha256",
+    "build:ripemd160": "cd ripemd160 && make clean && make",
+    "build:secp256k1": "cd secp256k1 && make clean && make",
+    "build:sha1": "cd sha1 && make clean && make",
+    "build:sha256": "cd sha256 && make clean && make",
+    "postinstall": "run-script-os",
+    "postinstall:linux": "curl -L https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-14/wasi-sdk-14.0-linux.tar.gz | tar -xz",
+    "postinstall:darwin": "curl -L https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-14/wasi-sdk-14.0-macos.tar.gz | tar -xz",
+    "postinstall:win32": "curl -L https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-14/wasi-sdk-14.0-mingw.tar.gz | tar -xz"
+  },
+  "devDependencies": {
+    "run-script-os": "^1.1.6"
+  }
+}

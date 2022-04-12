@@ -1,0 +1,9 @@
+# Code coverage
+.nyc_output
+coverage
+
+# Dependencies
+node_modules
+
+# Outputs
+dist

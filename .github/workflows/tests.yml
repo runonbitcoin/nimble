@@ -1,0 +1,225 @@
+name: tests
+
+on: push
+
+jobs:
+  cover_tests:
+    name: Node 10 Tests (with lint and coverage)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Setup Node 10
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v1
+      env:
+        cache-version: 1
+      with:
+        path: node_modules
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Lint
+      run: npx standard
+
+    - name: Cover Tests
+      run:
+        npm run test:cover
+
+    - name: Publish Coverage
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: coverage/lcov.info
+
+  node_12_tests:
+    name: Node 12 Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Setup Node 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Test Node
+      run: npm run test:node
+
+  node_16_tests:
+    name: Node 16 Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Setup Node 16
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Test Node
+      run: npm run test:node
+
+  firefox_tests:
+    name: Firefox Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Test Firefox
+      run: env BROWSER=firefox npm run test:browser
+
+  chrome_tests:
+    name: Chrome Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Test Chrome
+      run: env BROWSER=chrome npm run test:browser
+
+  edge_tests:
+    name: Edge Tests
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+      shell: bash
+
+    - name: Test Edge
+      run: env BROWSER=MicrosoftEdge npm run test:browser
+      shell: bash
+
+  safari_tests:
+    name: Safari Tests
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache Dependencies
+      id: cache-node-modules
+      uses: actions/cache@v2
+      env:
+        cache-version: 2
+      with:
+        path: |
+          node_modules
+          wasi-sdk-14.0
+        key: v${{ env.cache-version }}-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.AUTH_TOKEN }}" > ~/.npmrc
+        npm ci
+
+    - name: Test Safari
+      run: env BROWSER=safari npm run test:browser

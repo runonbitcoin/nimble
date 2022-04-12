@@ -1,0 +1,66 @@
+<!-- Open this in a browser to run the tests -->
+
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <title>Browser Tests</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
+  </head>
+
+  <body>
+    <div id="mocha"></div>
+
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script src="../../node_modules/mocha/mocha.js"></script>
+
+    <script class="mocha-init">
+      this.logs = []
+      this.failures = 0
+      this.done = false
+      const markDone = () => { this.done = true }
+
+      mocha.reporter(class {
+        constructor (runner, options) {
+          new mocha.Mocha.reporters.Spec(runner, options)
+          new mocha.Mocha.reporters.HTML(runner, options)
+          runner.on('end', markDone)
+        }
+      })
+
+      mocha.setup('bdd')
+      mocha.timeout(30000)
+
+      const urlParams = new URLSearchParams(window.location.search)
+      mocha.Mocha.reporters.Base.useColors = JSON.parse(urlParams.get('colors')) || typeof chrome !== 'undefined'
+      mocha.Mocha.reporters.Base.consoleLog = (...args) => console.log(...args)
+
+      const original = Object.assign({}, console)
+      const methods = ['log', 'info', 'warn', 'error', 'debug']
+      methods.forEach(method => {
+          window.console[method] = (...args) => {
+              original[method].call(console, ...args)
+              this.logs.push(([...args.map(x => JSON.parse(JSON.stringify(x)))]))
+          }
+      })
+
+      function pollLogs() {
+        const logs = this.logs
+        this.logs = []
+        return logs
+      }
+
+    </script>
+
+    <script src="../../node_modules/bsv/bsv.min.js"></script>
+    <script src="../../dist/nimble.browser.min.js"></script>
+    <script src="../../dist/nimble.browser.tests.js"></script>
+
+    <script class="mocha-exec">
+      mocha.run(failures => { this.failures = failures })
+    </script>
+  </body>
+
+</html>
