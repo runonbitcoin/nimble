@@ -15,12 +15,12 @@ npm install @runonbitcoin/nimble
 or 
 
 ```
-<script src="https://unpkg.com/@runonbitcoin/nimble@1.0.0">/script>
+<script src="https://unpkg.com/@runonbitcoin/nimble@1.0.0"></script>
 ```
 
 ## Examples
 
-`nimble`'s classes are going to feel familiar to developers that use bsv.js v1 or bitcore-lib.
+`nimble`'s classes are intended to feel familiar to developers that use bsv.js v1 or bitcore-lib.
 
 Generate a new random private key
 
