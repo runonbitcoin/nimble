@@ -10,6 +10,8 @@ It is designed to be exceptionally small, fast, and capable of the same commonly
 
 ## Examples
 
+`nimble`'s classes are designed to feel familiar to developers that use bsv.js v1 or bitcore-lib.
+
 Generate a new random private key
 
 ```
@@ -38,12 +40,32 @@ const transaction = new nimble.Transaction()
 const rawtx = transaction.toString()
 ```
 
-Calculate and existing transaction's txid
+Calculate a transaction's txid
 
 ```
 const transaction = nimble.Transaction.fromString('<rawtx>')
 
 console.log(transaction.hash)
+```
+
+## Advanced API
+
+`nimble` also provides a lower-level API for advanced developers. Every class above is wrapper around underlying functions that the user may discover and use directly.
+
+Hash a message with SHA-256
+
+```
+const hash = nimble.functions.sha256(buffer)
+```
+
+Stream decode several transactions
+
+```
+const reader = new nimble.classes.BufferReader(data)
+const tx1 = nimble.functions.readTx(reader)
+const tx2 = nimble.functions.readTx(reader)
+const tx3 = nimble.functions.readTx(reader)
+reader.close()
 ```
 
 ## Using on testnet
