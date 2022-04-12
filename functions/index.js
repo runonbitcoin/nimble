@@ -18,7 +18,7 @@ module.exports = {
   decodeTx: require('./decode-tx'),
   decodeWIF: require('./decode-wif'),
   ecdsaSignAsync: require('./ecdsa-sign-async'),
-  ecdsaSignRaw: require('./ecdsa-sign-raw'),
+  ecdsaSignWithK: require('./ecdsa-sign-with-k'),
   ecdsaSign: require('./ecdsa-sign'),
   ecdsaVerifyAsync: require('./ecdsa-verify-async'),
   ecdsaVerify: require('./ecdsa-verify'),

@@ -1,6 +1,6 @@
 const { BN_SIZE, PT_SIZE, getMemoryBuffer, getEcdsaExports, writeBN, readBN } = require('../wasm/wasm-secp256k1')
 
-function ecdsaSignRaw (hash32, k, privateKey, publicKey) {
+function ecdsaSignWithK (hash32, k, privateKey, publicKey) {
   const memory = getMemoryBuffer()
   const hash32Pos = memory.length - BN_SIZE
   const kPos = hash32Pos - BN_SIZE
@@ -27,4 +27,4 @@ function ecdsaSignRaw (hash32, k, privateKey, publicKey) {
   }
 }
 
-module.exports = ecdsaSignRaw
+module.exports = ecdsaSignWithK
