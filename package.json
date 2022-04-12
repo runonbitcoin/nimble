@@ -7,7 +7,11 @@
   "license": "MIT",
   "repository": "git+https://github.com/runonbitcoin/docs.git",
   "files": [
-    "dist/**.min.js"
+    "classes",
+    "constants",
+    "dist/**.min.js",
+    "functions",
+    "wasm/*.js"
   ],
   "scripts": {
     "build": "webpack",
