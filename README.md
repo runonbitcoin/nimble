@@ -70,6 +70,8 @@ const tx = decodeTx(buffer)
 const txid = calculateTxid(tx)
 ```
 
+For optimal size when using a bundler, set the global variable `VARIANT` to either `"node"` or `"browser"`
+
 ## Comparison to other libraries
 
 nimble shares much of its API with bitcore-lib from which MoneyButton's bsv.js v1 library was based on. However, it is smaller and faster for everyday scenarios. This is possible because of its smaller footprint, as well as use of WebAssembly to optimize hashing and elliptic curve math. In addition, nimble may be consumed piecemeal, as individual functions or classes, rather than an entire library. bsv-wasm takes longer to load, sometimes signficantly so, but once it loads it is faster than nimble. bsv-wasm has many optimizations that increase its size. While some of these may be incorporated into nimble someday, nimble strives more for a more balanced approach. In addition, nimble synchronously loads so that it is easier to use in scripts, and does not require the user to call free() after they are done with objects.

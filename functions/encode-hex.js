@@ -2,12 +2,10 @@
 
 let encodeHex = null
 
-if (typeof VARIANT === 'undefined' || VARIANT === 'node') {
-  // Buffer toString('hex') in Node is faster than any JavaScript we could write
-  encodeHex = function (buffer) {
-    return buffer instanceof Buffer ? buffer.toString('hex') : Buffer.from(buffer).toString('hex')
-  }
-} else {
+// Prefer our implementation of encodeHex over Buffer when we don't know the VARIANT
+// to avoid accidentally importing the Buffer shim in the browser.
+
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
   // In the browser, a lookup table is fastest, and faster than the Buffer toString shim.
   const HEX = [
     '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0a', '0b', '0c', '0d', '0e', '0f',
@@ -35,6 +33,11 @@ if (typeof VARIANT === 'undefined' || VARIANT === 'node') {
       out[i] = HEX[buffer[i]]
     }
     return out.join('')
+  }
+} else {
+  // Buffer toString('hex') in Node is faster than any JavaScript we could write
+  encodeHex = function (buffer) {
+    return buffer instanceof Buffer ? buffer.toString('hex') : Buffer.from(buffer).toString('hex')
   }
 }
 

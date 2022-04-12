@@ -4,7 +4,7 @@ const WasmHashes = require('../wasm/wasm-hashes')
 
 let sha256ripemd160 = null
 
-if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
   sha256ripemd160 = function (data) {
     const wasmMemory = WasmHashes.getMemoryBuffer()
     const wasmSha256 = WasmHashes.getSha256()

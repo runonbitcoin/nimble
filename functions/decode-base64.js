@@ -2,7 +2,10 @@
 
 let decodeBase64 = null
 
-if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
+// Prefer our implementation of decodeBase64 over Buffer when we don't know the VARIANT
+// to avoid accidentally importing the Buffer shim in the browser.
+
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
   // Credit to https://raw.githubusercontent.com/beatgammit/base64-js
 
   const REV_LOOKUP = []

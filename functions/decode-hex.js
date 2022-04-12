@@ -1,13 +1,14 @@
 /* global VARIANT */
 
+// Prefer our implementation of decodeHex over Buffer when we don't know the VARIANT
+// to avoid accidentally importing the Buffer shim in the browser.
+
 function decodeHex (hex) {
   if (typeof hex !== 'string') throw new Error('not a hex string')
 
   if (hex.length % 2 === 1) hex = '0' + hex
 
-  if (typeof VARIANT === 'undefined' || VARIANT === 'node') {
-    return Buffer.from(hex, 'hex')
-  } else {
+  if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
     const length = hex.length / 2
     const arr = new Uint8Array(length)
     const isNaN = x => x !== x // eslint-disable-line no-self-compare
@@ -17,6 +18,8 @@ function decodeHex (hex) {
       arr[i] = byte
     }
     return arr
+  } else {
+    return Buffer.from(hex, 'hex')
   }
 }
 
