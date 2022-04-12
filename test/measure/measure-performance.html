@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>Measure performance of library</title>
+    </head>
+
+    <body>
+    </body>
+
+    <script>
+        let start = null
+        let text = 'Results\n\n'
+        function round(x) { return Math.round(x * 10) / 10 }
+        function log(...args) { text += args.join(' ') + '\n'; document.body.innerText = text }
+        const count = 10
+    </script>
+
+    <script>
+        start = new Date()
+    </script>
+    <script src="node_modules/nimble/dist/nimble.browser.min.js"></script>
+    <script>
+        log('nimble')
+
+        log('- load (ms):', new Date() - start)
+
+        start = new Date()
+        let pubkeys = []
+        for (let i = 0; i < count; i++) {
+            const privateKey = nimble.PrivateKey.fromRandom()
+            pubkeys.push(privateKey.toPublicKey())
+        }
+        log('- generate keypair (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            pubkeys[i].toAddress()
+        }
+        log('- calculate address (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            nimble.functions.sha256(new Uint8Array(1024).fill(i % 256))
+        }
+        log('- sha256 (ms):', round((new Date() - start) / count))
+
+        log('')
+    </script>
+
+    <script>
+        start = new Date()
+    </script>
+    <script src="node_modules/bsv1/bsv.min.js"></script>
+    <script>
+        log('bsv1')
+
+        log('- load (ms):', new Date() - start)
+
+        start = new Date()
+        pubkeys = []
+        for (let i = 0; i < count; i++) {
+            const privateKey = new bsv.PrivateKey()
+            pubkeys.push(privateKey.toPublicKey())
+        }
+        log('- generate keypair (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            pubkeys[i].toAddress()
+        }
+        log('- calculate address (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            bsv.crypto.Hash.sha256(bsv.deps.Buffer.from(new Uint8Array(1024).fill(i % 256)))
+        }
+        log('- sha256 (ms):', round((new Date() - start) / count))
+
+        log('')
+    </script>
+
+    <script>
+        start = new Date()
+    </script>
+    <script src="node_modules/bsv2/dist/bsv.bundle.js"></script>
+    <script>
+        log('bsv2')
+
+        log('- load (ms):', new Date() - start)
+
+        start = new Date()
+        pubkeys = []
+        for (let i = 0; i < count; i++) {
+            const privateKey = bsvjs.PrivKey.fromRandom()
+            pubkeys.push(bsvjs.PubKey.fromPrivKey(privateKey))
+        }
+        log('- generate keypair (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            bsvjs.Address.fromPubKey(pubkeys[i])
+        }
+        log('- calculate address (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            bsvjs.Hash.sha256(bsv.deps.Buffer.from(new Uint8Array(1024).fill(i % 256)))
+        }
+        log('- sha256 (ms):', round((new Date() - start) / count))
+
+        log('')
+    </script>
+
+    <script type = "module">
+        start = new Date()
+
+        log('bsv-wasm')
+
+        import init, { PrivateKey, PublicKey, Hash } from './node_modules/bsv-wasm/bsv_wasm.js'
+
+        await init()
+
+        log('- load (ms):', new Date() - start)
+
+        start = new Date()
+        pubkeys = []
+        for (let i = 0; i < count; i++) {
+            const privateKey = PrivateKey.fromRandom()
+            pubkeys.push(PublicKey.fromPrivateKey(privateKey))
+        }
+        log('- generate keypair (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            pubkeys[i].toAddress()
+        }
+        log('- calculate address (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            Hash.sha256(new Uint8Array(1024).fill(i % 256))
+        }
+        log('- sha256 (ms):', round((new Date() - start) / count))
+
+        log('')
+    </script>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "measure",
+  "version": "1.0.0",
+  "description": "Measures size and performance of nimble vs other libraries",
+  "scripts": {
+    "measure-size": "node measure-size.js",
+    "measure-performance": "http-server -o measure-performance.html"
+  },
+  "dependencies": {
+    "bsv-wasm": "npm:bsv-wasm-web@^1.2.3",
+    "bsv1": "npm:bsv@^1.5.6",
+    "bsv2": "npm:bsv@^2.0.10",
+    "http-server": "^14.1.0",
+    "nimble": "../.."
+  }
+}
