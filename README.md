@@ -6,7 +6,7 @@
 
 `nimble` is a practical everyday Javascript library for Bitcoin SV.
 
-It is designed to be tiny, fast, and capable of the same commonly-used features as alternative libraries.
+It is designed to be exceptionally small, fast, and capable of the same commonly-used features as alternative libraries.
 
 ## Examples
 
@@ -89,17 +89,48 @@ nimble shares much of its API with bitcore-lib from which MoneyButton's bsv.js v
 
 | Library  | Load (ms) | Generate Keypair (ms) | Calculate Address (ms) | Sign Tx (ms) | Verify Signature (ms) | SHA256 (ms) |
 | -------- | --------- | --------------------- | ---------------------- | ------------ | --------------------- | ----------- |
-| nimble   | 11        | 2                     | 0.2                    |              |                       | 0           |
-| bsv1     | 24        | 6.8                   | 0.3                    |              |                       | 1.2         |
-| bsv2     | 32        | 8.5                   | 0.5                    |              |                       | 0.7         |
-| bsv-wasm | 56        | 0.4                   | 0                      |              |                       | 0           |
+| nimble   | 11        | 2                     | 0.2                    | TBD          | TBD                   | 0           |
+| bsv1     | 24        | 6.8                   | 0.3                    | TBD          | TBD                   | 1.2         |
+| bsv2     | 32        | 8.5                   | 0.5                    | TBD          | TBD                   | 0.7         |
+| bsv-wasm | 56        | 0.4                   | 0                      | TBD          | TBD                   | 0           |
 
 * Load performance was captured by loading the library from cache and calling any init functions
 * All others were captured by performing the operation 100 times in Chrome and taking the average
 
 **Feature Comparison**
 
-<TODO>
+| Feature                      | nimble | bsv1 | bsv2 | bsv-wasm | 
+| ---------------------------- | ------ | ---- | ---- | -------- |
+| Generate keypairs            | ✅ | ✅ | ✅ | ✅ |
+| Calculate addresses          | ✅ | ✅ | ✅ | ✅ |
+| Encode/decode keys           | ✅ | ✅ | ✅ | ✅ |
+| Serialize transactions       | ✅ | ✅ | ✅ | ✅ |
+| Deserialize transactions     | ✅ | ✅ | ✅ | ✅ |
+| Transaction builder          | ✅ | ✅ | ❌ | ❌ |
+| Deconstruct scripts          | ✅ | ✅ | ✅ | ❌ |
+| Custom genesis scripts       | ✅ | ❌ | ✅ | ✅ |
+| Script interpreter           | ✅ | ✅ | ✅ | ❌ |
+| Generate signatures          | ✅ | ✅ | ✅ | ✅ |
+| Verify signatures            | ✅ | ✅ | ✅ | ✅ |
+| Recover keys from signatures | ❌ | ❌ | ❌ | ✅ |
+| Sighash flags                | ✅ | ✅ | ✅ | ✅ |
+| P2PKH support                | ✅ | ✅ | ✅ | ✅ |
+| Multisig support             | ❌ | ✅ | ✅ | ❌ |
+| Threshold signatures         | ❌ | ❌ | ❌ | ❌ |
+| SHA-256                      | ✅ | ✅ | ✅ | ✅ |
+| SHA-1                        | ✅ | ✅ | ✅ | ✅ |
+| SHA-512                      | ❌ | ✅ | ✅ | ✅ |
+| RIPEMD-160                   | ✅ | ✅ | ✅ | ✅ |
+| Sighash function             | ✅ | ✅ | ✅ | ✅ |
+| Testnet support              | ✅ | ✅ | ✅ | ❌ |
+| Synchronous initialization   | ✅ | ✅ | ✅ | ❌ |
+| Automatic memory management  | ✅ | ✅ | ✅ | ❌ |
+| Use library in parts         | ✅ | ✅ | ✅ | ❌ |
+| Stream decode transactions   | ✅ | ❌ | ✅ | ❌ |
+| Custom elliptic curve math   | ❌ | ✅ | ✅ | ❌ |
+| Seed phrase mnemonics        | ❌ | ✅ | ✅ | ❌ |
+| ECIES                        | ❌ | ✅ | ✅ | ✅ |
+| HD keys                      | ❌ | ✅ | ✅ | ✅ |
 
 ## NPM commands
 
