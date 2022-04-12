@@ -14,17 +14,8 @@ const PrivateKey = require('./private-key')
 const Address = require('./address')
 const BufferWriter = require('./buffer-writer')
 
-// ------------------------------------------------------------------------------------------------
-// Globals
-// ------------------------------------------------------------------------------------------------
-
 // These WeakMap caches allow the objects themselves to maintain their immutability
-
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
-
-// ------------------------------------------------------------------------------------------------
-// Transaction
-// ------------------------------------------------------------------------------------------------
 
 class Transaction {
   constructor (...args) {
@@ -209,10 +200,6 @@ class Transaction {
   }
 }
 
-// ------------------------------------------------------------------------------------------------
-// Input
-// ------------------------------------------------------------------------------------------------
-
 class Input {
   constructor (txid, vout, script, sequence, output = undefined) {
     if (!isHex(txid) || txid.length !== 64) throw new Error(`Invalid txid: ${txid}`)
@@ -230,10 +217,6 @@ class Input {
     }
   }
 }
-
-// ------------------------------------------------------------------------------------------------
-// Output
-// ------------------------------------------------------------------------------------------------
 
 class Output {
   constructor (script, satoshis, tx = undefined) {
@@ -259,8 +242,6 @@ class Output {
     return new Address(pubkeyhash, testnet)
   }
 }
-
-// ------------------------------------------------------------------------------------------------
 
 Transaction.Input = Input
 Transaction.Output = Output

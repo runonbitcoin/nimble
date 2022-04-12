@@ -4,18 +4,8 @@ const decodePublicKey = require('../functions/decode-public-key')
 const calculatePublicKey = require('../functions/calculate-public-key')
 const encodePublicKey = require('../functions/encode-public-key')
 
-// ------------------------------------------------------------------------------------------------
-// Globals
-// ------------------------------------------------------------------------------------------------
-
 // These WeakMap caches allow the objects themselves to maintain their immutability
-
-// Cached to reduce secp256k1 multiplication
-const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap()
-
-// ------------------------------------------------------------------------------------------------
-// PublicKey
-// ------------------------------------------------------------------------------------------------
+const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp256k1 multiplication
 
 class PublicKey {
   constructor (point, testnet, compressed) {
@@ -66,7 +56,5 @@ class PublicKey {
     return Address.fromPublicKey(this)
   }
 }
-
-// ------------------------------------------------------------------------------------------------
 
 module.exports = PublicKey

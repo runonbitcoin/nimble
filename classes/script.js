@@ -6,17 +6,8 @@ const decodeHex = require('../functions/decode-hex')
 const decodeScriptChunks = require('../functions/decode-script-chunks')
 const Address = require('./address')
 
-// ------------------------------------------------------------------------------------------------
-// Globals
-// ------------------------------------------------------------------------------------------------
-
 // These WeakMap caches allow the objects themselves to maintain their immutability
-
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
-
-// ------------------------------------------------------------------------------------------------
-// Script
-// ------------------------------------------------------------------------------------------------
 
 class Script {
   constructor (buffer = []) {
@@ -45,7 +36,5 @@ class Script {
     return chunks
   }
 }
-
-// ------------------------------------------------------------------------------------------------
 
 module.exports = Script
