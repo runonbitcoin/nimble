@@ -2,11 +2,21 @@
 
 [![tests](https://github.com/runonbitcoin/nimble/workflows/tests/badge.svg)](https://github.com/runonbitcoin/nimble/actions) [![codecov](https://codecov.io/gh/runonbitcoin/nimble/branch/main/graph/badge.svg?token=DEA91M2f1o)](https://codecov.io/gh/runonbitcoin/nimble)
 
-## Introduction
-
 `nimble` is a practical everyday Javascript library for Bitcoin SV.
 
 It is designed to be exceptionally small, fast, and capable of the same popular features as alternative libraries.
+
+## Getting started
+
+```
+npm install @runonbitcoin/nimble
+```
+
+or 
+
+```
+<script src="https://unpkg.com/@runonbitcoin/nimble@1.0.0">/script>
+```
 
 ## Examples
 
