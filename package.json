@@ -1,8 +1,9 @@
 {
   "name": "nimble",
   "version": "1.0.0",
-  "description": "",
+  "description": "A practical everyday JS library for BSV",
   "main": "index.js",
+  "license": "MIT",
   "scripts": {
     "build": "webpack",
     "lint": "standard --fix",
