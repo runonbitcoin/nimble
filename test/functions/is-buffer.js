@@ -11,8 +11,9 @@ describe('isBuffer', () => {
   })
 
   it('returns false for non-buffer', () => {
+    expect(isBuffer()).to.equal(false)
     expect(isBuffer({})).to.equal(false)
-    expect(isBuffer(Uint16Array.from())).to.equal(false)
+    expect(isBuffer(Uint16Array.from([]))).to.equal(false)
   })
 
   it('returns false non-byte elements', () => {
