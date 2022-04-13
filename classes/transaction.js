@@ -33,7 +33,6 @@ class Transaction {
 
   static fromHex (hex) { return Transaction.fromBuffer(decodeHex(hex)) }
   static fromString (hex) { return this.fromHex(hex) }
-
   static fromBuffer (buffer) {
     const transaction = decodeTx(buffer)
 
@@ -43,6 +42,13 @@ class Transaction {
     transaction.outputs.forEach(output => { output.tx = this })
 
     return transaction
+  }
+
+  toHex () { return encodeHex(this.toBuffer()) }
+  toString () { return this.toHex() }
+  toBuffer () {
+    this._calculateChange()
+    return encodeTx(this)
   }
 
   get hash () {
@@ -165,15 +171,6 @@ class Transaction {
     this.outputs.forEach(output => Object.freeze(output))
 
     return this
-  }
-
-  toHex () { return encodeHex(this.toBuffer()) }
-  toString () { return this.toHex() }
-
-  toBuffer () {
-    this._calculateChange()
-
-    return encodeTx(this)
   }
 
   _calculateChange () {
