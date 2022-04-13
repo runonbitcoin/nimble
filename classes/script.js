@@ -12,9 +12,6 @@ const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
 class Script {
   constructor (buffer = []) {
     this.buffer = buffer
-
-    Object.freeze(this)
-    Object.freeze(this.buffer)
   }
 
   static fromString (s) { return Script.fromHex(s) }
@@ -29,11 +26,23 @@ class Script {
 
   isP2PKH () { return isP2PKHLockScript(this.buffer) }
 
+  // Locks a script so that no further changes may be made
+  finalize() {
+    if (Object.isFrozen(this)) throw new Error('Script finalized')
+    Object.freeze(this)
+    Object.freeze(this.buffer)
+    return this
+  }
+
   get chunks () {
-    if (SCRIPT_TO_CHUNKS_CACHE.has(this)) return SCRIPT_TO_CHUNKS_CACHE.get(this)
-    const chunks = decodeScriptChunks(this.buffer)
-    SCRIPT_TO_CHUNKS_CACHE.set(this, chunks)
-    return chunks
+    if (Object.isFrozen(this)) {
+      if (SCRIPT_TO_CHUNKS_CACHE.has(this)) return SCRIPT_TO_CHUNKS_CACHE.get(this)
+      const chunks = decodeScriptChunks(this.buffer)
+      SCRIPT_TO_CHUNKS_CACHE.set(this, chunks)
+      return chunks
+    } else {
+      return decodeScriptChunks(this.buffer)
+    }
   }
 }
 

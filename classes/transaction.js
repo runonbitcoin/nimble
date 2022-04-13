@@ -159,6 +159,7 @@ class Transaction {
     return this
   }
 
+  // Calculates change and then locks a transaction so that no further changes may be made
   finalize () {
     if (Object.isFrozen(this)) throw new Error('Transaction finalized')
 
