@@ -9,6 +9,7 @@ describe('classes', () => {
   require('./classes/buffer-writer')
   require('./classes/private-key')
   require('./classes/public-key')
+  require('./classes/script')
   require('./classes/transaction')
 })
 

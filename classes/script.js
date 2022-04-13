@@ -13,7 +13,24 @@ const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
 class Script {
   constructor (buffer = []) {
     if (!isBuffer(buffer)) throw new Error(`Not a buffer: ${buffer}`)
+
     this.buffer = buffer
+
+    // Proxy the script so it may be used in place of a buffer in functions
+    return new Proxy(this, {
+      get: (target, prop, receiver) => {
+        if (prop === Symbol.iterator || (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop)))) {
+          return target.buffer[prop]
+        }
+        return Reflect.get(target, prop, receiver)
+      },
+      set: (target, prop, value, receiver) => {
+        if (prop === Symbol.iterator || (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop)))) {
+          return Reflect.set(target.buffer, prop, value)
+        }
+        return Reflect.set(target, prop, value, receiver)
+      }
+    })
   }
 
   static fromString (s) { return Script.fromHex(s) }
@@ -25,6 +42,8 @@ class Script {
   toHex () { return encodeHex(this.buffer) }
   toBuffer () { return this.buffer }
   toAddress () { return this.isP2PKH(this.buffer) && new Address(extractP2PKHLockScriptPubkeyhash(this.buffer), require('../index').testnet) }
+
+  get length () { return this.buffer.length }
 
   isP2PKH () { return isP2PKHLockScript(this.buffer) }
 
