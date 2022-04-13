@@ -31,9 +31,8 @@ class Transaction {
     this.changeOutput = undefined
   }
 
-  static fromHex (hex) {
-    return Transaction.fromBuffer(decodeHex(hex))
-  }
+  static fromHex (hex) { return Transaction.fromBuffer(decodeHex(hex)) }
+  static fromString (hex) { return this.fromHex(hex) }
 
   static fromBuffer (buffer) {
     const transaction = decodeTx(buffer)
@@ -168,9 +167,8 @@ class Transaction {
     return this
   }
 
-  toString () {
-    return encodeHex(this.toBuffer())
-  }
+  toHex () { return encodeHex(this.toBuffer()) }
+  toString () { return this.toHex() }
 
   toBuffer () {
     this._calculateChange()

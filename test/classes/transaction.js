@@ -87,6 +87,24 @@ describe('Transaction', () => {
     })
   })
 
+  describe('hash', () => {
+    it('returns txid', () => {
+      const bsvtx = new bsv.Transaction()
+      const nimbletx = nimble.Transaction.fromString(bsvtx.toString())
+      expect(nimbletx.hash).to.equal(bsvtx.hash)
+    })
+
+    it('caches txid when finalized', () => {
+      const tx = new nimble.Transaction().finalize()
+      const t0 = new Date()
+      tx.hash // eslint-disable-line
+      const t1 = new Date()
+      tx.hash // eslint-disable-line
+      const t2 = new Date()
+      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
+    })
+  })
+
   describe('from', () => {
     it('adds transaction output', () => {
       const pk = PrivateKey.fromRandom()
