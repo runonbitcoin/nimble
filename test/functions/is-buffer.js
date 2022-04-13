@@ -1,11 +1,22 @@
 const { describe, it } = require('mocha')
+const { expect } = require('chai')
+const nimble = require('../env/nimble')
+const { isBuffer } = nimble.functions
 
 describe('isBuffer', () => {
-  it.skip('returns true for buffer', () => {
-    // TODO
+  it('returns true for buffer', () => {
+    expect(isBuffer([])).to.equal(true)
+    expect(isBuffer(Buffer.from([]))).to.equal(true)
+    expect(isBuffer(Uint8Array.from([]))).to.equal(true)
   })
 
-  it.skip('returns false for buffer', () => {
-    // TODO
+  it('returns false for non-buffer', () => {
+    expect(isBuffer({})).to.equal(false)
+    expect(isBuffer(Uint16Array.from())).to.equal(false)
+  })
+
+  it('returns false non-byte elements', () => {
+    expect(isBuffer(['a'])).to.equal(false)
+    expect(isBuffer([1, undefined])).to.equal(false)
   })
 })
