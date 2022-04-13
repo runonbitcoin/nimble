@@ -5,12 +5,14 @@ const encodeHex = require('../functions/encode-hex')
 const decodeHex = require('../functions/decode-hex')
 const decodeScriptChunks = require('../functions/decode-script-chunks')
 const Address = require('./address')
+const isBuffer = require('../functions/is-buffer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
 
 class Script {
   constructor (buffer = []) {
+    if (!isBuffer(buffer)) throw new Error(`Not a buffer: ${buffer}`)
     this.buffer = buffer
   }
 
