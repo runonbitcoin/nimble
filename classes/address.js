@@ -1,6 +1,7 @@
 const encodeAddress = require('../functions/encode-address')
 const decodeAddress = require('../functions/decode-address')
 const calculatePublicKeyHash = require('../functions/calculate-public-key-hash')
+const isBuffer = require('../functions/is-buffer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const PUBLIC_KEY_TO_ADDRESS_CACHE = new WeakMap() // Cached to reduce ripemd160 and sha256 hashing
@@ -8,6 +9,9 @@ const ADDRESS_TO_STRING_CACHE = new WeakMap() // Cached to reduce sha256 hashing
 
 class Address {
   constructor (pubkeyhash, testnet) {
+    if (!isBuffer(pubkeyhash)) throw new Error(`Invalid pubkeyhash: ${pubkeyhash}`)
+    if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
+
     this.pubkeyhash = pubkeyhash
     this.testnet = testnet
 

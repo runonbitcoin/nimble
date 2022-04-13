@@ -57,7 +57,7 @@ class PublicKey {
   }
 
   toAddress () {
-    const Address = require('./address');
+    const Address = require('./address')
     return Address.fromPublicKey(this)
   }
 }

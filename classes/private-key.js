@@ -1,12 +1,17 @@
 const generatePrivateKey = require('../functions/generate-private-key')
 const encodeWIF = require('../functions/encode-wif')
 const decodeWIF = require('../functions/decode-wif')
+const isBuffer = require('../functions/is-buffer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const PRIVATE_KEY_TO_WIF_CACHE = new WeakMap() // Cached to reduce sha256
 
 class PrivateKey {
   constructor (number, testnet, compressed) {
+    if (!isBuffer(number)) throw new Error(`Invalid number: ${number}`)
+    if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
+    if (typeof compressed !== 'boolean') throw new Error(`Invalid compressed flag: ${compressed}`)
+
     this.number = number
     this.testnet = testnet
     this.compressed = compressed
