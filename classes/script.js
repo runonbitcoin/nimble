@@ -19,15 +19,12 @@ class Script {
     // Proxy the script so it may be used in place of a buffer in functions
     return new Proxy(this, {
       get: (target, prop, receiver) => {
-        if (prop === Symbol.iterator || (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop)))) {
-          return target.buffer[prop]
-        }
+        if (prop === Symbol.iterator) return target.buffer[Symbol.iterator].bind(target.buffer)
+        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return target.buffer[prop]
         return Reflect.get(target, prop, receiver)
       },
       set: (target, prop, value, receiver) => {
-        if (prop === Symbol.iterator || (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop)))) {
-          return Reflect.set(target.buffer, prop, value)
-        }
+        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return Reflect.set(target.buffer, prop, value)
         return Reflect.set(target, prop, value, receiver)
       }
     })
@@ -37,6 +34,12 @@ class Script {
   static fromHex (s) { return new Script(decodeHex(s)) }
   static fromBuffer (buffer) { return new Script(buffer) }
   static fromAddress (address) { return new Script(createP2PKHLockScript(address.toString())) }
+  static from (script) {
+    if (script instanceof Script) return script
+    if (typeof script === 'string') return Script.fromString(script)
+    if (isBuffer(script)) return Script.fromBuffer(script)
+    throw new Error(`Invalid script: ${script}`)
+  }
 
   toString () { return this.toHex() }
   toHex () { return encodeHex(this.buffer) }
@@ -44,6 +47,7 @@ class Script {
   toAddress () { return this.isP2PKH(this.buffer) && new Address(extractP2PKHLockScriptPubkeyhash(this.buffer), require('../index').testnet) }
 
   get length () { return this.buffer.length }
+  slice (start, end) { return this.buffer.slice(start, end) }
 
   isP2PKH () { return isP2PKHLockScript(this.buffer) }
 

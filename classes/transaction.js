@@ -11,7 +11,7 @@ const decodeTx = require('../functions/decode-tx')
 const encodeTx = require('../functions/encode-tx')
 const calculateTxid = require('../functions/calculate-txid')
 const PrivateKey = require('./private-key')
-const Address = require('./address')
+const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
@@ -38,8 +38,10 @@ class Transaction {
 
     Object.setPrototypeOf(transaction, Transaction.prototype)
     transaction.inputs.forEach(input => Object.setPrototypeOf(input, Input.prototype))
+    transaction.inputs.forEach(input => { input.script = Script.fromBuffer(input.script) })
     transaction.outputs.forEach(output => Object.setPrototypeOf(output, Output.prototype))
     transaction.outputs.forEach(output => { output.tx = this })
+    transaction.outputs.forEach(output => { output.script = Script.fromBuffer(output.script) })
 
     return transaction
   }
@@ -151,7 +153,7 @@ class Transaction {
       writePushData(writer, privateKey.toPublicKey().toBuffer())
       const script = writer.toBuffer()
 
-      input.script = script
+      input.script = Script.fromBuffer(script)
     }
 
     return this
@@ -195,14 +197,14 @@ class Transaction {
 }
 
 class Input {
-  constructor (txid, vout, script, sequence, output = undefined) {
+  constructor (txid, vout, script = [], sequence = 0, output = undefined) {
     if (!isHex(txid) || txid.length !== 64) throw new Error(`Invalid txid: ${txid}`)
     if (!Number.isInteger(vout) || vout < 0) throw new Error(`Invalid vout: ${vout}`)
 
     this.txid = txid
     this.vout = vout
-    this.script = typeof script === 'string' ? decodeHex(script) : script || []
-    this.sequence = sequence || 0
+    this.script = Script.from(script)
+    this.sequence = sequence
 
     if (output instanceof Output) {
       this.output = output
@@ -214,27 +216,13 @@ class Input {
 
 class Output {
   constructor (script, satoshis, tx = undefined) {
-    this.script = typeof script === 'string' ? decodeHex(script) : script
+    this.script = Script.from(script)
     this.satoshis = satoshis
-
     this.tx = tx
   }
 
   get txid () { return this.tx.hash }
   get vout () { return this.tx.outputs.indexOf(this) }
-
-  get scriptHex () {
-    return encodeHex(this.script)
-  }
-
-  toAddress () {
-    if (!isP2PKHLockScript(this.script)) return null
-
-    const pubkeyhash = extractP2PKHLockScriptPubkeyhash(this.script)
-    const testnet = require('../index').testnet
-
-    return new Address(pubkeyhash, testnet)
-  }
 }
 
 Transaction.Input = Input

@@ -37,7 +37,7 @@ describe('Transaction', () => {
       expect(tx2.outputs.length).to.equal(tx.outputs.length)
       expect(tx2.inputs[0].txid).to.equal(tx.inputs[0].txid)
       expect(tx2.inputs[0].vout).to.equal(tx.inputs[0].vout)
-      expect(Array.from(tx2.inputs[0].script)).to.deep.equal(Array.from(tx.inputs[0].script))
+      expect(Array.from([...tx2.inputs[0].script])).to.deep.equal(Array.from([...tx.inputs[0].script]))
       expect(tx2.inputs[0].sequence).to.equal(tx.inputs[0].sequence)
       expect(Array.from(tx2.outputs[0].script)).to.deep.equal(Array.from(tx.outputs[0].script))
       expect(tx2.outputs[0].satoshis).to.equal(tx.outputs[0].satoshis)
@@ -123,7 +123,7 @@ describe('Transaction', () => {
       const utxo = {
         txid: tx1.hash,
         vout: 0,
-        script: tx1.outputs[0].scriptHex,
+        script: tx1.outputs[0].script,
         satoshis: tx1.outputs[0].satoshis
       }
       const tx2 = new Transaction().from(utxo)
@@ -131,7 +131,7 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].vout).to.equal(0)
       expect(tx2.inputs[0].script.length).to.equal(0)
       expect(tx2.inputs[0].sequence).to.equal(0)
-      expect(tx2.inputs[0].output.scriptHex).to.equal(utxo.script)
+      expect(tx2.inputs[0].output.script).to.equal(utxo.script)
       expect(tx2.inputs[0].output.satoshis).to.equal(utxo.satoshis)
     })
 
