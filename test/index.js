@@ -33,6 +33,7 @@ describe('functions', () => {
   require('./functions/encode-tx')
   require('./functions/encode-wif')
   require('./functions/generate-private-key')
+  require('./functions/generate-random-data')
   require('./functions/generate-tx-signature')
   require('./functions/is-buffer')
   require('./functions/read-u32-le')
