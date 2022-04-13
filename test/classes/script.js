@@ -29,10 +29,6 @@ describe('Script', () => {
       expect(script[0]).to.equal(1)
       expect(script[1]).to.equal(2)
       expect(script[2]).to.equal(3)
-      script[1] = 4
-      expect(script[1]).to.equal(4)
-      expect(script.buffer[1]).to.equal(4)
-      expect(Array.from(script)).to.deep.equal([1, 4, 3])
     })
   })
 })

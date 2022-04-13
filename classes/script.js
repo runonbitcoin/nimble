@@ -14,7 +14,16 @@ class Script {
   constructor (buffer = []) {
     if (!isBuffer(buffer)) throw new Error(`Not a buffer: ${buffer}`)
 
+    try {
+      Object.freeze(buffer)
+    } catch (e) {
+      buffer = Uint8Array.from(buffer)
+      Object.freeze(this.buffer)
+    }
+
     this.buffer = buffer
+
+    Object.freeze(this)
 
     // Proxy the script so it may be used in place of a buffer in functions
     return new Proxy(this, {
@@ -22,10 +31,6 @@ class Script {
         if (prop === Symbol.iterator) return target.buffer[Symbol.iterator].bind(target.buffer)
         if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return target.buffer[prop]
         return Reflect.get(target, prop, receiver)
-      },
-      set: (target, prop, value, receiver) => {
-        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return Reflect.set(target.buffer, prop, value)
-        return Reflect.set(target, prop, value, receiver)
       }
     })
   }
@@ -51,23 +56,11 @@ class Script {
 
   isP2PKH () { return isP2PKHLockScript(this.buffer) }
 
-  // Locks a script so that no further changes may be made
-  finalize () {
-    if (Object.isFrozen(this)) throw new Error('Script finalized')
-    Object.freeze(this)
-    Object.freeze(this.buffer)
-    return this
-  }
-
   get chunks () {
-    if (Object.isFrozen(this)) {
-      if (SCRIPT_TO_CHUNKS_CACHE.has(this)) return SCRIPT_TO_CHUNKS_CACHE.get(this)
-      const chunks = decodeScriptChunks(this.buffer)
-      SCRIPT_TO_CHUNKS_CACHE.set(this, chunks)
-      return chunks
-    } else {
-      return decodeScriptChunks(this.buffer)
-    }
+    if (SCRIPT_TO_CHUNKS_CACHE.has(this)) return SCRIPT_TO_CHUNKS_CACHE.get(this)
+    const chunks = decodeScriptChunks(this.buffer)
+    SCRIPT_TO_CHUNKS_CACHE.set(this, chunks)
+    return chunks
   }
 }
 
