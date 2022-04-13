@@ -3,12 +3,17 @@ const decodeHex = require('../functions/decode-hex')
 const decodePublicKey = require('../functions/decode-public-key')
 const calculatePublicKey = require('../functions/calculate-public-key')
 const encodePublicKey = require('../functions/encode-public-key')
+const isBuffer = require('../functions/is-buffer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp256k1 multiplication
 
 class PublicKey {
   constructor (point, testnet, compressed) {
+    if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error(`Invalid point: ${point}`)
+    if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
+    if (typeof compressed !== 'boolean') throw new Error(`Invalid compressed flag: ${compressed}`)
+
     this.point = point
     this.testnet = testnet
     this.compressed = compressed
@@ -52,7 +57,7 @@ class PublicKey {
   }
 
   toAddress () {
-    const Address = require('./address')
+    const Address = require('./address');
     return Address.fromPublicKey(this)
   }
 }

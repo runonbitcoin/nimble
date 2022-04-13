@@ -29,7 +29,7 @@ class Script {
   isP2PKH () { return isP2PKHLockScript(this.buffer) }
 
   // Locks a script so that no further changes may be made
-  finalize() {
+  finalize () {
     if (Object.isFrozen(this)) throw new Error('Script finalized')
     Object.freeze(this)
     Object.freeze(this.buffer)
