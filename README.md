@@ -78,6 +78,8 @@ const tx3 = nimble.functions.readTx(reader)
 reader.close()
 ```
 
+There are asynchronous versions of the more expensive functions so check the functions directory.
+
 ## Using on testnet
 
 Testnet mode must be enabled to correctly generate private keys and addresses on testnet and STN.
