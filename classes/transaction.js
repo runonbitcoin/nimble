@@ -115,11 +115,9 @@ class Transaction {
     if (this.changeOutput) throw new Error('Change output already added')
 
     const script = createP2PKHLockScript(address.toString())
-
     const output = new Output(script, 0, this)
 
     this.outputs.push(output)
-
     this.changeOutput = output
 
     return this
