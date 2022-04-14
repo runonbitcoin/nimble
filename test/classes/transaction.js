@@ -1,8 +1,9 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { Transaction, PrivateKey } = nimble
+const { Transaction, PrivateKey, Script } = nimble
 const { createP2PKHLockScript } = nimble.functions
+const { opcodes } = nimble.constants
 const bsv = require('bsv')
 
 describe('Transaction', () => {
@@ -84,6 +85,17 @@ describe('Transaction', () => {
     it('throws if invalid', () => {
       const badBuffer = [0].concat(new Transaction().toBuffer())
       expect(() => Transaction.fromBuffer(badBuffer)).to.throw()
+    })
+
+    it('creates script objects', () => {
+      const dummyTxid = new Transaction().hash
+      const tx = new Transaction()
+      const script = [3, 1, 2, 3, opcodes.OP_CHECKSIG, opcodes.OP_ADD]
+      tx.inputs.push({ txid: dummyTxid, vout: 1, script: script, sequence: 5 })
+      tx.outputs.push({ script: [], satoshis: 4 })
+      const tx2 = Transaction.fromBuffer(tx.toBuffer())
+      expect(tx2.inputs[0].script instanceof Script).to.equal(true)
+      expect(tx2.outputs[0].script instanceof Script).to.equal(true)
     })
   })
 
