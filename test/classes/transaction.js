@@ -5,6 +5,7 @@ const { Transaction, PrivateKey, Script } = nimble
 const { createP2PKHLockScript } = nimble.functions
 const { opcodes } = nimble.constants
 const bsv = require('bsv')
+const verifyScriptAsync = require('../../functions/verify-script-async')
 
 describe('Transaction', () => {
   describe('constructor', () => {
@@ -260,11 +261,12 @@ describe('Transaction', () => {
   })
 
   describe('sign', () => {
-    it('signs matching p2pkh scripts', () => {
+    it('signs matching p2pkh scripts', async () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000).sign(privateKey)
       expect(tx2.inputs[0].script.length > 0).to.equal(true)
+      await verifyScriptAsync(tx2.inputs[0].script, tx1.outputs[0].script, tx2, 0, tx1.outputs[0].satoshis)
     })
 
     it('supports string private key', () => {
