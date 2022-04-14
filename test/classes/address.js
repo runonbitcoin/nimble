@@ -86,15 +86,5 @@ describe('Address', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
       expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
     })
-
-    it('caches string', () => {
-      const address = PrivateKey.fromRandom().toAddress()
-      const t0 = new Date()
-      address.toString()
-      const t1 = new Date()
-      address.toString()
-      const t2 = new Date()
-      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
-    })
   })
 })
