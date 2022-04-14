@@ -46,6 +46,11 @@ describe('PrivateKey', () => {
       const privateKey = PrivateKey.fromRandom()
       expect(Object.isFrozen(privateKey)).to.equal(true)
     })
+
+    it('testnet', () => {
+      const privateKey = PrivateKey.fromRandom(true)
+      expect(privateKey.testnet).to.equal(true)
+    })
   })
 
   describe('toString', () => {

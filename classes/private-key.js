@@ -30,9 +30,8 @@ class PrivateKey {
     }
   }
 
-  static fromRandom () {
+  static fromRandom (testnet = require('../index').testnet) {
     const number = generatePrivateKey()
-    const testnet = require('../index').testnet
     const compressed = true
     return new PrivateKey(number, testnet, compressed)
   }
