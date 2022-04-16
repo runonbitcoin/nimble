@@ -1,18 +1,18 @@
 const { BN_SIZE, getMemoryBuffer, getSecp256k1Exports, writeBN, readBN } = require('../wasm/wasm-secp256k1')
-const verifyPublicKey = require('./verify-public-key')
+const verifyPoint = require('./verify-point')
 
 function decodePublicKey (buffer) {
   const prefix = buffer[0]
 
   if (prefix === 0x04) {
     const publicKey = decodeUncompressedPublicKey(buffer)
-    verifyPublicKey(publicKey)
+    verifyPoint(publicKey)
     return publicKey
   }
 
   if (prefix === 0x02 || prefix === 0x03) {
     const publicKey = decodeCompressedPublicKey(buffer)
-    verifyPublicKey(publicKey)
+    verifyPoint(publicKey)
     return publicKey
   }
 

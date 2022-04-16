@@ -95,7 +95,7 @@ int ecdsa_verify(const bn_digit_t* bn_r, const bn_digit_t* bn_s, const bn_digit_
   return bn_cmp(R, bn_r);
 }
 
-int validate_pubkey(bn_digit_t* pt_pubkey) { 
+int validate_point(bn_digit_t* pt_pubkey) { 
   // https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
   // https://research.nccgroup.com/2021/11/18/an-illustrated-guide-to-elliptic-curve-cryptography-validation/
 

@@ -49,7 +49,7 @@ describe('functions', () => {
   require('./functions/sha256d')
   require('./functions/sighash-async')
   require('./functions/sighash')
-  require('./functions/verify-public-key')
+  require('./functions/verify-point')
   require('./functions/verify-tx-signature')
   require('./functions/verify-script-async')
   require('./functions/write-u32-le')

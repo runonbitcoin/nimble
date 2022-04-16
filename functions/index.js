@@ -53,7 +53,7 @@ module.exports = {
   sha256ripemd160: require('./sha256ripemd160'),
   sighashAsync: require('./sighash-async'),
   sighash: require('./sighash'),
-  verifyPublicKey: require('./verify-public-key'),
+  verifyPoint: require('./verify-point'),
   verifyScriptAsync: require('./verify-script-async'),
   verifyTxSignatureAsync: require('./verify-tx-signature-async'),
   verifyTxSignature: require('./verify-tx-signature'),

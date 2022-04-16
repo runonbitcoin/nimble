@@ -1,7 +1,7 @@
 _BN_EXPORTS = bn_unpad bn_cmp bn_cmp_digits bn_from_digit copy_digits copy_bn bn_sub bn_sub_digits bn_sub_digits2 bn_add bn_double bn_half bn_mul_digit
 _BN2_EXPORTS = bn_mul bn_sq bn_div_digit bn_div_rem bn_inv_mod_barrett bn_precompute_barrett_factor bn_mod_barrett bn_pow_mod_barrett
 _SECP256K1_EXPORTS = secp256k1_init pt_add pt_mul g_mul decompress_y
-_ECDSA_EXPORTS = ecdsa_init ecdsa_sign ecdsa_verify validate_pubkey
+_ECDSA_EXPORTS = ecdsa_init ecdsa_sign ecdsa_verify validate_point
 
 BN_EXPORTS = $(_BN_EXPORTS:%=--export=%)
 BN2_EXPORTS = $(_BN2_EXPORTS:%=--export=%)

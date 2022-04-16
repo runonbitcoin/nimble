@@ -399,29 +399,29 @@ int main() {
         expect(bn_num(bn_y)[i] == BN_PUBKEYY3[i]);
     }
 
-    printf("validate_pubkey: valid\n");
+    printf("validate_point: valid\n");
     pt_t pt;
     copy_bn(pt_x(pt), BN_PUBKEYX);
     copy_bn(pt_y(pt), BN_PUBKEYY);
-    expect(validate_pubkey(pt) == 0);
+    expect(validate_point(pt) == 0);
 
-    printf("validate_pubkey: not on curve\n");
+    printf("validate_point: not on curve\n");
     copy_bn(pt_x(pt), BN_PUBKEYX2);
     copy_bn(pt_y(pt), BN_PUBKEYX3);
-    expect(validate_pubkey(pt) != 0);
+    expect(validate_point(pt) != 0);
 
-    printf("validate_pubkey: identity point\n");
+    printf("validate_point: identity point\n");
     bn_from_digit(pt_x(pt), 0);
     bn_from_digit(pt_y(pt), 0);
-    expect(validate_pubkey(pt) != 0);
+    expect(validate_point(pt) != 0);
 
-    printf("validate_pubkey: negative x\n");
+    printf("validate_point: negative x\n");
     copy_bn(pt_x(pt), BN_PUBKEYX);
     copy_bn(pt_y(pt), BN_PUBKEYY);
     bn_sub(pt_x(pt), pt_x(pt), g_bn_P);
-    expect(validate_pubkey(pt) != 0);
+    expect(validate_point(pt) != 0);
 
-    printf("validate_pubkey: monte carlo 1K\n");
+    printf("validate_point: monte carlo 1K\n");
     bn_t privkeys[1000];
     pt_t pubkeys[1000];
     for (int i = 0; i < 1000; i++) {
@@ -431,7 +431,7 @@ int main() {
     }
     clock_gettime(CLOCK_REALTIME, &start);
     for (int i = 0; i < 1000; i++) {
-        expect(validate_pubkey(pubkeys[i]) == 0)
+        expect(validate_point(pubkeys[i]) == 0)
     }
     printf("Avg time: %f ms\n", (secs_since(&start)) * 1000.0 / 1000);
 
