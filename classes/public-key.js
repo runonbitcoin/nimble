@@ -4,15 +4,19 @@ const decodePublicKey = require('../functions/decode-public-key')
 const calculatePublicKey = require('../functions/calculate-public-key')
 const encodePublicKey = require('../functions/encode-public-key')
 const isBuffer = require('../functions/is-buffer')
+const verifyPoint = require('../functions/verify-point')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp256k1 multiplication
 
 class PublicKey {
-  constructor (point, testnet, compressed) {
-    if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error(`Invalid point: ${point}`)
-    if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
-    if (typeof compressed !== 'boolean') throw new Error(`Invalid compressed flag: ${compressed}`)
+  constructor (point, testnet, compressed, validate = true) {
+    if (validate) {
+      if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error(`Invalid point: ${point}`)
+      if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
+      if (typeof compressed !== 'boolean') throw new Error(`Invalid compressed flag: ${compressed}`)
+      verifyPoint(point)
+    }
 
     this.point = point
     this.testnet = testnet
@@ -26,7 +30,7 @@ class PublicKey {
       const point = decodePublicKey(decodeHex(pubkey))
       const testnet = require('../index').testnet
       const compressed = pubkey.length === 66
-      return new PublicKey(point, testnet, compressed)
+      return new PublicKey(point, testnet, compressed, false)
     } catch (e) {
       throw new Error(`Cannot create PublicKey: ${e.message}`)
     }
@@ -41,7 +45,7 @@ class PublicKey {
     const point = calculatePublicKey(privateKey.number)
     const testnet = privateKey.testnet
     const compressed = privateKey.compressed
-    const publicKey = new PublicKey(point, testnet, compressed)
+    const publicKey = new PublicKey(point, testnet, compressed, false)
 
     PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.set(privateKey, publicKey)
 
