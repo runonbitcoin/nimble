@@ -1,13 +1,26 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { PrivateKey, Address } = nimble
+const { Address, PrivateKey } = nimble
 const { encodeBase58Check } = nimble.functions
 const bsv = require('bsv')
 
 describe('Address', () => {
   describe('constructor', () => {
-    // TODO
+    it('valid', () => {
+      const privateKey = nimble.functions.generatePrivateKey()
+      const publicKey = nimble.functions.calculatePublicKey(privateKey)
+      const pubkeyhash = nimble.functions.calculatePublicKeyHash(publicKey)
+      const address = new Address(pubkeyhash, true)
+      expect(address.pubkeyhash).to.equal(pubkeyhash)
+      expect(address.testnet).to.equal(true)
+    })
+
+    it('throws if invalid', () => {
+      expect(() => new Address('abc', true)).to.throw('Cannot create Address: bad pubkeyhash')
+      expect(() => new Address([], false)).to.throw('Cannot create Address: bad pubkeyhash')
+      expect(() => new Address(new Array(20), 0)).to.throw('Cannot create Address: bad testnet flag')
+    })
   })
 
   describe('fromString', () => {

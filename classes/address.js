@@ -8,9 +8,15 @@ const PUBLIC_KEY_TO_ADDRESS_CACHE = new WeakMap() // Cached to reduce ripemd160 
 const ADDRESS_TO_STRING_CACHE = new WeakMap() // Cached to reduce sha256 hashing
 
 class Address {
-  constructor (pubkeyhash, testnet) {
-    if (!isBuffer(pubkeyhash)) throw new Error(`Invalid pubkeyhash: ${pubkeyhash}`)
-    if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
+  constructor (pubkeyhash, testnet, validate = true) {
+    if (validate) {
+      try {
+        if (!isBuffer(pubkeyhash) || pubkeyhash.length !== 20) throw new Error('bad pubkeyhash')
+        if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
+      } catch (e) {
+        throw new Error(`Cannot create Address: ${e.message}`)
+      }
+    }
 
     this.pubkeyhash = pubkeyhash
     this.testnet = testnet
@@ -20,7 +26,7 @@ class Address {
 
   static fromString (s) {
     const { pubkeyhash, testnet } = decodeAddress(s)
-    const address = new Address(pubkeyhash, testnet)
+    const address = new Address(pubkeyhash, testnet, false)
     ADDRESS_TO_STRING_CACHE.set(address, s)
     return address
   }
@@ -30,7 +36,7 @@ class Address {
 
     const testnet = publicKey.testnet
     const pubkeyhash = calculatePublicKeyHash(publicKey.point)
-    const address = new Address(pubkeyhash, testnet)
+    const address = new Address(pubkeyhash, testnet, false)
 
     PUBLIC_KEY_TO_ADDRESS_CACHE.set(publicKey, address)
 
