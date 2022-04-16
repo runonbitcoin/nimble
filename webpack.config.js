@@ -7,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const glob = require('glob')
 const pkg = require('./package')
+const fs = require('fs-extra')
 
 // ------------------------------------------------------------------------------------------------
 // Constants
@@ -21,16 +22,15 @@ const VERSION_PLUGIN = new webpack.DefinePlugin({ VERSION: JSON.stringify(pkg.ve
 const VARIANT_BROWSER_PLUGIN = new webpack.DefinePlugin({ VARIANT: JSON.stringify('browser') })
 const VARIANT_NODE_PLUGIN = new webpack.DefinePlugin({ VARIANT: JSON.stringify('node') })
 
+fs.removeSync(DIST_PATH)
+fs.mkdirSync(DIST_PATH)
+
 // ------------------------------------------------------------------------------------------------
 // Terser options
 // ------------------------------------------------------------------------------------------------
 
 // Run library terser settings
 const terserPluginConfig = {
-  // The nameCache requires parallel to be off
-  parallel: false,
-  // We don't cache, because otherwise the name cache is lost
-  // cache: false,
   terserOptions: {
     ecma: 2015,
     mangle: {
