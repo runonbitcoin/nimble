@@ -19,7 +19,7 @@ class BufferReader {
     if (this.pos !== this.buffer.length) throw new Error('unconsumed data')
   }
 
-  checkRemaining (length = 0) {
+  checkRemaining (length) {
     if (this.buffer.length - this.pos < length) throw new Error('not enough data')
   }
 }

@@ -43,4 +43,16 @@ describe('BufferReader', () => {
       expect(() => reader.close()).to.throw('unconsumed data')
     })
   })
+
+  describe('checkRemaining', () => {
+    it('throws if not enough data left', () => {
+      expect(() => new BufferReader([]).checkRemaining(1)).to.throw('not enough data')
+      expect(() => new BufferReader([2]).checkRemaining(2)).to.throw('not enough data')
+    })
+
+    it('does not throw if data left', () => {
+      expect(() => new BufferReader([]).checkRemaining()).not.to.throw()
+      expect(() => new BufferReader([1]).checkRemaining(1)).not.to.throw()
+    })
+  })
 })
