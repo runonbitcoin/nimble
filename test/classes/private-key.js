@@ -25,7 +25,7 @@ describe('PrivateKey', () => {
 
     it('throws if invalid WIF', () => {
       const invalidPrivateKey = encodeBase58Check(0, [])
-      expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('Cannot create PrivateKey: bad payload')
+      expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('Cannot create PrivateKey: bad length')
     })
 
     it('is immutable', () => {

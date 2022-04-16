@@ -50,6 +50,7 @@ describe('functions', () => {
   require('./functions/sighash-async')
   require('./functions/sighash')
   require('./functions/verify-point')
+  require('./functions/verify-private-key')
   require('./functions/verify-tx-signature')
   require('./functions/verify-script-async')
   require('./functions/write-u32-le')

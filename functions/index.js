@@ -54,6 +54,7 @@ module.exports = {
   sighashAsync: require('./sighash-async'),
   sighash: require('./sighash'),
   verifyPoint: require('./verify-point'),
+  verifyPrivateKey: require('./verify-private-key'),
   verifyScriptAsync: require('./verify-script-async'),
   verifyTxSignatureAsync: require('./verify-tx-signature-async'),
   verifyTxSignature: require('./verify-tx-signature'),
