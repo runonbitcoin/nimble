@@ -6,7 +6,7 @@ const { expect } = require('chai')
 
 describe('PublicKey', () => {
   describe('constructor', () => {
-    it('accepts valid args', () => {
+    it('valid', () => {
       const privateKey = nimble.functions.generatePrivateKey()
       const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
       const publicKey = new PublicKey(publicKeyPoint, true, false)
@@ -15,7 +15,7 @@ describe('PublicKey', () => {
       expect(publicKey.compressed).to.equal(false)
     })
 
-    it('throws if invalid args', () => {
+    it('throws if invalid', () => {
       const privateKey = nimble.functions.generatePrivateKey()
       const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
       expect(() => new PublicKey(0, true, true)).to.throw('Cannot create PublicKey: bad point')

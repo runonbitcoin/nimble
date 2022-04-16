@@ -7,7 +7,24 @@ const bsv = require('bsv')
 
 describe('PrivateKey', () => {
   describe('constructor', () => {
-    // TODO
+    it('valid', () => {
+      const number = nimble.functions.generatePrivateKey()
+      const privateKey = new PrivateKey(number, true, false)
+      expect(privateKey.number).to.equal(number)
+      expect(privateKey.testnet).to.equal(true)
+      expect(privateKey.compressed).to.equal(false)
+    })
+
+    it('throws if invalid', () => {
+      const number = nimble.functions.generatePrivateKey()
+      expect(() => new PrivateKey(null, true, true)).to.throw('Cannot create PrivateKey: bad number')
+      expect(() => new PrivateKey(0, true, true)).to.throw('Cannot create PrivateKey: bad number')
+      expect(() => new PrivateKey(number, 1, true)).to.throw('Cannot create PrivateKey: bad testnet flag')
+      expect(() => new PrivateKey(number, false, undefined)).to.throw('Cannot create PrivateKey: bad compressed flag')
+      expect(() => new PrivateKey([], true, true)).to.throw('Cannot create PrivateKey: bad length')
+      expect(() => new PrivateKey(new Array(33), true, true)).to.throw('Cannot create PrivateKey: bad length')
+      expect(() => new PrivateKey(new Array(32).fill(255), true, true)).to.throw('Cannot create PrivateKey: outside range')
+    })
   })
 
   describe('fromString', () => {
