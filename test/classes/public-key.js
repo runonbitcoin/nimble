@@ -27,7 +27,7 @@ describe('PublicKey', () => {
     })
 
     it('throws if too short', () => {
-      expect(() => PublicKey.fromString('01')).to.throw('Cannot create PublicKey: too short')
+      expect(() => PublicKey.fromString('02')).to.throw('Cannot create PublicKey: bad length')
     })
 
     it('is immutable', () => {

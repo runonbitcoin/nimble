@@ -9,7 +9,7 @@ function verifyPublicKey (publicKey) {
 
   const verified = getEcdsaExports().validate_pubkey(pos) === 0
 
-  if (!verified) throw new Error('bad public key')
+  if (!verified) throw new Error('invalid point')
 }
 
 module.exports = verifyPublicKey
