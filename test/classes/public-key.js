@@ -6,7 +6,27 @@ const { expect } = require('chai')
 
 describe('PublicKey', () => {
   describe('constructor', () => {
-    // TODO
+    it('accepts valid args', () => {
+      const privateKey = nimble.functions.generatePrivateKey()
+      const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
+      const publicKey = new PublicKey(publicKeyPoint, true, false)
+      expect(publicKey.point).to.equal(publicKeyPoint)
+      expect(publicKey.testnet).to.equal(true)
+      expect(publicKey.compressed).to.equal(false)
+    })
+
+    it('throws if invalid args', () => {
+      const privateKey = nimble.functions.generatePrivateKey()
+      const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
+      expect(() => new PublicKey(0, true, true)).to.throw('Invalid point')
+      expect(() => new PublicKey('', true, true)).to.throw('Invalid point')
+      expect(() => new PublicKey({}, true, true)).to.throw('Invalid point')
+      expect(() => new PublicKey({ x: [], y: publicKeyPoint.y }, true, true)).to.throw('not on curve')
+      expect(() => new PublicKey({ x: publicKeyPoint.x, y: 1 }, true, true)).to.throw('Invalid point')
+      expect(() => new PublicKey(publicKeyPoint, 0, true)).to.throw('Invalid testnet')
+      expect(() => new PublicKey(publicKeyPoint, 'testnet', true)).to.throw('Invalid testnet flag')
+      expect(() => new PublicKey(publicKeyPoint, true, 'compressed')).to.throw('Invalid compressed flag')
+    })
   })
 
   describe('fromString', () => {
