@@ -10,6 +10,8 @@ function verifyPoint (publicKey) {
   const verified = getEcdsaExports().validate_point(pos)
 
   if (verified !== 0) throw new Error(verified === 1 ? 'outside range' : verified === 2 ? 'not on curve' : 'invalid point')
+
+  return publicKey
 }
 
 module.exports = verifyPoint
