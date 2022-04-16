@@ -1,6 +1,6 @@
 {
   "name": "@runonbitcoin/nimble",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A practical everyday JS library for BSV",
   "main": "index.js",
   "browser": "dist/nimble.browser.min.js",
