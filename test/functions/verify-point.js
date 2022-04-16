@@ -14,6 +14,6 @@ describe('validatePublicKey', () => {
     const privateKey = generatePrivateKey()
     const publicKey = calculatePublicKey(privateKey)
     publicKey.y = publicKey.x
-    expect(() => verifyPoint(publicKey)).to.throw('invalid point')
+    expect(() => verifyPoint(publicKey)).to.throw('not on curve')
   })
 })

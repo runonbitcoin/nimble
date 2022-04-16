@@ -7,9 +7,9 @@ function verifyPoint (publicKey) {
   writeBN(memory, pos, publicKey.x)
   writeBN(memory, pos + BN_SIZE, publicKey.y)
 
-  const verified = getEcdsaExports().validate_point(pos) === 0
+  const verified = getEcdsaExports().validate_point(pos)
 
-  if (!verified) throw new Error('invalid point')
+  if (verified !== 0) throw new Error(verified === 1 ? 'outside range' : verified === 2 ? 'not on curve' : 'invalid point')
 }
 
 module.exports = verifyPoint

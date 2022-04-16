@@ -110,14 +110,14 @@ describe('decodePublicKey', () => {
     const publicKey = calculatePublicKey(privateKey)
     const badPublicKey = { x: publicKey.x, y: publicKey.x }
     const uncompressed = encodePublicKey(badPublicKey, false)
-    expect(() => decodePublicKey(uncompressed)).to.throw('invalid point')
+    expect(() => decodePublicKey(uncompressed)).to.throw('not on curve')
   })
 
   it('throws if outside range', () => {
     const badPublicKey = { x: new Array(32).fill(0xff), y: new Array(32).fill(0xff) }
     const compressed = encodePublicKey(badPublicKey, true)
     const uncompressed = encodePublicKey(badPublicKey, true)
-    expect(() => decodePublicKey(compressed)).to.throw('invalid point')
-    expect(() => decodePublicKey(uncompressed)).to.throw('invalid point')
+    expect(() => decodePublicKey(compressed)).to.throw('outside range')
+    expect(() => decodePublicKey(uncompressed)).to.throw('outside range')
   })
 })
