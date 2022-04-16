@@ -14,7 +14,7 @@ We built `nimble` first for ourselves at [Run](run.network), and we are excited 
 npm install @runonbitcoin/nimble
 ```
 
-```
+```html
 <script src="https://unpkg.com/@runonbitcoin/nimble@1.0.2"></script>
 ```
 
@@ -24,7 +24,7 @@ nimble's classes are intended to feel familiar to developers that use bsv.js v1 
 
 Generate a new random private key
 
-```
+```javascript
 const privateKey = nimble.PrivateKey.fromRandom()
 
 console.log(privateKey.toString())
@@ -32,7 +32,7 @@ console.log(privateKey.toString())
 
 Print the public key and address for a private key
 
-```
+```javascript
 const privateKey = nimble.PrivateKey.fromString('<private-key-wif-string>')
 
 console.log(privateKey.toPublicKey().toString())
@@ -41,7 +41,7 @@ console.log(privateKey.toAddress().toString())
 
 Create a simple P2PKH payment transaction
 
-```
+```javascript
 const transaction = new nimble.Transaction()
     .from(utxo)
     .to(address, satoshis)
@@ -52,7 +52,7 @@ const rawtx = transaction.toString()
 
 Calculate a transaction's txid
 
-```
+```javascript
 const transaction = nimble.Transaction.fromString('<rawtx>')
 
 console.log(transaction.hash)
@@ -64,13 +64,13 @@ nimble also has a lower-level API for advanced developers. Every class exampled 
 
 Hash a message with SHA-256
 
-```
+```javascript
 const hash = nimble.functions.sha256(buffer)
 ```
 
 Stream decode several transactions
 
-```
+```javascript
 const reader = new nimble.classes.BufferReader(data)
 const tx1 = nimble.functions.readTx(reader)
 const tx2 = nimble.functions.readTx(reader)
@@ -86,7 +86,7 @@ Testnet mode must be enabled to correctly generate private keys and addresses on
 
 To enable, set the global testnet flag to `true`:
 
-```
+```javascript
 nimble.testnet = true
 ```
 
@@ -94,7 +94,7 @@ nimble.testnet = true
 
 For smaller builds and faster load times, you can take only the parts of the library you need instead of the whole thing. We've handily separated out every function and class into its own module. Just append the subpath to the class or function in your `require()` or `import` paths:
 
-```
+```javascript
 const decodeTx = require('nimble/functions/decode-tx')
 const calculateTxid = require('nimble/functions/calculate-txid')
 
