@@ -1,18 +1,20 @@
 const { BN_SIZE, getMemoryBuffer, getSecp256k1Exports, writeBN, readBN } = require('../wasm/wasm-secp256k1')
 
-function decodePublicKey (arr) {
-  const prefix = arr[0]
+function decodePublicKey (buffer) {
+  const prefix = buffer[0]
+
+  if (buffer.length < 33) throw new Error('too short')
 
   let xstart = 1
-  while (!arr[xstart] && xstart < arr.length) xstart++
-  if (arr.length < 33) throw new Error('too short')
-  const x = arr.slice(xstart, 33)
+  while (!buffer[xstart] && xstart < buffer.length) xstart++
+  const x = buffer.slice(xstart, 33)
 
   if (prefix === 0x04) {
+    if (buffer.length < 65) throw new Error('too short')
+
     let ystart = 33
-    while (!arr[ystart] && ystart < arr.length) ystart++
-    if (arr.length < 65) throw new Error('too short')
-    const y = arr.slice(ystart, 65)
+    while (!buffer[ystart] && ystart < buffer.length) ystart++
+    const y = buffer.slice(ystart, 65)
 
     return { x, y }
   }
