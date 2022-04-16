@@ -18,14 +18,14 @@ describe('PublicKey', () => {
     it('throws if invalid args', () => {
       const privateKey = nimble.functions.generatePrivateKey()
       const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
-      expect(() => new PublicKey(0, true, true)).to.throw('Invalid point')
-      expect(() => new PublicKey('', true, true)).to.throw('Invalid point')
-      expect(() => new PublicKey({}, true, true)).to.throw('Invalid point')
-      expect(() => new PublicKey({ x: [], y: publicKeyPoint.y }, true, true)).to.throw('not on curve')
-      expect(() => new PublicKey({ x: publicKeyPoint.x, y: 1 }, true, true)).to.throw('Invalid point')
-      expect(() => new PublicKey(publicKeyPoint, 0, true)).to.throw('Invalid testnet')
-      expect(() => new PublicKey(publicKeyPoint, 'testnet', true)).to.throw('Invalid testnet flag')
-      expect(() => new PublicKey(publicKeyPoint, true, 'compressed')).to.throw('Invalid compressed flag')
+      expect(() => new PublicKey(0, true, true)).to.throw('Cannot create PublicKey: bad point')
+      expect(() => new PublicKey('', true, true)).to.throw('Cannot create PublicKey: bad point')
+      expect(() => new PublicKey({}, true, true)).to.throw('Cannot create PublicKey: bad point')
+      expect(() => new PublicKey({ x: [], y: publicKeyPoint.y }, true, true)).to.throw('Cannot create PublicKey: not on curve')
+      expect(() => new PublicKey({ x: publicKeyPoint.x, y: 1 }, true, true)).to.throw('Cannot create PublicKey: bad point')
+      expect(() => new PublicKey(publicKeyPoint, 0, true)).to.throw('Cannot create PublicKey: bad testnet flag')
+      expect(() => new PublicKey(publicKeyPoint, 'testnet', true)).to.throw('Cannot create PublicKey: bad testnet flag')
+      expect(() => new PublicKey(publicKeyPoint, true, 'compressed')).to.throw('Cannot create PublicKey: bad compressed flag')
     })
   })
 
@@ -48,6 +48,14 @@ describe('PublicKey', () => {
 
     it('throws if too short', () => {
       expect(() => PublicKey.fromString('02')).to.throw('Cannot create PublicKey: bad length')
+    })
+
+    it('throws if not on curve', () => {
+      const privateKey = nimble.functions.generatePrivateKey()
+      const publicKey = nimble.functions.calculatePublicKey(privateKey)
+      publicKey.y = publicKey.x
+      const compressed = nimble.functions.encodeHex(nimble.functions.encodePublicKey(publicKey, false))
+      expect(() => PublicKey.fromString(compressed)).to.throw('Cannot create PublicKey: not on curve')
     })
 
     it('is immutable', () => {

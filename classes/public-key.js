@@ -12,10 +12,14 @@ const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp25
 class PublicKey {
   constructor (point, testnet, compressed, validate = true) {
     if (validate) {
-      if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error(`Invalid point: ${point}`)
-      if (typeof testnet !== 'boolean') throw new Error(`Invalid testnet flag: ${testnet}`)
-      if (typeof compressed !== 'boolean') throw new Error(`Invalid compressed flag: ${compressed}`)
-      verifyPoint(point)
+      try {
+        if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error('bad point')
+        if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
+        if (typeof compressed !== 'boolean') throw new Error('bad compressed flag')
+        verifyPoint(point)
+      } catch (e) {
+        throw new Error(`Cannot create PublicKey: ${e.message}`)
+      }
     }
 
     this.point = point
