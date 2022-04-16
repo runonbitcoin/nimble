@@ -1,5 +1,3 @@
-/* global VARIANT */
-
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
@@ -30,7 +28,7 @@ describe('sha256', () => {
     expect(time < 100).to.equal(true)
   })
 
-  if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
+  if (nimble.variant === 'undefined' || nimble.variant === 'browser') {
     it('throws if too big', () => {
       const data = new Uint8Array(100 * 1024 * 1024)
       expect(() => sha256(data)).to.throw('data too big')

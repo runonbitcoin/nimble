@@ -1,4 +1,5 @@
 /* global VERSION */
+/* global VARIANT */
 
 const nimble = {}
 
@@ -14,6 +15,8 @@ nimble.functions = require('./functions')
 
 nimble.testnet = false
 nimble.feePerKB = 250
+
 nimble.version = typeof VERSION === 'undefined' ? require('./package.json').version : VERSION
+nimble.variant = typeof VARIANT === 'undefined' ? undefined : VARIANT
 
 module.exports = nimble
