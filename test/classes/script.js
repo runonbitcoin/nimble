@@ -118,7 +118,11 @@ describe('Script', () => {
   })
 
   describe('slice', () => {
-    // TODO
+    it('returns slice of buffer', () => {
+      expect(Array.from(new Script([1, 2, 3]).slice())).to.deep.equal([1, 2, 3])
+      expect(Array.from(new Script([1, 2, 3]).slice(1))).to.deep.equal([2, 3])
+      expect(Array.from(new Script([1, 2, 3]).slice(1, 2))).to.deep.equal([2])
+    })
   })
 
   describe('chunks', () => {
