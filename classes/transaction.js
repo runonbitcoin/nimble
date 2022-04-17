@@ -15,6 +15,7 @@ const Address = require('./address')
 const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
 const isBuffer = require('../functions/is-buffer')
+const calculateDust = require('../functions/calculate-dust')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
@@ -193,7 +194,7 @@ class Transaction {
 
   // Calculates change and then locks a transaction so that no further changes may be made
   finalize () {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) return this
 
     this._calculateChange()
 
@@ -209,9 +210,8 @@ class Transaction {
   _calculateChange () {
     if (Object.isFrozen(this)) return
 
-    if (!this.changeOutput) return
-
-    if (this.outputs.indexOf(this.changeOutput) === -1) {
+    const changeIndex = this.outputs.indexOf(this.changeOutput)
+    if (changeIndex === -1) {
       this.changeOutput = undefined
       return
     }
@@ -219,12 +219,19 @@ class Transaction {
     this.changeOutput.satoshis = 0
 
     const currentFee = this.fee
-    const expectedFee = Math.ceil(encodeTx(this).length / 1000 * require('../index').feePerKb)
-    const change = currentFee - expectedFee
+    const expectedFee = Math.ceil(encodeTx(this).length * require('../index').feePerKb / 1000)
 
-    if (change < 0) throw new Error('Not enough satoshis')
+    if (this.changeOutput) {
+      const change = currentFee - expectedFee
+      const dust = calculateDust(this.changeOutput.script.length)
 
-    this.changeOutput.satoshis = change
+      if (change > dust) {
+        this.changeOutput.satoshis = change
+      } else {
+        this.outputs.splice(changeIndex, 1)
+        this.changeOutput = undefined
+      }
+    }
   }
 }
 

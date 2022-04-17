@@ -479,24 +479,16 @@ describe('Transaction', () => {
       expect(tx.finalize()).to.equal(tx)
     })
 
-    it.skip('caches txid', () => {
-
+    it('call twice ok', () => {
+      new Transaction().finalize().finalize() // eslint-disable-line
     })
 
-    it.skip('throws if called twice', () => {
-
-    })
-
-    it.skip('throws if not enough satoshis', () => {
-      // TODO
-    })
-
-    it.skip('does not add change output if not enough change', () => {
-      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 10 }
+    it('removes change output if not enough to cover dust', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      const tx = new Transaction().from(utxo).change(address)
-      tx.finalize()
+      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 50 }
+      const tx = new Transaction().from(utxo).change(address).finalize()
       expect(tx.outputs.length).to.equal(0)
+      expect(tx.changeOutput).to.equal(undefined)
     })
   })
 })
