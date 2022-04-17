@@ -69,7 +69,24 @@ describe('Script', () => {
   })
 
   describe('from', () => {
-    // TODO
+    it('accepts Script instances', () => {
+      const script = new Script([1, 2, 3])
+      expect(Script.from(script)).to.equal(script)
+    })
+
+    it('accepts hex strings', () => {
+      expect(Script.from('001122').toString()).to.equal('001122')
+    })
+
+    it('accepts buffers', () => {
+      expect(Array.from(Script.from([0, 1, 2]).buffer)).to.deep.equal([0, 1, 2])
+    })
+
+    it('throws if none of the above', () => {
+      expect(() => Script.from()).to.throw('Cannot create script: unsupported type')
+      expect(() => Script.from({})).to.throw('Cannot create script: unsupported type')
+      expect(() => Script.from('xyz')).to.throw('Cannot create Script: bad hex char')
+    })
   })
 
   describe('toString', () => {

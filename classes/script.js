@@ -66,7 +66,7 @@ class Script {
     if (script instanceof Script) return script
     if (typeof script === 'string') return Script.fromString(script)
     if (isBuffer(script)) return Script.fromBuffer(script)
-    throw new Error(`Invalid script: ${script}`)
+    throw new Error('Cannot create script: unsupported type')
   }
 
   toString () {
