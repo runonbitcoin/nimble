@@ -36,8 +36,8 @@ describe('Script', () => {
     })
 
     it('detects p2pkh lockscript template', () => {
-      const address = nimble.PrivateKey.fromRandom().toAddress().toString()
-      const script = new Script(nimble.functions.createP2PKHLockScript(address))
+      const address = nimble.PrivateKey.fromRandom().toAddress()
+      const script = new Script(nimble.functions.createP2PKHLockScript(address.pubkeyhash))
       expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
     })
 
@@ -52,8 +52,8 @@ describe('Script', () => {
     })
 
     it('create from matching template', () => {
-      const address = nimble.PrivateKey.fromRandom().toAddress().toString()
-      const buffer = nimble.functions.createP2PKHLockScript(address)
+      const address = nimble.PrivateKey.fromRandom().toAddress()
+      const buffer = nimble.functions.createP2PKHLockScript(address.pubkeyhash)
       const script = Script.templates.P2PKHLockScript.fromBuffer(buffer)
       expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
     })
@@ -192,7 +192,7 @@ describe('Script', () => {
       it('creates', () => {
         const address = nimble.PrivateKey.fromRandom().toAddress()
         const script = Script.templates.P2PKHLockScript.fromAddress(address)
-        expect(Array.from(script.buffer)).to.deep.equal(Array.from(nimble.functions.createP2PKHLockScript(address.toString())))
+        expect(Array.from(script.buffer)).to.deep.equal(Array.from(nimble.functions.createP2PKHLockScript(address.pubkeyhash)))
       })
 
       it('throws if not an address', () => {

@@ -14,7 +14,7 @@ describe('generateTxSignature', () => {
       const publicKey = privateKey.toPublicKey()
 
       const parentSatoshis = 123
-      const parentScript = createP2PKHLockScript(privateKey.toAddress().toString())
+      const parentScript = createP2PKHLockScript(privateKey.toAddress().pubkeyhash)
 
       const parentTx = {
         outputs: [

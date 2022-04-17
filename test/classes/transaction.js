@@ -166,7 +166,7 @@ describe('Transaction', () => {
     it('adds output', () => {
       const pk = PrivateKey.fromRandom()
       const tx = new Transaction().to(pk.toAddress(), 1000)
-      expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(createP2PKHLockScript(pk.toAddress().toString())))
+      expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(createP2PKHLockScript(pk.toAddress().pubkeyhash)))
       expect(tx.outputs[0].satoshis).to.equal(1000)
     })
 
@@ -213,7 +213,7 @@ describe('Transaction', () => {
   describe('output', () => {
     it('adds output', () => {
       const pk = PrivateKey.fromRandom()
-      const script = createP2PKHLockScript(pk.toAddress().toString())
+      const script = createP2PKHLockScript(pk.toAddress().pubkeyhash)
       const output = { script, satoshis: 1000 }
       const tx = new Transaction().output(output)
       expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(script))
@@ -223,7 +223,7 @@ describe('Transaction', () => {
     it('returns self for chaining', () => {
       const tx = new Transaction()
       const pk = PrivateKey.fromRandom()
-      const script = createP2PKHLockScript(pk.toAddress().toString())
+      const script = createP2PKHLockScript(pk.toAddress().pubkeyhash)
       const output = { script, satoshis: 1000 }
       expect(tx.output(output)).to.equal(tx)
     })

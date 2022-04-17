@@ -11,6 +11,7 @@ const decodeTx = require('../functions/decode-tx')
 const encodeTx = require('../functions/encode-tx')
 const calculateTxid = require('../functions/calculate-txid')
 const PrivateKey = require('./private-key')
+const Address = require('./address')
 const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
 
@@ -88,7 +89,7 @@ class Transaction {
   to (address, satoshis) {
     if (Object.isFrozen(this)) throw new Error('Transaction finalized')
 
-    const script = createP2PKHLockScript(address.toString())
+    const script = createP2PKHLockScript(Address.from(address).pubkeyhash)
     const output = new Output(script, satoshis, this)
     this.outputs.push(output)
     return this
@@ -116,7 +117,7 @@ class Transaction {
 
     if (this.changeOutput) throw new Error('Change output already added')
 
-    const script = createP2PKHLockScript(address.toString())
+    const script = createP2PKHLockScript(Address.from(address).pubkeyhash)
     const output = new Output(script, 0, this)
 
     this.outputs.push(output)

@@ -1,7 +1,7 @@
-const decodeAddress = require('./decode-address')
+const isBuffer = require('./is-buffer')
 
-function createP2PKHLockScript (address) {
-  const { pubkeyhash } = decodeAddress(address)
+function createP2PKHLockScript (pubkeyhash) {
+  if (!isBuffer(pubkeyhash)) throw new Error('not a buffer')
   const buf = new Uint8Array(25)
   buf[0] = 118 // OP_DUP
   buf[1] = 169 // OP_HASH160

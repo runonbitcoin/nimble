@@ -101,7 +101,7 @@ class P2PKHLockScript extends Script {
   }
 
   static fromAddress (address) {
-    return new P2PKHLockScript(createP2PKHLockScript(address.toString()))
+    return new P2PKHLockScript(createP2PKHLockScript(Address.from(address).pubkeyhash))
   }
 
   toAddress () {
