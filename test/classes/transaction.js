@@ -321,6 +321,22 @@ describe('Transaction', () => {
       expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('Invalid sequence')
       expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('Invalid sequence')
     })
+
+    it('supports output property', () => {
+      const txid = new Transaction().hash
+      const output = { script: [2], satoshis: 2 }
+      const tx = new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output })
+      expect(Array.from(tx.inputs[0].output.script)).to.deep.equal([2])
+      expect(tx.inputs[0].output.satoshis).to.equal(2)
+    })
+
+    it('throws if invalid output property', () => {
+      const txid = new Transaction().hash
+      const output1 = { script: 'xyz', satoshis: 0 }
+      const output2 = { script: [], satoshis: -1 }
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('Invalid satoshis')
+    })
   })
 
   describe('output', () => {
@@ -341,8 +357,9 @@ describe('Transaction', () => {
       expect(tx.output(output)).to.equal(tx)
     })
 
-    it.skip('throws if not a valid output', () => {
-      // TODO
+    it('throws if not a valid output', () => {
+      expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('Invalid satoshis')
     })
   })
 

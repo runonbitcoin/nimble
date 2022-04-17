@@ -240,7 +240,7 @@ class Input {
 
     if (output instanceof Output) {
       this.output = output
-    } else if (typeof output === 'object') {
+    } else if (typeof output === 'object' && output) {
       this.output = new Output(output.script, output.satoshis)
     }
   }
