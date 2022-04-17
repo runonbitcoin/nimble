@@ -20,13 +20,16 @@ class Script {
 
       const isTemplate = this.constructor !== Script
       if (isTemplate) {
-      // If we are using a template, make sure it matches, and that there is no custom constructor
-        if (this.matches(buffer)) throw new Error(`not a ${this.constructor.name}`)
+        // If we are using a template, make sure it matches, and that there is no custom constructor
+        if (!this.constructor.matches(buffer)) throw new Error(`not a ${this.constructor.name}`)
         if (this.constructor.toString().includes('constructor')) throw new Error('template constructors not allowed')
       } else {
-      // If we are not using a template, see if we can detect one
+        // If we are not using a template, see if we can detect one
         const T = Object.values(Script.templates).find(template => template.matches(buffer))
-        if (T) Object.setPrototypeOf(this, T.prototype)
+        if (T) {
+          if (T.toString().includes('constructor')) throw new Error('template constructors not allowed')
+          Object.setPrototypeOf(this, T.prototype)
+        }
       }
 
       // Make the script immutable, in part so that its safe to cache chunks

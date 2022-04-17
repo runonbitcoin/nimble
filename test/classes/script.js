@@ -30,6 +30,44 @@ describe('Script', () => {
       expect(script[1]).to.equal(2)
       expect(script[2]).to.equal(3)
     })
+
+    it('detects p2pkh lockscript template', () => {
+      const address = nimble.PrivateKey.fromRandom().toAddress().toString()
+      const script = new Script(nimble.functions.createP2PKHLockScript(address))
+      expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
+    })
+
+    it('detects custom script templates', () => {
+      class CustomScript extends Script {
+        static matches (buffer) { return buffer[0] === 0xab }
+      }
+      Script.templates.CustomScript = CustomScript
+      expect(new Script([0xab]) instanceof CustomScript).to.equal(true)
+      expect(new Script([0x00]) instanceof CustomScript).to.equal(false)
+      delete Script.templates.CustomScript
+    })
+
+    it('create from matching template', () => {
+      const address = nimble.PrivateKey.fromRandom().toAddress().toString()
+      const buffer = nimble.functions.createP2PKHLockScript(address)
+      const script = Script.templates.P2PKHLockScript.fromBuffer(buffer)
+      expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
+    })
+
+    it('throws if create from non-matching template', () => {
+      expect(() => new Script.templates.P2PKHLockScript([])).to.throw('Cannot create Script: not a P2PKHLockScript')
+    })
+
+    it('throws if template has constructor', () => {
+      class CustomScript extends Script {
+        constructor (buffer) { super(buffer); this.prefix = buffer[0] }
+        static matches (buffer) { return buffer[0] === 0xab }
+      }
+      Script.templates.CustomScript = CustomScript
+      expect(() => new CustomScript([0xab])).to.throw('Cannot create Script: template constructors not allowed')
+      expect(() => new Script([0xab])).to.throw('Cannot create Script: template constructors not allowed')
+      delete Script.templates.CustomScript
+    })
   })
 
   describe('fromString', () => {
