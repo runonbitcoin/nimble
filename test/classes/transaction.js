@@ -412,12 +412,22 @@ describe('Transaction', () => {
       new Transaction().sign(privateKey.toString()) // eslint-disable-line
     })
 
-    it.skip('does not sign different addresses', () => {
-      // TODO
+    it('does not sign different addresses', () => {
+      const privateKey1 = PrivateKey.fromRandom()
+      const privateKey2 = PrivateKey.fromRandom()
+      const tx0 = new Transaction().to(privateKey1.toAddress(), 1000)
+      const tx1 = new Transaction().to(privateKey2.toAddress(), 1000)
+      const tx2 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey2.toAddress(), 2000).sign(privateKey2)
+      expect(tx2.inputs[0].script.length === 0).to.equal(true)
+      expect(tx2.inputs[1].script.length > 0).to.equal(true)
     })
 
-    it.skip('does not sign without previous outputs', () => {
-      // TODO
+    it('does not sign without previous outputs', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
+      const input = { txid: tx1.hash, vout: 0, script: [], sequence: 0 }
+      const tx2 = new Transaction().input(input).to(privateKey.toAddress(), 2000).sign(privateKey)
+      expect(tx2.inputs[0].script.length).to.equal(0)
     })
 
     it('returns self for chaining', () => {
