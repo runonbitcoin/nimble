@@ -14,6 +14,7 @@ const PrivateKey = require('./private-key')
 const Address = require('./address')
 const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
+const isBuffer = require('../functions/is-buffer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
@@ -32,10 +33,28 @@ class Transaction {
     this.changeOutput = undefined
   }
 
-  static fromHex (hex) { return Transaction.fromBuffer(decodeHex(hex)) }
-  static fromString (hex) { return this.fromHex(hex) }
+  static fromHex (hex) {
+    let buffer
+    try {
+      buffer = decodeHex(hex)
+    } catch (e) {
+      throw new Error(`Cannot create Transaction: ${e.message}`)
+    }
+    return Transaction.fromBuffer(buffer)
+  }
+
+  static fromString (hex) {
+    return this.fromHex(hex)
+  }
+
   static fromBuffer (buffer) {
-    const transaction = decodeTx(buffer)
+    let transaction
+    try {
+      if (!isBuffer(buffer)) throw new Error('not a buffer')
+      transaction = decodeTx(buffer)
+    } catch (e) {
+      throw new Error(`Cannot create Transaction: ${e.message}`)
+    }
 
     Object.setPrototypeOf(transaction, Transaction.prototype)
     transaction.inputs.forEach(input => Object.setPrototypeOf(input, Input.prototype))
@@ -47,8 +66,14 @@ class Transaction {
     return transaction
   }
 
-  toHex () { return encodeHex(this.toBuffer()) }
-  toString () { return this.toHex() }
+  toHex () {
+    return encodeHex(this.toBuffer())
+  }
+
+  toString () {
+    return this.toHex()
+  }
+
   toBuffer () {
     this._calculateChange()
     return encodeTx(this)
