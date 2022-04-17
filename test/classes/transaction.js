@@ -144,9 +144,33 @@ describe('Transaction', () => {
       const t0 = new Date()
       tx.hash // eslint-disable-line
       const t1 = new Date()
-      tx.hash // eslint-disable-line
+      for (let i = 0; i < 100; i++) {
+        tx.hash // eslint-disable-line
+      }
       const t2 = new Date()
-      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
+      expect(Math.round((t2 - t1) / 100)).to.be.lessThanOrEqual(t1 - t0)
+    })
+  })
+
+  describe('fee', () => {
+    it('returns input satoshis minus output satoshis', () => {
+      const txid = new Transaction().hash
+      const utxo1 = { txid, vout: 0, script: [], satoshis: 2000 }
+      const utxo2 = { txid, vout: 1, script: [], satoshis: 100 }
+      const address = PrivateKey.fromRandom().toAddress()
+      const tx = new Transaction()
+        .from(utxo1)
+        .from(utxo2)
+        .to(address, 1000)
+        .to(address, 500)
+      expect(tx.fee).to.equal(600)
+    })
+
+    it('throws if missing previous output information', () => {
+      const txid = new Transaction().hash
+      const tx = new Transaction()
+        .input({ txid, vout: 0, script: [], sequence: 0 })
+      expect(() => tx.fee).to.throw('Missing previous output information for input 0')
     })
   })
 
