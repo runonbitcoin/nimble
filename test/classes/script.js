@@ -18,9 +18,9 @@ describe('Script', () => {
     })
 
     it('throws if not a buffer', () => {
-      expect(() => new Script(1)).to.throw('Not a buffer')
-      expect(() => new Script({})).to.throw('Not a buffer')
-      expect(() => new Script(new Uint16Array())).to.throw('Not a buffer')
+      expect(() => new Script(1)).to.throw('Cannot create Script: not a buffer')
+      expect(() => new Script({})).to.throw('Cannot create Script: not a buffer')
+      expect(() => new Script(new Uint16Array())).to.throw('Cannot create Script: not a buffer')
     })
 
     it('may be substituted for a buffer', () => {
@@ -57,7 +57,15 @@ describe('Script', () => {
   })
 
   describe('fromBuffer', () => {
-    // TODO
+    it('creates with buffer', () => {
+      expect(Array.from(Script.fromBuffer([]).buffer)).to.deep.equal([])
+    })
+
+    it('throws if not a buffer', () => {
+      expect(() => Script.fromBuffer()).to.throw('Cannot create Script: not a buffer')
+      expect(() => Script.fromBuffer(null)).to.throw('Cannot create Script: not a buffer')
+      expect(() => Script.fromBuffer({})).to.throw('Cannot create Script: not a buffer')
+    })
   })
 
   describe('from', () => {
