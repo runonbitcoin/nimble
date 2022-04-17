@@ -364,7 +364,7 @@ describe('Transaction', () => {
   })
 
   describe('change', () => {
-    it.skip('creates change output', () => {
+    it('creates change output', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 9000)
       const tx2 = new Transaction()
@@ -381,12 +381,20 @@ describe('Transaction', () => {
       expect(tx.change(PrivateKey.fromRandom().toAddress())).to.equal(tx)
     })
 
-    it.skip('throws if already has change output', () => {
-      // TODO
+    it('delete change output', () => {
+      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1000 }
+      const address = PrivateKey.fromRandom().toAddress()
+      const tx = new Transaction().from(utxo).change(address)
+      tx.outputs = []
+      tx.finalize()
+      expect(tx.outputs.length).to.equal(0)
     })
 
-    it.skip('does not add change output if not enough change', () => {
-      // TODO
+    it('throws if already has change output', () => {
+      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1000 }
+      const address = PrivateKey.fromRandom().toAddress()
+      const tx = new Transaction().from(utxo).change(address)
+      expect(() => tx.change(address)).to.throw('Change output already added')
     })
   })
 
@@ -467,6 +475,18 @@ describe('Transaction', () => {
 
     it.skip('throws if called twice', () => {
 
+    })
+
+    it.skip('throws if not enough satoshis', () => {
+      // TODO
+    })
+
+    it.skip('does not add change output if not enough change', () => {
+      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 10 }
+      const address = PrivateKey.fromRandom().toAddress()
+      const tx = new Transaction().from(utxo).change(address)
+      tx.finalize()
+      expect(tx.outputs.length).to.equal(0)
     })
   })
 })

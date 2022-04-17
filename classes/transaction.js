@@ -219,7 +219,7 @@ class Transaction {
     this.changeOutput.satoshis = 0
 
     const currentFee = this.fee
-    const expectedFee = Math.ceil(this.toBuffer().length / 1000 * require('../index').feePerKb)
+    const expectedFee = Math.ceil(encodeTx(this).length / 1000 * require('../index').feePerKb)
     const change = currentFee - expectedFee
 
     if (change < 0) throw new Error('Not enough satoshis')
