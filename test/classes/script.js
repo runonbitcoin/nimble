@@ -65,11 +65,16 @@ describe('Script', () => {
   })
 
   describe('toString', () => {
-    // TODO
+    it('encodes hex', () => {
+      expect(Script.fromBuffer([]).toString()).to.equal('')
+      expect(Script.fromBuffer([0, 1, 2]).toString()).to.equal('000102')
+    })
   })
 
   describe('toHex', () => {
-    // TODO
+    it('encodes hex', () => {
+      expect(Script.fromBuffer([0xff]).toHex()).to.equal('ff')
+    })
   })
 
   describe('toBuffer', () => {
