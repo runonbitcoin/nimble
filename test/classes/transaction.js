@@ -292,8 +292,34 @@ describe('Transaction', () => {
       expect(tx2.input(input)).to.equal(tx2)
     })
 
-    it.skip('throws if not a valid input', () => {
-      // TODO
+    it('throws if not a valid input', () => {
+      expect(() => new Transaction().input()).to.throw('Invalid input')
+      expect(() => new Transaction().input(null)).to.throw('Invalid input')
+    })
+
+    it('throws if invalid txid', () => {
+      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
+      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
+      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
+    })
+
+    it('throws if invalid vout', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('Invalid vout')
+      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('Invalid vout')
+    })
+
+    it('throws if invalid script', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })).to.throw('Cannot create Script')
+    })
+
+    it('throws if invalid sequence', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('Invalid sequenc')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('Invalid sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('Invalid sequence')
     })
   })
 

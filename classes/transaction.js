@@ -127,6 +127,7 @@ class Transaction {
 
   input (input) {
     if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (typeof input !== 'object' || !input) throw new Error('Invalid input')
 
     input = input instanceof Input ? input : new Input(input.txid, input.vout, input.script, input.sequence, input.output)
     this.inputs.push(input)
@@ -235,7 +236,7 @@ class Input {
     this.txid = txid
     this.vout = vout
     this.script = Script.from(script)
-    this.sequence = sequence
+    this.sequence = verifySequence(sequence)
 
     if (output instanceof Output) {
       this.output = output
@@ -261,6 +262,13 @@ function verifySatoshis (satoshis) {
     throw new Error(`Invalid satoshis: ${satoshis}`)
   }
   return satoshis
+}
+
+function verifySequence (sequence) {
+  if (!Number.isInteger(sequence) || sequence < 0 || sequence > 0xffffffff) {
+    throw new Error(`Invalid sequence: ${sequence}`)
+  }
+  return sequence
 }
 
 Transaction.Input = Input
