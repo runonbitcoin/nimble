@@ -126,6 +126,8 @@ describe('Script', () => {
   })
 
   describe('chunks', () => {
-    // TODO
+    it('returns chunks', () => {
+      expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { buf: [2] }])
+    })
   })
 })
