@@ -86,7 +86,11 @@ describe('Script', () => {
   })
 
   describe('toBuffer', () => {
-    // TODO
+    it('returns buffer', () => {
+      expect(Array.from(Script.fromBuffer([]).toBuffer())).to.deep.equal([])
+      expect(Array.from(Script.fromBuffer([0xff]).toBuffer())).to.deep.equal([0xff])
+      expect(Array.from(Script.fromBuffer([1, 2, 3]).toBuffer())).to.deep.equal([1, 2, 3])
+    })
   })
 
   describe('length', () => {
