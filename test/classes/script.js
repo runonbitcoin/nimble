@@ -29,6 +29,10 @@ describe('Script', () => {
       expect(script[0]).to.equal(1)
       expect(script[1]).to.equal(2)
       expect(script[2]).to.equal(3)
+      const expected = [1, 2, 3]
+      for (const byte of script) {
+        expect(byte).to.equal(expected.shift())
+      }
     })
 
     it('detects p2pkh lockscript template', () => {
@@ -166,6 +170,20 @@ describe('Script', () => {
   describe('chunks', () => {
     it('returns chunks', () => {
       expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { buf: [2] }])
+    })
+
+    it('caches chunks', () => {
+      let buffer = []
+      for (let i = 0; i < 100; i++) {
+        buffer = buffer.concat([100, 255, 1, 2])
+      }
+      const script = new Script(buffer)
+      const t0 = new Date()
+      script.chunks // eslint-disable-line
+      const t1 = new Date()
+      script.chunks // eslint-disable-line
+      const t2 = new Date()
+      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
     })
   })
 
