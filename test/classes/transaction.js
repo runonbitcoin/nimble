@@ -113,6 +113,25 @@ describe('Transaction', () => {
     })
   })
 
+  describe('toString', () => {
+    it('returns hex string', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
+      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
+      expect(new bsv.Transaction(tx2.toString()).toString()).to.deep.equal(tx2.toString())
+      expect(new bsv.Transaction(tx2.toHex()).toString()).to.deep.equal(tx2.toHex())
+    })
+  })
+
+  describe('toBuffer', () => {
+    it('returns buffer', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
+      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
+      expect(Array.from(new bsv.Transaction(tx2.toString()).toBuffer())).to.deep.equal(Array.from(tx2.toBuffer()))
+    })
+  })
+
   describe('hash', () => {
     it('returns txid', () => {
       const bsvtx = new bsv.Transaction()
@@ -350,24 +369,6 @@ describe('Transaction', () => {
 
     it.skip('throws if called twice', () => {
 
-    })
-  })
-
-  describe('toString', () => {
-    it('returns hex string', () => {
-      const privateKey = PrivateKey.fromRandom()
-      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
-      expect(new bsv.Transaction(tx2.toString()).toString()).to.deep.equal(tx2.toString())
-    })
-  })
-
-  describe('toBuffer', () => {
-    it('returns buffer', () => {
-      const privateKey = PrivateKey.fromRandom()
-      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
-      expect(Array.from(new bsv.Transaction(tx2.toString()).toBuffer())).to.deep.equal(Array.from(tx2.toBuffer()))
     })
   })
 })
