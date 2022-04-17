@@ -111,7 +111,10 @@ describe('Script', () => {
   })
 
   describe('length', () => {
-    // TODO
+    it('returns buffer length', () => {
+      expect(new Script().length).to.equal(0)
+      expect(new Script([1, 2, 3]).length).to.equal(3)
+    })
   })
 
   describe('slice', () => {
