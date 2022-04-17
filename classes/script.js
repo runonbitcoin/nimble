@@ -105,7 +105,7 @@ class P2PKHLockScript extends Script {
   }
 
   toAddress () {
-    return Address(extractP2PKHLockScriptPubkeyhash(this.buffer), require('../index').testnet)
+    return new Address(extractP2PKHLockScriptPubkeyhash(this.buffer), require('../index').testnet)
   }
 }
 

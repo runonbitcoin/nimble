@@ -168,4 +168,28 @@ describe('Script', () => {
       expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { buf: [2] }])
     })
   })
+
+  describe('P2PKHLockScript', () => {
+    describe('fromAddress', () => {
+      it('creates', () => {
+        const address = nimble.PrivateKey.fromRandom().toAddress()
+        const script = Script.templates.P2PKHLockScript.fromAddress(address)
+        expect(Array.from(script.buffer)).to.deep.equal(Array.from(nimble.functions.createP2PKHLockScript(address.toString())))
+      })
+
+      it('throws if not an address', () => {
+        expect(() => Script.templates.P2PKHLockScript.fromAddress()).to.throw()
+        expect(() => Script.templates.P2PKHLockScript.fromAddress('abc')).to.throw()
+        expect(() => Script.templates.P2PKHLockScript.fromAddress({})).to.throw()
+      })
+    })
+
+    describe('toAddress', () => {
+      it('returns address for current network', () => {
+        const address = nimble.PrivateKey.fromRandom().toAddress()
+        const script = Script.templates.P2PKHLockScript.fromAddress(address)
+        expect(script.toAddress().toString()).to.equal(address.toString())
+      })
+    })
+  })
 })
