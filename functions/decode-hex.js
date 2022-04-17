@@ -4,7 +4,7 @@
 // to avoid accidentally importing the Buffer shim in the browser.
 
 function decodeHex (hex) {
-  if (typeof hex !== 'string') throw new Error('not a hex string')
+  if (typeof hex !== 'string') throw new Error('not a string')
 
   if (hex.length % 2 === 1) hex = '0' + hex
 

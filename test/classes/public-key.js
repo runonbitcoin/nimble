@@ -41,9 +41,9 @@ describe('PublicKey', () => {
     })
 
     it('throws if not a string', () => {
-      expect(() => PublicKey.fromString()).to.throw('Cannot create PublicKey: not a hex string')
-      expect(() => PublicKey.fromString(null)).to.throw('Cannot create PublicKey: not a hex string')
-      expect(() => PublicKey.fromString({})).to.throw('Cannot create PublicKey: not a hex string')
+      expect(() => PublicKey.fromString()).to.throw('Cannot create PublicKey: not a string')
+      expect(() => PublicKey.fromString(null)).to.throw('Cannot create PublicKey: not a string')
+      expect(() => PublicKey.fromString({})).to.throw('Cannot create PublicKey: not a string')
     })
 
     it('throws if too short', () => {

@@ -47,11 +47,19 @@ class Script {
   }
 
   static fromHex (s) {
-    return new Script(decodeHex(s))
+    try {
+      return new Script(decodeHex(s))
+    } catch (e) {
+      throw new Error(`Cannot create Script: ${e.message}`)
+    }
   }
 
   static fromBuffer (buffer) {
-    return new Script(buffer)
+    try {
+      return new Script(buffer)
+    } catch (e) {
+      throw new Error(`Cannot create Script: ${e.message}`)
+    }
   }
 
   static from (script) {

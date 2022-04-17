@@ -31,4 +31,60 @@ describe('Script', () => {
       expect(script[2]).to.equal(3)
     })
   })
+
+  describe('fromString', () => {
+    it('decodes hex', () => {
+      expect(Array.from(Script.fromString('000102').buffer)).to.deep.equal([0, 1, 2])
+    })
+
+    it('throws if invalid hex', () => {
+      expect(() => Script.fromString()).to.throw('Cannot create Script: not a string')
+      expect(() => Script.fromString([])).to.throw('Cannot create Script: not a string')
+      expect(() => Script.fromString('xyz')).to.throw('Cannot create Script: bad hex char')
+    })
+  })
+
+  describe('fromHex', () => {
+    it('decodes hex', () => {
+      expect(Array.from(Script.fromHex('').buffer)).to.deep.equal([])
+      expect(Array.from(Script.fromHex('aabbcc').buffer)).to.deep.equal([0xaa, 0xbb, 0xcc])
+    })
+
+    it('throws if invalid hex', () => {
+      expect(() => Script.fromHex(null)).to.throw('Cannot create Script: not a string')
+      expect(() => Script.fromHex('x')).to.throw('Cannot create Script: bad hex char')
+    })
+  })
+
+  describe('fromBuffer', () => {
+    // TODO
+  })
+
+  describe('from', () => {
+    // TODO
+  })
+
+  describe('toString', () => {
+    // TODO
+  })
+
+  describe('toHex', () => {
+    // TODO
+  })
+
+  describe('toBuffer', () => {
+    // TODO
+  })
+
+  describe('length', () => {
+    // TODO
+  })
+
+  describe('slice', () => {
+    // TODO
+  })
+
+  describe('chunks', () => {
+    // TODO
+  })
 })
