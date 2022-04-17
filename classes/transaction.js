@@ -108,15 +108,23 @@ class Transaction {
 
     const input = new Input(output.txid, output.vout, [], 0, output)
     this.inputs.push(input)
+
     return this
   }
 
   to (address, satoshis) {
     if (Object.isFrozen(this)) throw new Error('Transaction finalized')
 
-    const script = createP2PKHLockScript(Address.from(address).pubkeyhash)
+    address = Address.from(address)
+
+    if (!Number.isInteger(satoshis) || satoshis < 0 || satoshis > Number.MAX_SAFE_INTEGER) {
+      throw new Error(`Invalid satoshis: ${satoshis}`)
+    }
+
+    const script = createP2PKHLockScript(address.pubkeyhash)
     const output = new Output(script, satoshis, this)
     this.outputs.push(output)
+
     return this
   }
 

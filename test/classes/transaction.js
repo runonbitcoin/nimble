@@ -232,12 +232,17 @@ describe('Transaction', () => {
       expect(tx.to(pk.toAddress(), 1000)).to.equal(tx)
     })
 
-    it.skip('throws if not a valid address', () => {
-
+    it('throws if not a valid address', () => {
+      expect(() => new Transaction().to(null, 1000)).to.throw('Cannot create Address: unsupported type')
+      expect(() => new Transaction().to({}, 1000)).to.throw('Cannot create Address: unsupported type')
     })
 
-    it.skip('throws if not a valid satoshis', () => {
-
+    it('throws if not a valid satoshis', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      expect(() => new Transaction().to(address)).to.throw('Invalid satoshis')
+      expect(() => new Transaction().to(address, -1)).to.throw('Invalid satoshis')
+      expect(() => new Transaction().to(address, 1.5)).to.throw('Invalid satoshis')
+      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('Invalid satoshis')
     })
   })
 
