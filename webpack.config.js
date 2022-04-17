@@ -34,6 +34,7 @@ const terserPluginConfig = {
   terserOptions: {
     ecma: 2015,
     mangle: {
+      reserved: ['P2PKHLockScript'],
       properties: false
     }
   },

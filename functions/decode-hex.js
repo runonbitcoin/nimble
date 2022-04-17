@@ -19,6 +19,8 @@ function decodeHex (hex) {
     }
     return arr
   } else {
+    const isHex = require('./is-hex')
+    if (!isHex(hex)) throw new Error('bad hex char')
     return Buffer.from(hex, 'hex')
   }
 }

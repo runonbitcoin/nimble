@@ -15,4 +15,13 @@ describe('decodeHex', () => {
   it('incomplete', () => {
     expect(Array.from(decodeHex('102'))).to.deep.equal([0x01, 0x02])
   })
+
+  it('throws if not a string', () => {
+    expect(() => decodeHex()).to.throw('not a string')
+    expect(() => decodeHex(null)).to.throw('not a string')
+  })
+
+  it('throws if not a hex char', () => {
+    expect(() => decodeHex('x!')).to.throw('bad hex char')
+  })
 })
