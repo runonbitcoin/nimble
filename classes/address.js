@@ -43,6 +43,14 @@ class Address {
     return address
   }
 
+  static from (x) {
+    if (x instanceof Address) return x
+    if (typeof x === 'string') return Address.fromString(x)
+    const PublicKey = require('./public-key')
+    if (x instanceof PublicKey) return Address.fromPublicKey(x)
+    throw new Error('Cannot create Address: unsupported type')
+  }
+
   toString () {
     if (ADDRESS_TO_STRING_CACHE.has(this)) return ADDRESS_TO_STRING_CACHE.get(this)
     const address = encodeAddress(this.testnet, this.pubkeyhash)

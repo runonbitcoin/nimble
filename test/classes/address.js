@@ -89,6 +89,29 @@ describe('Address', () => {
     })
   })
 
+  describe('from', () => {
+    it('from Address instance', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      expect(Address.from(address)).to.equal(address)
+    })
+
+    it('from string', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      expect(Address.from(address.toString()).toString()).to.equal(address.toString())
+    })
+
+    it('from PublicKey instance', () => {
+      const publicKey = PrivateKey.fromRandom().toPublicKey()
+      expect(Address.from(publicKey).toString()).to.equal(publicKey.toAddress().toString())
+    })
+
+    it('throws if unsupported', () => {
+      expect(() => Address.from()).to.throw()
+      expect(() => Address.from(null)).to.throw()
+      expect(() => Address.from('abc')).to.throw()
+    })
+  })
+
   describe('toString', () => {
     it('mainnet', () => {
       const bsvAddress = new bsv.PrivateKey().toAddress()

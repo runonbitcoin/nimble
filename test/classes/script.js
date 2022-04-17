@@ -125,8 +125,8 @@ describe('Script', () => {
     })
 
     it('throws if none of the above', () => {
-      expect(() => Script.from()).to.throw('Cannot create script: unsupported type')
-      expect(() => Script.from({})).to.throw('Cannot create script: unsupported type')
+      expect(() => Script.from()).to.throw('Cannot create Script: unsupported type')
+      expect(() => Script.from({})).to.throw('Cannot create Script: unsupported type')
       expect(() => Script.from('xyz')).to.throw('Cannot create Script: bad hex char')
     })
   })
