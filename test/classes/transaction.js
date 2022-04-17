@@ -5,7 +5,6 @@ const { Transaction, PrivateKey, Script } = nimble
 const { createP2PKHLockScript } = nimble.functions
 const { opcodes } = nimble.constants
 const bsv = require('bsv')
-const verifyScriptAsync = require('../../functions/verify-script-async')
 
 describe('Transaction', () => {
   describe('constructor', () => {
@@ -273,7 +272,7 @@ describe('Transaction', () => {
   })
 
   describe('input', () => {
-    it('adds input', () => {
+    it('adds input object', () => {
       const pk = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(pk.toAddress(), 1000)
       const input = { txid: tx1.hash, vout: 0, script: [1], sequence: 2 }
@@ -282,6 +281,14 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].vout).to.equal(0)
       expect(Array.from(tx2.inputs[0].script)).to.deep.equal([1])
       expect(tx2.inputs[0].sequence).to.equal(2)
+    })
+
+    it('adds Input instance', () => {
+      const pk = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(pk.toAddress(), 1000)
+      const input = new Transaction.Input(tx1.hash, 0)
+      const tx2 = new Transaction().input(input)
+      expect(tx2.inputs[0].txid).to.equal(tx1.hash)
     })
 
     it('returns self for chaining', () => {
@@ -340,13 +347,21 @@ describe('Transaction', () => {
   })
 
   describe('output', () => {
-    it('adds output', () => {
+    it('adds output object', () => {
       const pk = PrivateKey.fromRandom()
       const script = createP2PKHLockScript(pk.toAddress().pubkeyhash)
       const output = { script, satoshis: 1000 }
       const tx = new Transaction().output(output)
       expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(script))
       expect(tx.outputs[0].satoshis).to.equal(1000)
+    })
+
+    it('adds Output instance', () => {
+      const pk = PrivateKey.fromRandom()
+      const script = createP2PKHLockScript(pk.toAddress().pubkeyhash)
+      const output = new Transaction.Output(script, 1000)
+      const tx = new Transaction().output(output)
+      expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(script))
     })
 
     it('returns self for chaining', () => {
@@ -404,7 +419,7 @@ describe('Transaction', () => {
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000).sign(privateKey)
       expect(tx2.inputs[0].script.length > 0).to.equal(true)
-      await verifyScriptAsync(tx2.inputs[0].script, tx1.outputs[0].script, tx2, 0, tx1.outputs[0].satoshis)
+      await nimble.functions.verifyScriptAsync(tx2.inputs[0].script, tx1.outputs[0].script, tx2, 0, tx1.outputs[0].satoshis)
     })
 
     it('supports string private key', () => {
@@ -422,12 +437,29 @@ describe('Transaction', () => {
       expect(tx2.inputs[1].script.length > 0).to.equal(true)
     })
 
+    it('does not sign non-p2pkh', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const script = Array.from([...nimble.functions.createP2PKHLockScript(privateKey.toAddress().pubkeyhash), 1])
+      const utxo = { txid: new Transaction().hash, vout: 0, script, satoshis: 1000 }
+      const tx = new Transaction().from(utxo).sign(privateKey)
+      expect(tx.inputs[0].script.length).to.equal(0)
+    })
+
     it('does not sign without previous outputs', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const input = { txid: tx1.hash, vout: 0, script: [], sequence: 0 }
       const tx2 = new Transaction().input(input).to(privateKey.toAddress(), 2000).sign(privateKey)
       expect(tx2.inputs[0].script.length).to.equal(0)
+    })
+
+    it('does not sign if already have sign data', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
+      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
+      tx2.inputs[0].script = [0x01]
+      tx2.sign(privateKey)
+      expect(tx2.inputs[0].script).to.deep.equal([0x01])
     })
 
     it('returns self for chaining', () => {

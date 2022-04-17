@@ -221,16 +221,14 @@ class Transaction {
     const currentFee = this.fee
     const expectedFee = Math.ceil(encodeTx(this).length * require('../index').feePerKb / 1000)
 
-    if (this.changeOutput) {
-      const change = currentFee - expectedFee
-      const dust = calculateDust(this.changeOutput.script.length)
+    const change = currentFee - expectedFee
+    const dust = calculateDust(this.changeOutput.script.length)
 
-      if (change > dust) {
-        this.changeOutput.satoshis = change
-      } else {
-        this.outputs.splice(changeIndex, 1)
-        this.changeOutput = undefined
-      }
+    if (change > dust) {
+      this.changeOutput.satoshis = change
+    } else {
+      this.outputs.splice(changeIndex, 1)
+      this.changeOutput = undefined
     }
   }
 }
