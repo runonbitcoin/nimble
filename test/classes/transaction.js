@@ -216,6 +216,32 @@ describe('Transaction', () => {
       expect(() => new Transaction().from(null)).to.throw()
       expect(() => new Transaction().from({})).to.throw()
     })
+
+    it('throws if invalid txid', () => {
+      const txidBuffer = nimble.functions.decodeHex(new Transaction().hash)
+      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('Invalid txid')
+      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('Invalid txid')
+    })
+
+    it('throws if invalid vout', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('Invalid vout')
+      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('Invalid vout')
+      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('Invalid vout')
+    })
+
+    it('throws if invalid script', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })).to.throw('Cannot create Script')
+    })
+
+    it('throws if invalid satoshis', () => {
+      const txid = new Transaction().hash
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('Invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('Invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('Invalid satoshis')
+    })
   })
 
   describe('to', () => {
