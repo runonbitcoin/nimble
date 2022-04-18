@@ -2,6 +2,7 @@ const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
 const { Script } = nimble
+const bsv = require('bsv')
 
 describe('Script', () => {
   describe('constructor', () => {
@@ -116,6 +117,12 @@ describe('Script', () => {
       expect(Script.from(script)).to.equal(script)
     })
 
+    it('from bsv.Script', () => {
+      const script = new Script([1, 2, 3])
+      const bsvScript = new bsv.Script(script.toString())
+      expect(Script.from(bsvScript).toString()).to.equal(script.toString())
+    })
+
     it('accepts hex strings', () => {
       expect(Script.from('001122').toString()).to.equal('001122')
     })
@@ -126,7 +133,7 @@ describe('Script', () => {
 
     it('throws if none of the above', () => {
       expect(() => Script.from()).to.throw('Cannot create Script: unsupported type')
-      expect(() => Script.from({})).to.throw('Cannot create Script: unsupported type')
+      expect(() => Script.from({})).to.throw('Cannot create Script: bad hex char')
       expect(() => Script.from('xyz')).to.throw('Cannot create Script: bad hex char')
     })
   })

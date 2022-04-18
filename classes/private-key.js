@@ -46,6 +46,7 @@ class PrivateKey {
 
   static from (privateKey) {
     if (privateKey instanceof PrivateKey) return privateKey
+    if (typeof privateKey === 'object' && privateKey) privateKey = privateKey.toString()
     if (typeof privateKey === 'string') return PrivateKey.fromString(privateKey)
     throw new Error('Cannot create PrivateKey: unsupported type')
   }

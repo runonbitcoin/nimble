@@ -102,6 +102,12 @@ describe('PublicKey', () => {
       expect(PublicKey.from(publicKey)).to.equal(publicKey)
     })
 
+    it('from bsv.PublicKey', () => {
+      const publicKey = PrivateKey.fromRandom().toPublicKey()
+      const bsvPublicKey = new bsv.PublicKey(publicKey.toString())
+      expect(PublicKey.from(bsvPublicKey).toString()).to.equal(publicKey.toString())
+    })
+
     it('from string', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
       expect(PublicKey.from(publicKey.toString()).toString()).to.equal(publicKey.toString())

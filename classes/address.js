@@ -45,9 +45,10 @@ class Address {
 
   static from (x) {
     if (x instanceof Address) return x
-    if (typeof x === 'string') return Address.fromString(x)
     const PublicKey = require('./public-key')
     if (x instanceof PublicKey) return Address.fromPublicKey(x)
+    if (typeof x === 'object' && x) x = x.toString()
+    if (typeof x === 'string') return Address.fromString(x)
     throw new Error('Cannot create Address: unsupported type')
   }
 

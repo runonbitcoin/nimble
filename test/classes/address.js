@@ -95,6 +95,12 @@ describe('Address', () => {
       expect(Address.from(address)).to.equal(address)
     })
 
+    it('from bsv.Address', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      const bsvAddress = new bsv.Address(address.toString())
+      expect(Address.from(bsvAddress).toString()).to.equal(address.toString())
+    })
+
     it('from string', () => {
       const address = PrivateKey.fromRandom().toAddress()
       expect(Address.from(address.toString()).toString()).to.equal(address.toString())

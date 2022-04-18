@@ -67,8 +67,9 @@ class Script {
 
   static from (script) {
     if (script instanceof Script) return script
-    if (typeof script === 'string') return Script.fromString(script)
     if (isBuffer(script)) return Script.fromBuffer(script)
+    if (typeof script === 'object' && script) script = script.toHex ? script.toHex() : script.toString()
+    if (typeof script === 'string') return Script.fromString(script)
     throw new Error('Cannot create Script: unsupported type')
   }
 

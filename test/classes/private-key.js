@@ -76,6 +76,12 @@ describe('PrivateKey', () => {
       expect(PrivateKey.from(privateKey)).to.equal(privateKey)
     })
 
+    it('from bsv.PrivateKey', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const bsvPrivateKey = new bsv.PrivateKey(privateKey.toString())
+      expect(PrivateKey.from(bsvPrivateKey).toString()).to.equal(privateKey.toString())
+    })
+
     it('from string', () => {
       const privateKey = PrivateKey.fromRandom()
       expect(PrivateKey.from(privateKey.toString()).toString()).to.equal(privateKey.toString())

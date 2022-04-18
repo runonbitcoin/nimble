@@ -260,7 +260,7 @@ describe('Transaction', () => {
 
     it('throws if not a valid address', () => {
       expect(() => new Transaction().to(null, 1000)).to.throw('Cannot create Address: unsupported type')
-      expect(() => new Transaction().to({}, 1000)).to.throw('Cannot create Address: unsupported type')
+      expect(() => new Transaction().to({}, 1000)).to.throw('bad base58 chars')
     })
 
     it('throws if not a valid satoshis', () => {
