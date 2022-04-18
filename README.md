@@ -15,7 +15,7 @@ npm install @runonbitcoin/nimble
 ```
 
 ```html
-<script src="https://unpkg.com/@runonbitcoin/nimble@1.0.5"></script>
+<script src="https://unpkg.com/@runonbitcoin/nimble@1.0.6"></script>
 ```
 
 ## Examples
