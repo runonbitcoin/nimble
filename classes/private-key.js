@@ -44,6 +44,12 @@ class PrivateKey {
     return new PrivateKey(number, testnet, compressed, false)
   }
 
+  static from (privateKey) {
+    if (privateKey instanceof PrivateKey) return privateKey
+    if (typeof privateKey === 'string') return PrivateKey.fromString(privateKey)
+    throw new Error('Cannot create PrivateKey: unsupported type')
+  }
+
   toString () {
     if (PRIVATE_KEY_TO_WIF_CACHE.has(this)) return PRIVATE_KEY_TO_WIF_CACHE.get(this)
     const wif = encodeWIF(this.number, this.testnet, this.compressed)

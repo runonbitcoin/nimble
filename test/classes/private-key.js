@@ -70,6 +70,24 @@ describe('PrivateKey', () => {
     })
   })
 
+  describe('from', () => {
+    it('from PrivateKey instance', () => {
+      const privateKey = PrivateKey.fromRandom()
+      expect(PrivateKey.from(privateKey)).to.equal(privateKey)
+    })
+
+    it('from string', () => {
+      const privateKey = PrivateKey.fromRandom()
+      expect(PrivateKey.from(privateKey.toString()).toString()).to.equal(privateKey.toString())
+    })
+
+    it('throws if unsupported', () => {
+      expect(() => PrivateKey.from()).to.throw()
+      expect(() => PrivateKey.from(null)).to.throw()
+      expect(() => PrivateKey.from('abc')).to.throw()
+    })
+  })
+
   describe('toString', () => {
     it('returns WIF', () => {
       const bsvPrivateKey = new bsv.PrivateKey()

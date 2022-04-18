@@ -96,6 +96,29 @@ describe('PublicKey', () => {
     })
   })
 
+  describe('from', () => {
+    it('from PublicKey instance', () => {
+      const publicKey = PrivateKey.fromRandom().toPublicKey()
+      expect(PublicKey.from(publicKey)).to.equal(publicKey)
+    })
+
+    it('from string', () => {
+      const publicKey = PrivateKey.fromRandom().toPublicKey()
+      expect(PublicKey.from(publicKey.toString()).toString()).to.equal(publicKey.toString())
+    })
+
+    it('from PrivateKey instance', () => {
+      const privateKey = PrivateKey.fromRandom()
+      expect(PublicKey.from(privateKey).toString()).to.equal(privateKey.toPublicKey().toString())
+    })
+
+    it('throws if unsupported', () => {
+      expect(() => PublicKey.from()).to.throw()
+      expect(() => PublicKey.from(null)).to.throw()
+      expect(() => PublicKey.from('abc')).to.throw()
+    })
+  })
+
   describe('toString', () => {
     it('compressed', () => {
       const bsvPrivateKey = new bsv.PrivateKey()

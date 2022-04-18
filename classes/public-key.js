@@ -56,6 +56,14 @@ class PublicKey {
     return publicKey
   }
 
+  static from (x) {
+    if (x instanceof PublicKey) return x
+    if (typeof x === 'string') return PublicKey.fromString(x)
+    const PrivateKey = require('./private-key')
+    if (x instanceof PrivateKey) return PublicKey.fromPrivateKey(x)
+    throw new Error('Cannot create PublicKey: unsupported type')
+  }
+
   toString () {
     return encodeHex(this.toBuffer())
   }
