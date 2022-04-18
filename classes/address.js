@@ -57,6 +57,11 @@ class Address {
     ADDRESS_TO_STRING_CACHE.set(this, address)
     return address
   }
+
+  toScript () {
+    const Script = require('./script')
+    return Script.templates.P2PKHLockScript.fromAddress(this)
+  }
 }
 
 module.exports = Address

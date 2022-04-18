@@ -1,8 +1,8 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { Address, PrivateKey } = nimble
-const { encodeBase58Check } = nimble.functions
+const { Address, PrivateKey, Script } = nimble
+const { encodeBase58Check, createP2PKHLockScript } = nimble.functions
 const bsv = require('bsv')
 
 describe('Address', () => {
@@ -121,6 +121,15 @@ describe('Address', () => {
     it('testnet', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
       expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
+    })
+  })
+
+  describe('toScript', () => {
+    it('returns p2pkh lock script', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      const script = address.toScript()
+      expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
+      expect(Array.from(script.toBuffer())).to.deep.equal(Array.from(createP2PKHLockScript(address.pubkeyhash)))
     })
   })
 })
