@@ -150,6 +150,19 @@ describe('Transaction', () => {
       const t2 = new Date()
       expect(Math.round((t2 - t1) / 100)).to.be.lessThanOrEqual(t1 - t0)
     })
+
+    it('computes change before calculating hash', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 9000)
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 1000)
+        .change(privateKey.toAddress())
+        .sign(privateKey)
+      const hash = tx2.hash
+      expect(tx2.changeOutput.satoshis).not.to.equal(0)
+      expect(hash).to.equal(new bsv.Transaction(tx2.toString()).hash)
+    })
   })
 
   describe('fee', () => {

@@ -8,7 +8,7 @@ describe('calculateTxid', () => {
   it('calculates txid', () => {
     const tx = { inputs: [], outputs: [{ script: [], satoshis: 100 }] }
     const bsvtx = new bsv.Transaction(encodeHex(encodeTx(tx)))
-    const txid = calculateTxid(tx)
+    const txid = calculateTxid(encodeTx(tx))
     expect(txid).to.equal(bsvtx.hash)
   })
 })

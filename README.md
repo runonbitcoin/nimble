@@ -99,7 +99,7 @@ const decodeTx = require('nimble/functions/decode-tx')
 const calculateTxid = require('nimble/functions/calculate-txid')
 
 const tx = decodeTx(buffer)
-const txid = calculateTxid(tx)
+const txid = calculateTxid(buffer)
 ```
 
 You can optimize the size further by telling your bundler where you intend to use the library by setting the global variable `VARIANT` to either `"node"` or `"browser"`.

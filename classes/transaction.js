@@ -83,12 +83,12 @@ class Transaction {
   get hash () {
     if (Object.isFrozen(this)) {
       if (TRANSACTION_TO_TXID_CACHE.has(this)) return TRANSACTION_TO_TXID_CACHE.get(this)
-      const txid = calculateTxid(this)
+      const txid = calculateTxid(this.toBuffer())
       TRANSACTION_TO_TXID_CACHE.set(this, txid)
       return txid
     }
 
-    return calculateTxid(this)
+    return calculateTxid(this.toBuffer())
   }
 
   get fee () {
