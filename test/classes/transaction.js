@@ -133,7 +133,8 @@ describe('Transaction', () => {
 
   describe('hash', () => {
     it('returns txid', () => {
-      const bsvtx = new bsv.Transaction()
+      const address = PrivateKey.fromRandom().toAddress().toString()
+      const bsvtx = new bsv.Transaction().to(address, 1000)
       const nimbletx = nimble.Transaction.fromString(bsvtx.toString())
       expect(nimbletx.hash).to.equal(bsvtx.hash)
     })

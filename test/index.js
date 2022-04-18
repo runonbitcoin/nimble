@@ -17,6 +17,7 @@ describe('functions', () => {
   require('./functions/are-buffers-equal')
   require('./functions/calculate-dust')
   require('./functions/calculate-public-key')
+  require('./functions/calculate-txid')
   require('./functions/create-p2pkh-lock-script')
   require('./functions/create-p2pkh-unlock-script')
   require('./functions/decode-address')
