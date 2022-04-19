@@ -49,22 +49,16 @@ class Transaction {
   }
 
   static fromBuffer (buffer) {
-    let transaction
-    try {
-      if (!isBuffer(buffer)) throw new Error('not a buffer')
-      transaction = decodeTx(buffer)
-    } catch (e) {
-      throw new Error(`Cannot create Transaction: ${e.message}`)
-    }
+    if (!isBuffer(buffer)) throw new Error('not a buffer')
+    const txData = decodeTx(buffer)
 
-    Object.setPrototypeOf(transaction, Transaction.prototype)
-    transaction.inputs.forEach(input => Object.setPrototypeOf(input, Input.prototype))
-    transaction.inputs.forEach(input => { input.script = Script.fromBuffer(input.script) })
-    transaction.outputs.forEach(output => Object.setPrototypeOf(output, Output.prototype))
-    transaction.outputs.forEach(output => { output.tx = this })
-    transaction.outputs.forEach(output => { output.script = Script.fromBuffer(output.script) })
+    const tx = new this()
+    txData.inputs.forEach(inp => tx.input(inp))
+    txData.outputs.forEach(out => tx.output(out))
+    tx.locktime = txData.locktime
+    tx.version = txData.version
 
-    return transaction
+    return tx
   }
 
   toHex () {
