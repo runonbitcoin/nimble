@@ -51,7 +51,7 @@ describe('Transaction', () => {
 
     it('throws if invalid', () => {
       const badHex = new Transaction().toString() + '00'
-      expect(() => Transaction.fromHex(badHex)).to.throw('Cannot create Transaction: unconsumed data')
+      expect(() => Transaction.fromHex(badHex)).to.throw('unconsumed data')
     })
   })
 
@@ -64,7 +64,7 @@ describe('Transaction', () => {
 
     it('throws if invalid', () => {
       const badHex = '00' + new Transaction().toString()
-      expect(() => Transaction.fromHex(badHex)).to.throw('Cannot create Transaction: unconsumed data')
+      expect(() => Transaction.fromHex(badHex)).to.throw('unconsumed data')
     })
   })
 
@@ -92,12 +92,12 @@ describe('Transaction', () => {
 
     it('throws if not a buffer', () => {
       const hex = new Transaction().toString()
-      expect(() => Transaction.fromBuffer(hex)).to.throw('Cannot create Transaction: not a buffer')
+      expect(() => Transaction.fromBuffer(hex)).to.throw('not a buffer')
     })
 
     it('throws if invalid', () => {
       const badBuffer = [0].concat(Array.from(new Transaction().toBuffer()))
-      expect(() => Transaction.fromBuffer(badBuffer)).to.throw('Cannot create Transaction: unconsumed data')
+      expect(() => Transaction.fromBuffer(badBuffer)).to.throw('unconsumed data')
     })
 
     it('creates script objects', () => {
