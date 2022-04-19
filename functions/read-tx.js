@@ -9,7 +9,7 @@ function readTx (reader) {
   const nin = readVarint(reader)
   const inputs = []
   for (let vin = 0; vin < nin; vin++) {
-    const txid = encodeHex(Uint8Array.from(reader.read(32)).reverse())
+    const txid = encodeHex(new Uint8Array(reader.read(32)).reverse())
     const vout = readU32LE(reader)
     const scriptLength = readVarint(reader)
     const script = reader.read(scriptLength)

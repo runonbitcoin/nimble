@@ -13,7 +13,7 @@ function ripemd160 (data) {
 
   wasmRipemd160(hashDataPos, data.length, hashOutPos)
 
-  return Uint8Array.from(wasmMemory.slice(hashOutPos, hashOutPos + 20))
+  return new Uint8Array(wasmMemory.slice(hashOutPos, hashOutPos + 20))
 }
 
 module.exports = ripemd160

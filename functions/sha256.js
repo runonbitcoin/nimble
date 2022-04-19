@@ -20,7 +20,7 @@ if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
 
     wasmSha256(hashDataPos, data.length, hashOutPos)
 
-    return Uint8Array.from(wasmMemory.slice(hashOutPos, hashOutPos + 32))
+    return new Uint8Array(wasmMemory.slice(hashOutPos, hashOutPos + 32))
   }
 } else {
   sha256 = (data) => {

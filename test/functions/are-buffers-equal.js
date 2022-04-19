@@ -7,12 +7,12 @@ describe('areBuffersEqual', () => {
   it('retunrs true if same', () => {
     expect(areBuffersEqual([], [])).to.equal(true)
     expect(areBuffersEqual(Buffer.from([]), Buffer.from([]))).to.equal(true)
-    expect(areBuffersEqual(Uint8Array.from([]), Uint8Array.from([]))).to.equal(true)
+    expect(areBuffersEqual(new Uint8Array([]), new Uint8Array([]))).to.equal(true)
     expect(areBuffersEqual([1, 2, 3], [1, 2, 3])).to.equal(true)
     expect(areBuffersEqual(Buffer.from([1, 2, 3]), Buffer.from([1, 2, 3]))).to.equal(true)
-    expect(areBuffersEqual(Uint8Array.from([1, 2, 3]), Uint8Array.from([1, 2, 3]))).to.equal(true)
+    expect(areBuffersEqual(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 3]))).to.equal(true)
     expect(areBuffersEqual([], Buffer.from([]))).to.equal(true)
-    expect(areBuffersEqual(Buffer.from([]), Uint8Array.from([]))).to.equal(true)
+    expect(areBuffersEqual(Buffer.from([]), new Uint8Array([]))).to.equal(true)
   })
 
   it('returns false for different lengths', () => {

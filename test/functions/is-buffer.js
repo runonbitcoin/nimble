@@ -7,7 +7,7 @@ describe('isBuffer', () => {
   it('returns true for buffer', () => {
     expect(isBuffer([])).to.equal(true)
     expect(isBuffer(Buffer.from([]))).to.equal(true)
-    expect(isBuffer(Uint8Array.from([]))).to.equal(true)
+    expect(isBuffer(new Uint8Array([]))).to.equal(true)
   })
 
   it('returns false for non-buffer', () => {
