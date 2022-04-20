@@ -22,6 +22,7 @@ describe('decodeHex', () => {
   })
 
   it('throws if not a hex char', () => {
+    expect(() => decodeHex('z')).to.throw('bad hex char')
     expect(() => decodeHex('x!')).to.throw('bad hex char')
   })
 })

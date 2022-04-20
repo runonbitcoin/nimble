@@ -1,5 +1,7 @@
 /* global VARIANT */
 
+const isHex = require('./is-hex')
+
 // Prefer our implementation of decodeHex over Buffer when we don't know the VARIANT
 // to avoid accidentally importing the Buffer shim in the browser.
 
@@ -7,6 +9,8 @@ function decodeHex (hex) {
   if (typeof hex !== 'string') throw new Error('not a string')
 
   if (hex.length % 2 === 1) hex = '0' + hex
+
+  if (!isHex(hex)) throw new Error('bad hex char')
 
   if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
     const length = hex.length / 2
@@ -19,8 +23,6 @@ function decodeHex (hex) {
     }
     return arr
   } else {
-    const isHex = require('./is-hex')
-    if (!isHex(hex)) throw new Error('bad hex char')
     return Buffer.from(hex, 'hex')
   }
 }
