@@ -54,7 +54,7 @@ class Address {
 
   toString () {
     if (ADDRESS_TO_STRING_CACHE.has(this)) return ADDRESS_TO_STRING_CACHE.get(this)
-    const address = encodeAddress(this.testnet, this.pubkeyhash)
+    const address = encodeAddress(this.pubkeyhash, this.testnet)
     ADDRESS_TO_STRING_CACHE.set(this, address)
     return address
   }
