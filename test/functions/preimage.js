@@ -1,7 +1,7 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { preimage, decodeHex, decodeTx, encodeHex } = nimble.functions
+const { preimage, decodeHex, decodeTx } = nimble.functions
 const { SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE, SIGHASH_ANYONECANPAY, SIGHASH_FORKID } = nimble.constants.sighashFlags
 const bsv = require('bsv')
 
