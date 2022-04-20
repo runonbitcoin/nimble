@@ -38,6 +38,8 @@ module.exports = {
   isBuffer: require('./is-buffer'),
   isHex: require('./is-hex'),
   isP2PKHLockScript: require('./is-p2pkh-lock-script'),
+  preimageAsync: require('./preimage-async'),
+  preimage: require('./preimage'),
   readDER: require('./read-der'),
   readTx: require('./read-tx'),
   readU32LE: require('./read-u32-le'),
