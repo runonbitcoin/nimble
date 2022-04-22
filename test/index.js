@@ -39,6 +39,8 @@ describe('functions', () => {
   require('./functions/generate-random-data')
   require('./functions/generate-tx-signature')
   require('./functions/is-buffer')
+  require('./functions/preimage-async')
+  require('./functions/preimage')
   require('./functions/read-u32-le')
   require('./functions/read-u64-le')
   require('./functions/read-varint')
