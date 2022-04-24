@@ -300,6 +300,38 @@ describe('verifyScriptAsync', () => {
     await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
   })
 
+  it('checkmultisigverify throws if repeat signatures', async () => {
+    const pk1 = nimble.PrivateKey.fromRandom()
+    const pk2 = nimble.PrivateKey.fromRandom()
+    const pk3 = nimble.PrivateKey.fromRandom()
+
+    const { OP_0, OP_2, OP_3, OP_CHECKMULTISIGVERIFY } = nimble.constants.opcodes
+
+    const lockScriptWriter = new BufferWriter()
+    lockScriptWriter.write([OP_2])
+    writePushData(lockScriptWriter, pk1.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk2.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk3.toPublicKey().toBuffer())
+    lockScriptWriter.write([OP_3])
+    lockScriptWriter.write([OP_CHECKMULTISIGVERIFY])
+    const lockScript = lockScriptWriter.toBuffer()
+
+    const tx1 = new nimble.Transaction().output({ script: lockScript, satoshis: 1000 })
+
+    const tx2 = new nimble.Transaction().from(tx1.outputs[0])
+
+    const signature1 = generateTxSignature(tx2, 0, lockScript, 1000, pk1.number, pk1.toPublicKey().point)
+
+    const unlockScriptWriter = new BufferWriter()
+    unlockScriptWriter.write([OP_0])
+    writePushData(unlockScriptWriter, signature1)
+    writePushData(unlockScriptWriter, signature1)
+    const unlockScript = unlockScriptWriter.toBuffer()
+    tx2.inputs[0].script = unlockScript
+
+    await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
+  })
+
   it('invalid', async () => {
     async function fail (script) {
       await expect(verifyScriptAsync([], script)).to.be.rejected
