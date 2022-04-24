@@ -2,7 +2,7 @@ const { describe, it } = require('mocha')
 const { expect } = require('chai')
 require('chai').use(require('chai-as-promised'))
 const nimble = require('../env/nimble')
-const { verifyScriptAsync, writePushData, decodeHex, decodeTx } = nimble.functions
+const { verifyScriptAsync, writePushData, decodeHex, decodeTx, generateTxSignature } = nimble.functions
 const { BufferWriter } = nimble.classes
 const { opcodes } = nimble.constants
 
@@ -209,8 +209,70 @@ describe('verifyScriptAsync', () => {
     await verifyScriptAsync(unlockScript, lockScript, tx, vin, parentSatoshis)
   })
 
-  it.skip('checkmultisig', async () => {
-    // TODO
+  it('checkmultisig valid', async () => {
+    const pk1 = nimble.PrivateKey.fromRandom()
+    const pk2 = nimble.PrivateKey.fromRandom()
+    const pk3 = nimble.PrivateKey.fromRandom()
+
+    const { OP_0, OP_2, OP_3, OP_CHECKMULTISIG } = nimble.constants.opcodes
+
+    const lockScriptWriter = new BufferWriter()
+    lockScriptWriter.write([OP_2])
+    writePushData(lockScriptWriter, pk1.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk2.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk3.toPublicKey().toBuffer())
+    lockScriptWriter.write([OP_3])
+    lockScriptWriter.write([OP_CHECKMULTISIG])
+    const lockScript = lockScriptWriter.toBuffer()
+
+    const tx1 = new nimble.Transaction().output({ script: lockScript, satoshis: 1000 })
+
+    const tx2 = new nimble.Transaction().from(tx1.outputs[0])
+
+    const signature1 = generateTxSignature(tx2, 0, lockScript, 1000, pk1.number, pk1.toPublicKey().point)
+    const signature3 = generateTxSignature(tx2, 0, lockScript, 1000, pk3.number, pk3.toPublicKey().point)
+
+    const unlockScriptWriter = new BufferWriter()
+    unlockScriptWriter.write([OP_0])
+    writePushData(unlockScriptWriter, signature1)
+    writePushData(unlockScriptWriter, signature3)
+    const unlockScript = unlockScriptWriter.toBuffer()
+    tx2.inputs[0].script = unlockScript
+
+    await verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)
+  })
+
+  it('checkmultisig throws if out of order', async () => {
+    const pk1 = nimble.PrivateKey.fromRandom()
+    const pk2 = nimble.PrivateKey.fromRandom()
+    const pk3 = nimble.PrivateKey.fromRandom()
+
+    const { OP_0, OP_2, OP_3, OP_CHECKMULTISIG } = nimble.constants.opcodes
+
+    const lockScriptWriter = new BufferWriter()
+    lockScriptWriter.write([OP_2])
+    writePushData(lockScriptWriter, pk1.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk2.toPublicKey().toBuffer())
+    writePushData(lockScriptWriter, pk3.toPublicKey().toBuffer())
+    lockScriptWriter.write([OP_3])
+    lockScriptWriter.write([OP_CHECKMULTISIG])
+    const lockScript = lockScriptWriter.toBuffer()
+
+    const tx1 = new nimble.Transaction().output({ script: lockScript, satoshis: 1000 })
+
+    const tx2 = new nimble.Transaction().from(tx1.outputs[0])
+
+    const signature1 = generateTxSignature(tx2, 0, lockScript, 1000, pk1.number, pk1.toPublicKey().point)
+    const signature3 = generateTxSignature(tx2, 0, lockScript, 1000, pk3.number, pk3.toPublicKey().point)
+
+    const unlockScriptWriter = new BufferWriter()
+    unlockScriptWriter.write([OP_0])
+    writePushData(unlockScriptWriter, signature3)
+    writePushData(unlockScriptWriter, signature1)
+    const unlockScript = unlockScriptWriter.toBuffer()
+    tx2.inputs[0].script = unlockScript
+
+    await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
   })
 
   it('invalid', async () => {
