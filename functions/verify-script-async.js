@@ -299,12 +299,13 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
       } break
       case OP_EQUAL: {
         const a = pop(); const b = pop()
-        if (a.length !== b.length) throw new Error('OP_EQUAL failed, different sizes')
-        stack.push(a.some((ai, i) => ai !== b[i]) ? encodeNum(0) : encodeNum(1))
+        const equal = a.length === b.length && !a.some((ai, i) => ai !== b[i])
+        stack.push(equal ? encodeNum(1) : encodeNum(0))
       } break
       case OP_EQUALVERIFY: {
         const a = pop(); const b = pop()
-        if (a.length !== b.length || a.some((ai, i) => ai !== b[i])) throw new Error('\'OP_EQUALVERIFY failed"')
+        const equal = a.length === b.length && !a.some((ai, i) => ai !== b[i])
+        if (!equal) throw new Error('\'OP_EQUALVERIFY failed"')
       } break
       case OP_LSHIFT : {
         const n = decodeNum(pop())
@@ -365,16 +366,18 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
         const max = decodeNum(pop()); const min = decodeNum(pop()); const x = decodeNum(pop())
         stack.push(encodeNum(greaterThanOrEqual(min, x) && lessThan(max, x) ? 1 : 0))
       } break
-      case OP_BIN2NUM: stack.push(encodeNum(decodeNum(pop().reverse()))); break
+      case OP_BIN2NUM: stack.push(encodeNum(decodeNum(pop()))); break
       case OP_NUM2BIN: {
-        const m = decodeNum(pop()); const narr = pop(); const n = decodeNum(narr)
+        const m = decodeNum(pop())
+        const narr = pop()
+        const n = decodeNum(narr)
         const oor = m.neg || m.num < BigInt(1) || m.num < BigInt(narr.length) || m.num > BigInt(2147483647)
         if (oor) throw new Error('OP_NUM2BIN failed, out of range')
-        if (BigInt(n.num) === BigInt(0)) { stack.push([]); break }
         const arr = Array.from(decodeHex(BigInt(n.num).toString(16)))
-        for (let i = arr.length; i < Number(m.num); i++) arr.unshift(0x00)
-        const full = arr[0] & 0x80
-        if (n.neg || full) { if (full) { arr.unshift(0x80) } else { arr[0] |= 0x80 } }
+        for (let i = arr.length; i < Number(m.num); i++) arr.push(0x00)
+        const full = arr[arr.length - 1] & 0x80
+        if (full) arr.push(0x00)
+        if (n.neg) { arr[arr.length - 1] |= n.neg ? 0x80 : 0x00 }
         stack.push(arr)
       } break
       case OP_RIPEMD160: stack.push(await ripemd160Async(pop())); break
