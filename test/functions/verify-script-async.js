@@ -209,6 +209,31 @@ describe('verifyScriptAsync', () => {
     await verifyScriptAsync(unlockScript, lockScript, tx, vin, parentSatoshis)
   })
 
+  it('checksigverify', async () => {
+    const pk = nimble.PrivateKey.fromRandom()
+
+    const { OP_1, OP_CHECKSIGVERIFY } = nimble.constants.opcodes
+
+    const lockScriptWriter = new BufferWriter()
+    writePushData(lockScriptWriter, pk.toPublicKey().toBuffer())
+    lockScriptWriter.write([OP_CHECKSIGVERIFY])
+    lockScriptWriter.write([OP_1])
+    const lockScript = lockScriptWriter.toBuffer()
+
+    const tx1 = new nimble.Transaction().output({ script: lockScript, satoshis: 1000 })
+
+    const tx2 = new nimble.Transaction().from(tx1.outputs[0])
+
+    const signature = generateTxSignature(tx2, 0, lockScript, 1000, pk.number, pk.toPublicKey().point)
+
+    const unlockScriptWriter = new BufferWriter()
+    writePushData(unlockScriptWriter, signature)
+    const unlockScript = unlockScriptWriter.toBuffer()
+    tx2.inputs[0].script = unlockScript
+
+    await verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)
+  })
+
   it('checkmultisig valid', async () => {
     const pk1 = nimble.PrivateKey.fromRandom()
     const pk2 = nimble.PrivateKey.fromRandom()
