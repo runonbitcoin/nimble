@@ -91,6 +91,7 @@ describe('verifyScriptAsync', () => {
     await pass([2, opcodes.OP_0, opcodes.OP_1, opcodes.OP_0, opcodes.OP_SPLIT])
     await pass([opcodes.OP_0, opcodes.OP_0, opcodes.OP_SPLIT, opcodes.OP_1])
     await pass([opcodes.OP_1, opcodes.OP_1, opcodes.OP_SPLIT, opcodes.OP_DROP])
+    await pass([2, opcodes.OP_0, opcodes.OP_1, opcodes.OP_SIZE, opcodes.OP_2, opcodes.OP_EQUALVERIFY])
     await pass([opcodes.OP_1, opcodes.OP_SIZE])
     await pass([opcodes.OP_1, opcodes.OP_SIZE, opcodes.OP_DROP])
     await pass([opcodes.OP_1, opcodes.OP_1, opcodes.OP_AND])
