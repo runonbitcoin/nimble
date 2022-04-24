@@ -17,6 +17,21 @@ describe('verifyScriptAsync', () => {
     }
 
     await pass([opcodes.OP_TRUE])
+    await pass([opcodes.OP_1])
+    await pass([opcodes.OP_2])
+    await pass([opcodes.OP_3])
+    await pass([opcodes.OP_4])
+    await pass([opcodes.OP_5])
+    await pass([opcodes.OP_6])
+    await pass([opcodes.OP_7])
+    await pass([opcodes.OP_8])
+    await pass([opcodes.OP_9])
+    await pass([opcodes.OP_10])
+    await pass([opcodes.OP_11])
+    await pass([opcodes.OP_12])
+    await pass([opcodes.OP_13])
+    await pass([opcodes.OP_14])
+    await pass([opcodes.OP_15])
     await pass([opcodes.OP_16])
     await pass([1, 1])
     await pass([opcodes.OP_PUSHDATA1, 2, 0, 1])
@@ -32,6 +47,7 @@ describe('verifyScriptAsync', () => {
     await pass([opcodes.OP_1, opcodes.OP_IF, opcodes.OP_PUSHDATA1, 1, 0, opcodes.OP_1, opcodes.OP_ENDIF])
     await pass([opcodes.OP_1, opcodes.OP_IF, opcodes.OP_ELSE, opcodes.OP_ELSE, opcodes.OP_1, opcodes.OP_ENDIF])
     await pass([opcodes.OP_1, opcodes.OP_IF, opcodes.OP_ELSE, opcodes.OP_ELSE, opcodes.OP_ELSE, opcodes.OP_ELSE, opcodes.OP_1, opcodes.OP_ENDIF])
+    await pass([opcodes.OP_1, opcodes.OP_IF, opcodes.OP_1, opcodes.OP_ELSE, opcodes.OP_1, opcodes.OP_IF, opcodes.OP_ENDIF, opcodes.OP_ENDIF])
     await pass([opcodes.OP_1, opcodes.OP_VERIFY, opcodes.OP_1])
     await pass([opcodes.OP_1, opcodes.OP_RETURN])
     await pass([opcodes.OP_FALSE, opcodes.OP_TRUE, opcodes.OP_RETURN])
@@ -192,6 +208,8 @@ describe('verifyScriptAsync', () => {
     await pass([opcodes.OP_0, opcodes.OP_HASH256])
     await pass(encodePushData(decodeHex('137ad663f79da06e282ed0abbec4d70523ced5ff8e39d5c2e5641d978c5925aa')).concat(
       encodePushData(decodeHex('0123456789abcdef'))).concat([opcodes.OP_HASH256, opcodes.OP_EQUAL]))
+    await pass([opcodes.OP_NOP1, opcodes.OP_NOP2, opcodes.OP_NOP3, opcodes.OP_NOP4, opcodes.OP_NOP5,
+      opcodes.OP_NOP6, opcodes.OP_NOP7, opcodes.OP_NOP8, opcodes.OP_NOP9, opcodes.OP_NOP10, opcodes.OP_1])
   })
 
   it('checksig', async () => {
@@ -535,5 +553,7 @@ describe('verifyScriptAsync', () => {
     await fail([opcodes.OP_0, opcodes.OP_0, opcodes.OP_1, opcodes.OP_CHECKMULTISIG])
     await fail([opcodes.OP_0, opcodes.OP_0, 1, 21, opcodes.OP_CHECKMULTISIG])
     await fail([opcodes.OP_0, opcodes.OP_9, opcodes.OP_9, opcodes.OP_2, opcodes.OP_9, opcodes.OP_1, opcodes.OP_CHECKMULTISIG])
+    await fail([opcodes.OP_NOP10 + 1])
+    await fail([255])
   })
 })
