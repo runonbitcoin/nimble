@@ -61,6 +61,7 @@ module.exports = {
   verifyPoint: require('./verify-point'),
   verifyPrivateKey: require('./verify-private-key'),
   verifyScriptAsync: require('./verify-script-async'),
+  verifyScript: require('./verify-script'),
   verifyTxSignatureAsync: require('./verify-tx-signature-async'),
   verifyTxSignature: require('./verify-tx-signature'),
   writeDER: require('./write-der'),

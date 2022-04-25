@@ -3,7 +3,7 @@ const { expect } = require('chai')
 require('chai').use(require('chai-as-promised'))
 const nimble = require('../env/nimble')
 const {
-  verifyScriptAsync, encodePushData, writePushData, decodeHex, decodeTx, generateTxSignature
+  verifyScript, verifyScriptAsync, encodePushData, writePushData, decodeHex, decodeTx, generateTxSignature
 } = nimble.functions
 const { BufferWriter } = nimble.classes
 const {
@@ -24,7 +24,8 @@ const {
 describe('verifyScriptAsync', () => {
   it('valid', async () => {
     async function pass (script) {
-      await verifyScriptAsync([], script)
+      await verifyScriptAsync([], script, undefined, undefined, undefined)
+      verifyScript([], script, undefined, undefined, undefined)
     }
 
     await pass([OP_TRUE])
@@ -253,6 +254,8 @@ describe('verifyScriptAsync', () => {
     const lockScript = prevout.script
     const parentSatoshis = prevout.satoshis
     await verifyScriptAsync(unlockScript, lockScript, tx, vin, parentSatoshis)
+    const tx2 = decodeTx(decodeHex(rawtx))
+    verifyScript(unlockScript, lockScript, tx2, vin, parentSatoshis)
   })
 
   it('checksigverify', async () => {
@@ -274,6 +277,7 @@ describe('verifyScriptAsync', () => {
     tx2.inputs[0].script = unlockScript
 
     await verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)
+    verifyScript(unlockScript, lockScript, tx2, 0, 1000)
   })
 
   it('checkmultisig valid', async () => {
@@ -305,6 +309,7 @@ describe('verifyScriptAsync', () => {
     tx2.inputs[0].script = unlockScript
 
     await verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)
+    verifyScript(unlockScript, lockScript, tx2, 0, 1000)
   })
 
   it('checkmultisig throws if out of order', async () => {
@@ -336,6 +341,7 @@ describe('verifyScriptAsync', () => {
     tx2.inputs[0].script = unlockScript
 
     await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
+    expect(() => verifyScript(unlockScript, lockScript, tx2, 0, 1000)).to.throw()
   })
 
   it('checkmultisigverify throws if repeat signatures', async () => {
@@ -366,11 +372,13 @@ describe('verifyScriptAsync', () => {
     tx2.inputs[0].script = unlockScript
 
     await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
+    expect(() => verifyScript(unlockScript, lockScript, tx2, 0, 1000)).to.throw()
   })
 
   it('bad', async () => {
     async function fail (script) {
-      await expect(verifyScriptAsync([], script)).to.be.rejected
+      await expect(verifyScriptAsync([], script, undefined, undefined, undefined)).to.be.rejected
+      expect(() => verifyScript([], script, undefined, undefined, undefined)).to.throw()
     }
 
     await fail([])
@@ -593,6 +601,7 @@ describe('verifyScriptAsync', () => {
     const vout = tx.inputs[vin].vout
     const prevout = prevtx.outputs[vout]
 
-    await nimble.functions.verifyScriptAsync(tx.inputs[vin].script, prevout.script, tx, vin, prevout.satoshis)
+    await verifyScriptAsync(tx.inputs[vin].script, prevout.script, tx, vin, prevout.satoshis)
+    verifyScript(tx.inputs[vin].script, prevout.script, tx, vin, prevout.satoshis)
   })
 })
