@@ -245,8 +245,8 @@ describe('Transaction', () => {
 
     it('throws if invalid script', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })).to.throw('Cannot create Script')
-      expect(() => new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })).to.throw('unsupported type')
+      expect(() => new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })).to.throw('bad hex char')
     })
 
     it('throws if invalid satoshis', () => {
@@ -332,8 +332,8 @@ describe('Transaction', () => {
 
     it('throws if invalid script', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })).to.throw('Cannot create Script')
-      expect(() => new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })).to.throw('bad hex char')
+      expect(() => new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })).to.throw('unsupported type')
     })
 
     it('throws if invalid sequence', () => {
@@ -355,7 +355,7 @@ describe('Transaction', () => {
       const txid = new Transaction().hash
       const output1 = { script: 'xyz', satoshis: 0 }
       const output2 = { script: [], satoshis: -1 }
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('bad hex char')
       expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('Invalid satoshis')
     })
   })
@@ -387,7 +387,7 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid output', () => {
-      expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('Cannot create Script')
+      expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('unsupported type')
       expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('Invalid satoshis')
     })
   })
