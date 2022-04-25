@@ -300,7 +300,7 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
       case OP_EQUAL: {
         const a = pop(); const b = pop()
         const equal = a.length === b.length && !a.some((ai, i) => ai !== b[i])
-        stack.push(equal ? encodeNum(1) : encodeNum(0))
+        stack.push(encodeNum(equal ? 1 : 0))
       } break
       case OP_EQUALVERIFY: {
         const a = pop(); const b = pop()
@@ -386,19 +386,17 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
       case OP_HASH160: stack.push(await ripemd160Async(await sha256Async(pop()))); break
       case OP_HASH256: stack.push(await sha256Async(await sha256Async(pop()))); break
       case OP_CODESEPARATOR: checkIndex = i + 1; break
-      case OP_CHECKSIG: {
-        const pubkey = decodePublicKey(pop())
-        const signature = pop()
-        const cleanedScript = lockScript.slice(checkIndex)
-        const verified = await verifyTxSignatureAsync(tx, vin, signature, pubkey, cleanedScript, parentSatoshis)
-        stack.push(encodeNum(verified ? 1 : 0))
-      } break
+      case OP_CHECKSIG:
       case OP_CHECKSIGVERIFY: {
         const pubkey = decodePublicKey(pop())
         const signature = pop()
         const cleanedScript = lockScript.slice(checkIndex)
         const verified = await verifyTxSignatureAsync(tx, vin, signature, pubkey, cleanedScript, parentSatoshis)
-        if (!verified) throw new Error('OP_CHECKSIGVERIFY failed')
+        if (chunk.opcode === OP_CHECKSIG) {
+          stack.push(encodeNum(verified ? 1 : 0))
+        } else {
+          if (!verified) throw new Error('OP_CHECKSIGVERIFY failed')
+        }
       } break
       case OP_CHECKMULTISIG:
       case OP_CHECKMULTISIGVERIFY: {
