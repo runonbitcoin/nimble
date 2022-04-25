@@ -4,9 +4,10 @@ const extractP2PKHLockScriptPubkeyhash = require('../functions/extract-p2pkh-loc
 const encodeHex = require('../functions/encode-hex')
 const decodeHex = require('../functions/decode-hex')
 const decodeScriptChunks = require('../functions/decode-script-chunks')
-const Address = require('./address')
 const isBuffer = require('../functions/is-buffer')
 const encodeASM = require('../functions/encode-asm')
+const decodeASM = require('../functions/decode-asm')
+const Address = require('./address')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
@@ -51,15 +52,20 @@ class Script {
   }
 
   static fromString (s) {
-    return Script.fromHex(s)
+    if (typeof s !== 'string') throw new Error('not a string')
+    try {
+      return Script.fromHex(s)
+    } catch (e) {
+      return Script.fromASM(s)
+    }
   }
 
   static fromHex (s) {
-    try {
-      return new Script(decodeHex(s), false)
-    } catch (e) {
-      throw new Error(`Cannot create Script: ${e.message}`)
-    }
+    return new Script(decodeHex(s), false)
+  }
+
+  static fromASM (asm) {
+    return this.fromBuffer(decodeASM(asm))
   }
 
   static fromBuffer (buffer) {

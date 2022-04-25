@@ -80,10 +80,15 @@ describe('Script', () => {
       expect(Array.from(Script.fromString('000102').buffer)).to.deep.equal([0, 1, 2])
     })
 
-    it('throws if invalid hex', () => {
-      expect(() => Script.fromString()).to.throw('Cannot create Script: not a string')
-      expect(() => Script.fromString([])).to.throw('Cannot create Script: not a string')
-      expect(() => Script.fromString('xyz')).to.throw('Cannot create Script: bad hex char')
+    it('decodes asm', () => {
+
+    })
+
+    it('throws if invalid', () => {
+      expect(() => Script.fromString()).to.throw('not a string')
+      expect(() => Script.fromString([])).to.throw('not a string')
+      expect(() => Script.fromString('xyz')).to.throw('bad hex char')
+      expect(() => Script.fromString('OP_MISSING')).to.throw('bad hex char')
     })
   })
 
@@ -94,8 +99,14 @@ describe('Script', () => {
     })
 
     it('throws if invalid hex', () => {
-      expect(() => Script.fromHex(null)).to.throw('Cannot create Script: not a string')
-      expect(() => Script.fromHex('x')).to.throw('Cannot create Script: bad hex char')
+      expect(() => Script.fromHex(null)).to.throw('not a string')
+      expect(() => Script.fromHex('x')).to.throw('bad hex char')
+    })
+  })
+
+  describe('fromASM', () => {
+    it('decodes asm', () => {
+      expect(Array.from(Script.fromASM('OP_TRUE'))).to.deep.equal([81])
     })
   })
 
@@ -127,14 +138,18 @@ describe('Script', () => {
       expect(Script.from('001122').toString()).to.equal('001122')
     })
 
+    it('accepts asm', () => {
+      expect(Script.from('OP_CHECKSIG').toString()).to.equal('ac')
+    })
+
     it('accepts buffers', () => {
       expect(Array.from(Script.from([0, 1, 2]).buffer)).to.deep.equal([0, 1, 2])
     })
 
     it('throws if none of the above', () => {
       expect(() => Script.from()).to.throw('Cannot create Script: unsupported type')
-      expect(() => Script.from({})).to.throw('Cannot create Script: bad hex char')
-      expect(() => Script.from('xyz')).to.throw('Cannot create Script: bad hex char')
+      expect(() => Script.from({})).to.throw('bad hex char')
+      expect(() => Script.from('xyz')).to.throw('bad hex char')
     })
   })
 
