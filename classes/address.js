@@ -10,12 +10,8 @@ const ADDRESS_TO_STRING_CACHE = new WeakMap() // Cached to reduce sha256 hashing
 class Address {
   constructor (pubkeyhash, testnet, validate = true) {
     if (validate) {
-      try {
-        if (!isBuffer(pubkeyhash) || pubkeyhash.length !== 20) throw new Error('bad pubkeyhash')
-        if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
-      } catch (e) {
-        throw new Error(`Cannot create Address: ${e.message}`)
-      }
+      if (!isBuffer(pubkeyhash) || pubkeyhash.length !== 20) throw new Error('bad pubkeyhash')
+      if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
     }
 
     this.pubkeyhash = pubkeyhash
@@ -49,7 +45,7 @@ class Address {
     if (x instanceof PublicKey) return Address.fromPublicKey(x)
     if (typeof x === 'object' && x) x = x.toString()
     if (typeof x === 'string') return Address.fromString(x)
-    throw new Error('Cannot create Address: unsupported type')
+    throw new Error('unsupported type')
   }
 
   toString () {

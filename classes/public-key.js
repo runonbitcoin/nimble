@@ -12,14 +12,10 @@ const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp25
 class PublicKey {
   constructor (point, testnet, compressed, validate = true) {
     if (validate) {
-      try {
-        if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error('bad point')
-        if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
-        if (typeof compressed !== 'boolean') throw new Error('bad compressed flag')
-        verifyPoint(point)
-      } catch (e) {
-        throw new Error(`Cannot create PublicKey: ${e.message}`)
-      }
+      if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error('bad point')
+      if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
+      if (typeof compressed !== 'boolean') throw new Error('bad compressed flag')
+      verifyPoint(point)
     }
 
     this.point = point
@@ -30,14 +26,10 @@ class PublicKey {
   }
 
   static fromString (pubkey) {
-    try {
-      const point = decodePublicKey(decodeHex(pubkey))
-      const testnet = require('../index').testnet
-      const compressed = pubkey.length === 66
-      return new PublicKey(point, testnet, compressed, false)
-    } catch (e) {
-      throw new Error(`Cannot create PublicKey: ${e.message}`)
-    }
+    const point = decodePublicKey(decodeHex(pubkey))
+    const testnet = require('../index').testnet
+    const compressed = pubkey.length === 66
+    return new PublicKey(point, testnet, compressed, false)
   }
 
   static fromPrivateKey (privateKey) {
@@ -62,7 +54,7 @@ class PublicKey {
     if (x instanceof PrivateKey) return PublicKey.fromPrivateKey(x)
     if (typeof x === 'object' && x) x = x.toString()
     if (typeof x === 'string') return PublicKey.fromString(x)
-    throw new Error('Cannot create PublicKey: unsupported type')
+    throw new Error('unsupported type')
   }
 
   toString () {

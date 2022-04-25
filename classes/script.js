@@ -14,41 +14,37 @@ const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
 
 class Script {
   constructor (buffer = [], validate = true) {
-    try {
-      if (validate && !isBuffer(buffer)) throw new Error('not a buffer')
+    if (validate && !isBuffer(buffer)) throw new Error('not a buffer')
 
-      // Store the buffer. If a view, convert to standlone buffer, so that we can make immutable
-      this.buffer = ArrayBuffer.isView(buffer) ? Array.from(buffer) : buffer
+    // Store the buffer. If a view, convert to standlone buffer, so that we can make immutable
+    this.buffer = ArrayBuffer.isView(buffer) ? Array.from(buffer) : buffer
 
-      const isTemplate = this.constructor !== Script
-      if (isTemplate) {
-        // If we are using a template, make sure it matches, and that there is no custom constructor
-        if (!this.constructor.matches(buffer)) throw new Error(`not a ${this.constructor.name}`)
-        if (this.constructor.toString().includes('constructor')) throw new Error('template constructors not allowed')
-      } else {
-        // If we are not using a template, see if we can detect one
-        const T = Object.values(Script.templates).find(template => template.matches(buffer))
-        if (T) {
-          if (T.toString().includes('constructor')) throw new Error('template constructors not allowed')
-          Object.setPrototypeOf(this, T.prototype)
-        }
+    const isTemplate = this.constructor !== Script
+    if (isTemplate) {
+      // If we are using a template, make sure it matches, and that there is no custom constructor
+      if (!this.constructor.matches(buffer)) throw new Error(`not a ${this.constructor.name}`)
+      if (this.constructor.toString().includes('constructor')) throw new Error('template constructors not allowed')
+    } else {
+      // If we are not using a template, see if we can detect one
+      const T = Object.values(Script.templates).find(template => template.matches(buffer))
+      if (T) {
+        if (T.toString().includes('constructor')) throw new Error('template constructors not allowed')
+        Object.setPrototypeOf(this, T.prototype)
       }
-
-      // Make the script immutable, in part so that its safe to cache chunks
-      Object.freeze(this.buffer)
-      Object.freeze(this)
-
-      // Proxy the script so it may be used in place of a buffer in functions
-      return new Proxy(this, {
-        get: (target, prop, receiver) => {
-          if (prop === Symbol.iterator) return target.buffer[Symbol.iterator].bind(target.buffer)
-          if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return target.buffer[prop]
-          return Reflect.get(target, prop, receiver)
-        }
-      })
-    } catch (e) {
-      throw new Error(`Cannot create Script: ${e.message}`)
     }
+
+    // Make the script immutable, in part so that its safe to cache chunks
+    Object.freeze(this.buffer)
+    Object.freeze(this)
+
+    // Proxy the script so it may be used in place of a buffer in functions
+    return new Proxy(this, {
+      get: (target, prop, receiver) => {
+        if (prop === Symbol.iterator) return target.buffer[Symbol.iterator].bind(target.buffer)
+        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return target.buffer[prop]
+        return Reflect.get(target, prop, receiver)
+      }
+    })
   }
 
   static fromString (s) {
@@ -77,7 +73,7 @@ class Script {
     if (isBuffer(script)) return Script.fromBuffer(script)
     if (typeof script === 'object' && script) script = script.toHex ? script.toHex() : script.toString()
     if (typeof script === 'string') return Script.fromString(script)
-    throw new Error('Cannot create Script: unsupported type')
+    throw new Error('unsupported type')
   }
 
   toString () {

@@ -17,9 +17,9 @@ describe('Address', () => {
     })
 
     it('throws if invalid', () => {
-      expect(() => new Address('abc', true)).to.throw('Cannot create Address: bad pubkeyhash')
-      expect(() => new Address([], false)).to.throw('Cannot create Address: bad pubkeyhash')
-      expect(() => new Address(new Array(20), 0)).to.throw('Cannot create Address: bad testnet flag')
+      expect(() => new Address('abc', true)).to.throw('bad pubkeyhash')
+      expect(() => new Address([], false)).to.throw('bad pubkeyhash')
+      expect(() => new Address(new Array(20), 0)).to.throw('bad testnet flag')
     })
   })
 

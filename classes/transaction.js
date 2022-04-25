@@ -35,12 +35,7 @@ class Transaction {
   }
 
   static fromHex (hex) {
-    let buffer
-    try {
-      buffer = decodeHex(hex)
-    } catch (e) {
-      throw new Error(`Cannot create Transaction: ${e.message}`)
-    }
+    const buffer = decodeHex(hex)
     return Transaction.fromBuffer(buffer)
   }
 

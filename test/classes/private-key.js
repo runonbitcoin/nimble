@@ -17,13 +17,13 @@ describe('PrivateKey', () => {
 
     it('throws if invalid', () => {
       const number = nimble.functions.generatePrivateKey()
-      expect(() => new PrivateKey(null, true, true)).to.throw('Cannot create PrivateKey: bad number')
-      expect(() => new PrivateKey(0, true, true)).to.throw('Cannot create PrivateKey: bad number')
-      expect(() => new PrivateKey(number, 1, true)).to.throw('Cannot create PrivateKey: bad testnet flag')
-      expect(() => new PrivateKey(number, false, undefined)).to.throw('Cannot create PrivateKey: bad compressed flag')
-      expect(() => new PrivateKey([], true, true)).to.throw('Cannot create PrivateKey: bad length')
-      expect(() => new PrivateKey(new Array(33), true, true)).to.throw('Cannot create PrivateKey: bad length')
-      expect(() => new PrivateKey(new Array(32).fill(255), true, true)).to.throw('Cannot create PrivateKey: outside range')
+      expect(() => new PrivateKey(null, true, true)).to.throw('bad number')
+      expect(() => new PrivateKey(0, true, true)).to.throw('bad number')
+      expect(() => new PrivateKey(number, 1, true)).to.throw('bad testnet flag')
+      expect(() => new PrivateKey(number, false, undefined)).to.throw('bad compressed flag')
+      expect(() => new PrivateKey([], true, true)).to.throw('bad length')
+      expect(() => new PrivateKey(new Array(33), true, true)).to.throw('bad length')
+      expect(() => new PrivateKey(new Array(32).fill(255), true, true)).to.throw('outside range')
     })
   })
 
@@ -37,12 +37,12 @@ describe('PrivateKey', () => {
     })
 
     it('throws if not a string', () => {
-      expect(() => PrivateKey.fromString()).to.throw('Cannot create PrivateKey: not a string')
+      expect(() => PrivateKey.fromString()).to.throw('not a string')
     })
 
     it('throws if invalid WIF', () => {
       const invalidPrivateKey = encodeBase58Check(0, [])
-      expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('Cannot create PrivateKey: bad length')
+      expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('bad length')
     })
 
     it('is immutable', () => {

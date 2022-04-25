@@ -46,7 +46,7 @@ describe('Transaction', () => {
 
     it('throws if not a hex string', () => {
       const buffer = new Transaction().toBuffer()
-      expect(() => Transaction.fromHex(buffer)).to.throw('Cannot create Transaction: not a string')
+      expect(() => Transaction.fromHex(buffer)).to.throw('not a string')
     })
 
     it('throws if invalid', () => {
@@ -272,7 +272,7 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid address', () => {
-      expect(() => new Transaction().to(null, 1000)).to.throw('Cannot create Address: unsupported type')
+      expect(() => new Transaction().to(null, 1000)).to.throw('unsupported type')
       expect(() => new Transaction().to({}, 1000)).to.throw('bad base58 chars')
     })
 
@@ -485,7 +485,7 @@ describe('Transaction', () => {
       expect(() => new Transaction().sign()).to.throw('Not a private key: ')
       expect(() => new Transaction().sign({})).to.throw('Not a private key: [object Object]')
       expect(() => new Transaction().sign(123)).to.throw('Not a private key: 123')
-      expect(() => new Transaction().sign('abc')).to.throw('Cannot create PrivateKey: bad checksum')
+      expect(() => new Transaction().sign('abc')).to.throw('bad checksum')
     })
   })
 

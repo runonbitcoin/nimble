@@ -19,9 +19,9 @@ describe('Script', () => {
     })
 
     it('throws if not a buffer', () => {
-      expect(() => new Script(1)).to.throw('Cannot create Script: not a buffer')
-      expect(() => new Script({})).to.throw('Cannot create Script: not a buffer')
-      expect(() => new Script(new Uint16Array())).to.throw('Cannot create Script: not a buffer')
+      expect(() => new Script(1)).to.throw('not a buffer')
+      expect(() => new Script({})).to.throw('not a buffer')
+      expect(() => new Script(new Uint16Array())).to.throw('not a buffer')
     })
 
     it('may be substituted for a buffer', () => {
@@ -60,7 +60,7 @@ describe('Script', () => {
     })
 
     it('throws if create from non-matching template', () => {
-      expect(() => new Script.templates.P2PKHLockScript([])).to.throw('Cannot create Script: not a P2PKHLockScript')
+      expect(() => new Script.templates.P2PKHLockScript([])).to.throw('not a P2PKHLockScript')
     })
 
     it('throws if template has constructor', () => {
@@ -69,8 +69,8 @@ describe('Script', () => {
         static matches (buffer) { return buffer[0] === 0xab }
       }
       Script.templates.CustomScript = CustomScript
-      expect(() => new CustomScript([0xab])).to.throw('Cannot create Script: template constructors not allowed')
-      expect(() => new Script([0xab])).to.throw('Cannot create Script: template constructors not allowed')
+      expect(() => new CustomScript([0xab])).to.throw('template constructors not allowed')
+      expect(() => new Script([0xab])).to.throw('template constructors not allowed')
       delete Script.templates.CustomScript
     })
   })
@@ -116,9 +116,9 @@ describe('Script', () => {
     })
 
     it('throws if not a buffer', () => {
-      expect(() => Script.fromBuffer()).to.throw('Cannot create Script: not a buffer')
-      expect(() => Script.fromBuffer(null)).to.throw('Cannot create Script: not a buffer')
-      expect(() => Script.fromBuffer({})).to.throw('Cannot create Script: not a buffer')
+      expect(() => Script.fromBuffer()).to.throw('not a buffer')
+      expect(() => Script.fromBuffer(null)).to.throw('not a buffer')
+      expect(() => Script.fromBuffer({})).to.throw('not a buffer')
     })
   })
 
@@ -147,7 +147,7 @@ describe('Script', () => {
     })
 
     it('throws if none of the above', () => {
-      expect(() => Script.from()).to.throw('Cannot create Script: unsupported type')
+      expect(() => Script.from()).to.throw('unsupported type')
       expect(() => Script.from({})).to.throw('bad hex char')
       expect(() => Script.from('xyz')).to.throw('bad hex char')
     })
