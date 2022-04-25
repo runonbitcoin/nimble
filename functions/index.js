@@ -29,6 +29,7 @@ module.exports = {
   encodeDER: require('./encode-der'),
   encodeHex: require('./encode-hex'),
   encodePublicKey: require('./encode-public-key'),
+  encodePushData: require('./encode-push-data'),
   encodeTx: require('./encode-tx'),
   encodeWIF: require('./encode-wif'),
   extractP2PKHLockScriptPubkeyhash: require('./extract-p2pkh-lock-script-pubkeyhash'),

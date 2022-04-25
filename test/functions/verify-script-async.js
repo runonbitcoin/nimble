@@ -2,7 +2,9 @@ const { describe, it } = require('mocha')
 const { expect } = require('chai')
 require('chai').use(require('chai-as-promised'))
 const nimble = require('../env/nimble')
-const { verifyScriptAsync, writePushData, decodeHex, decodeTx, generateTxSignature } = nimble.functions
+const {
+  verifyScriptAsync, encodePushData, writePushData, decodeHex, decodeTx, generateTxSignature
+} = nimble.functions
 const { BufferWriter } = nimble.classes
 const {
   OP_TRUE, OP_1, OP_2, OP_3, OP_4, OP_5, OP_6, OP_7, OP_8, OP_9, OP_10, OP_11, OP_12, OP_13,
@@ -23,10 +25,6 @@ describe('verifyScriptAsync', () => {
   it('valid', async () => {
     async function pass (script) {
       await verifyScriptAsync([], script)
-    }
-
-    function encodePushData (buffer) {
-      return Array.from(writePushData(new BufferWriter(), buffer).toBuffer())
     }
 
     await pass([OP_TRUE])
@@ -217,24 +215,24 @@ describe('verifyScriptAsync', () => {
     await pass([OP_1, 5, 129, 0, 0, 0, 0, OP_NUM2BIN])
     await pass([OP_1, OP_RIPEMD160])
     await pass([OP_0, OP_RIPEMD160])
-    await pass(encodePushData(decodeHex('cea1b21f1a739fba68d1d4290437d2c5609be1d3')).concat(
-      encodePushData(decodeHex('0123456789abcdef'))).concat([OP_RIPEMD160, OP_EQUAL]))
+    await pass(Array.from(encodePushData(decodeHex('cea1b21f1a739fba68d1d4290437d2c5609be1d3'))).concat(
+      Array.from(encodePushData(decodeHex('0123456789abcdef')))).concat([OP_RIPEMD160, OP_EQUAL]))
     await pass([OP_1, OP_SHA1])
     await pass([OP_0, OP_SHA1])
-    await pass(encodePushData(decodeHex('0ca2eadb529ac2e63abf9b4ae3df8ee121f10547')).concat(
-      encodePushData(decodeHex('0123456789abcdef'))).concat([OP_SHA1, OP_EQUAL]))
+    await pass(Array.from(encodePushData(decodeHex('0ca2eadb529ac2e63abf9b4ae3df8ee121f10547'))).concat(
+      Array.from(encodePushData(decodeHex('0123456789abcdef')))).concat([OP_SHA1, OP_EQUAL]))
     await pass([OP_1, OP_SHA256])
     await pass([OP_0, OP_SHA256])
-    await pass(encodePushData(decodeHex('55c53f5d490297900cefa825d0c8e8e9532ee8a118abe7d8570762cd38be9818')).concat(
-      encodePushData(decodeHex('0123456789abcdef'))).concat([OP_SHA256, OP_EQUAL]))
+    await pass(Array.from(encodePushData(decodeHex('55c53f5d490297900cefa825d0c8e8e9532ee8a118abe7d8570762cd38be9818'))).concat(
+      Array.from(encodePushData(decodeHex('0123456789abcdef')))).concat([OP_SHA256, OP_EQUAL]))
     await pass([OP_1, OP_HASH160])
     await pass([OP_0, OP_HASH160])
-    await pass(encodePushData(decodeHex('a956ed79819901b1b2c7b3ec045081f749c588ed')).concat(
-      encodePushData(decodeHex('0123456789abcdef'))).concat([OP_HASH160, OP_EQUAL]))
+    await pass(Array.from(encodePushData(decodeHex('a956ed79819901b1b2c7b3ec045081f749c588ed'))).concat(
+      Array.from(encodePushData(decodeHex('0123456789abcdef')))).concat([OP_HASH160, OP_EQUAL]))
     await pass([OP_1, OP_HASH256])
     await pass([OP_0, OP_HASH256])
-    await pass(encodePushData(decodeHex('137ad663f79da06e282ed0abbec4d70523ced5ff8e39d5c2e5641d978c5925aa')).concat(
-      encodePushData(decodeHex('0123456789abcdef'))).concat([OP_HASH256, OP_EQUAL]))
+    await pass(Array.from(encodePushData(decodeHex('137ad663f79da06e282ed0abbec4d70523ced5ff8e39d5c2e5641d978c5925aa'))).concat(
+      Array.from(encodePushData(decodeHex('0123456789abcdef')))).concat([OP_HASH256, OP_EQUAL]))
     await pass([OP_NOP1, OP_NOP2, OP_NOP3, OP_NOP4, OP_NOP5,
       OP_NOP6, OP_NOP7, OP_NOP8, OP_NOP9, OP_NOP10, OP_1])
   })
@@ -268,10 +266,8 @@ describe('verifyScriptAsync', () => {
     const tx2 = new nimble.Transaction().from(tx1.outputs[0])
 
     const signature = generateTxSignature(tx2, 0, lockScript, 1000, pk.number, pk.toPublicKey().point)
+    const unlockScript = encodePushData(signature)
 
-    const unlockScriptWriter = new BufferWriter()
-    writePushData(unlockScriptWriter, signature)
-    const unlockScript = unlockScriptWriter.toBuffer()
     tx2.inputs[0].script = unlockScript
 
     await verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)

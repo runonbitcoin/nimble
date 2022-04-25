@@ -34,6 +34,7 @@ describe('functions', () => {
   require('./functions/encode-der')
   require('./functions/encode-hex')
   require('./functions/encode-public-key')
+  require('./functions/encode-push-data')
   require('./functions/encode-tx')
   require('./functions/encode-wif')
   require('./functions/generate-private-key')
