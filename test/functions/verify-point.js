@@ -10,7 +10,7 @@ describe('verifyPoint', () => {
     expect(() => verifyPoint(publicKey)).not.to.throw()
   })
 
-  it('invalid', () => {
+  it('bad', () => {
     const privateKey = generatePrivateKey()
     const publicKey = calculatePublicKey(privateKey)
     publicKey.y = publicKey.x

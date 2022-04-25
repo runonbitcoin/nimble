@@ -34,7 +34,7 @@ describe('decodeAddress', () => {
   })
 
   it('throws if too short', () => {
-    const invalidLengthAddress = encodeBase58Check(0x00, [])
-    expect(() => decodeAddress(invalidLengthAddress)).to.throw('bad payload')
+    const badLengthAddress = encodeBase58Check(0x00, [])
+    expect(() => decodeAddress(badLengthAddress)).to.throw('bad payload')
   })
 })

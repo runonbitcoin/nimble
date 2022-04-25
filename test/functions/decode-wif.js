@@ -27,8 +27,8 @@ describe('decodeWIF', () => {
   })
 
   it('throws if too short', () => {
-    const invalidLengthWIF = encodeBase58Check(0x80, [])
-    expect(() => decodeWIF(invalidLengthWIF)).to.throw('bad length')
+    const badLengthWIF = encodeBase58Check(0x80, [])
+    expect(() => decodeWIF(badLengthWIF)).to.throw('bad length')
   })
 
   it('throws if outside range', () => {

@@ -16,7 +16,7 @@ describe('Address', () => {
       expect(address.testnet).to.equal(true)
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       expect(() => new Address('abc', true)).to.throw('bad pubkeyhash')
       expect(() => new Address([], false)).to.throw('bad pubkeyhash')
       expect(() => new Address(new Array(20), 0)).to.throw('bad testnet flag')
@@ -38,7 +38,7 @@ describe('Address', () => {
       expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(Buffer.from(address.pubkeyhash).toString('hex'))
     })
 
-    it('throws if invalid checksum', () => {
+    it('throws if bad checksum', () => {
       expect(() => Address.fromString('1JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad checksum')
     })
 
@@ -48,13 +48,13 @@ describe('Address', () => {
       expect(() => Address.fromString(Address.fromString(new bsv.PrivateKey().toAddress()))).to.throw('not a string')
     })
 
-    it('throws if invalid chars', () => {
+    it('throws if bad chars', () => {
       expect(() => Address.fromString('!JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad base58 chars')
     })
 
-    it('throws if invalid length', () => {
-      const invalidLengthAddress = encodeBase58Check(0, [])
-      expect(() => Address.fromString(invalidLengthAddress)).to.throw('bad payload')
+    it('throws if bad length', () => {
+      const badLengthAddress = encodeBase58Check(0, [])
+      expect(() => Address.fromString(badLengthAddress)).to.throw('bad payload')
     })
 
     it('is immutable', () => {

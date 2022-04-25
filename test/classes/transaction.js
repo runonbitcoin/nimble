@@ -49,7 +49,7 @@ describe('Transaction', () => {
       expect(() => Transaction.fromHex(buffer)).to.throw('not a string')
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       const badHex = new Transaction().toString() + '00'
       expect(() => Transaction.fromHex(badHex)).to.throw('unconsumed data')
     })
@@ -62,7 +62,7 @@ describe('Transaction', () => {
       expect(Array.from(tx2.toBuffer())).to.deep.equal(Array.from(tx.toBuffer()))
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       const badHex = '00' + new Transaction().toString()
       expect(() => Transaction.fromHex(badHex)).to.throw('unconsumed data')
     })
@@ -95,7 +95,7 @@ describe('Transaction', () => {
       expect(() => Transaction.fromBuffer(hex)).to.throw('not a buffer')
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       const badBuffer = [0].concat(Array.from(new Transaction().toBuffer()))
       expect(() => Transaction.fromBuffer(badBuffer)).to.throw('unconsumed data')
     })
@@ -230,30 +230,30 @@ describe('Transaction', () => {
       expect(() => new Transaction().from({})).to.throw()
     })
 
-    it('throws if invalid txid', () => {
+    it('throws if bad txid', () => {
       const txidBuffer = nimble.functions.decodeHex(new Transaction().hash)
-      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('invalid txid')
-      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('invalid txid')
+      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('bad txid')
+      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('bad txid')
     })
 
-    it('throws if invalid vout', () => {
+    it('throws if bad vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('invalid vout')
-      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('invalid vout')
-      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('invalid vout')
+      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('bad vout')
+      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('bad vout')
+      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('bad vout')
     })
 
-    it('throws if invalid script', () => {
+    it('throws if bad script', () => {
       const txid = new Transaction().hash
       expect(() => new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })).to.throw('unsupported type')
       expect(() => new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })).to.throw('bad hex char')
     })
 
-    it('throws if invalid satoshis', () => {
+    it('throws if bad satoshis', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('invalid satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('invalid satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('bad satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('bad satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('bad satoshis')
     })
   })
 
@@ -278,10 +278,10 @@ describe('Transaction', () => {
 
     it('throws if not a valid satoshis', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      expect(() => new Transaction().to(address)).to.throw('invalid satoshis')
-      expect(() => new Transaction().to(address, -1)).to.throw('invalid satoshis')
-      expect(() => new Transaction().to(address, 1.5)).to.throw('invalid satoshis')
-      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('invalid satoshis')
+      expect(() => new Transaction().to(address)).to.throw('bad satoshis')
+      expect(() => new Transaction().to(address, -1)).to.throw('bad satoshis')
+      expect(() => new Transaction().to(address, 1.5)).to.throw('bad satoshis')
+      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('bad satoshis')
     })
   })
 
@@ -314,33 +314,33 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid input', () => {
-      expect(() => new Transaction().input()).to.throw('invalid input')
-      expect(() => new Transaction().input(null)).to.throw('invalid input')
+      expect(() => new Transaction().input()).to.throw('bad input')
+      expect(() => new Transaction().input(null)).to.throw('bad input')
     })
 
-    it('throws if invalid txid', () => {
-      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
-      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
-      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
+    it('throws if bad txid', () => {
+      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
+      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
+      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
     })
 
-    it('throws if invalid vout', () => {
+    it('throws if bad vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('invalid vout')
-      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('invalid vout')
+      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('bad vout')
+      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('bad vout')
     })
 
-    it('throws if invalid script', () => {
+    it('throws if bad script', () => {
       const txid = new Transaction().hash
       expect(() => new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })).to.throw('bad hex char')
       expect(() => new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })).to.throw('unsupported type')
     })
 
-    it('throws if invalid sequence', () => {
+    it('throws if bad sequence', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('invalid sequence')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('invalid sequence')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('invalid sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('bad sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('bad sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('bad sequence')
     })
 
     it('supports output property', () => {
@@ -351,12 +351,12 @@ describe('Transaction', () => {
       expect(tx.inputs[0].output.satoshis).to.equal(2)
     })
 
-    it('throws if invalid output property', () => {
+    it('throws if bad output property', () => {
       const txid = new Transaction().hash
       const output1 = { script: 'xyz', satoshis: 0 }
       const output2 = { script: [], satoshis: -1 }
       expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('bad hex char')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('invalid satoshis')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('bad satoshis')
     })
   })
 
@@ -388,7 +388,7 @@ describe('Transaction', () => {
 
     it('throws if not a valid output', () => {
       expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('unsupported type')
-      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('invalid satoshis')
+      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('bad satoshis')
     })
   })
 

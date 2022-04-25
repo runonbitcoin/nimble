@@ -365,7 +365,7 @@ describe('verifyScriptAsync', () => {
     await expect(verifyScriptAsync(unlockScript, lockScript, tx2, 0, 1000)).to.be.rejected
   })
 
-  it('invalid', async () => {
+  it('bad', async () => {
     async function fail (script) {
       await expect(verifyScriptAsync([], script)).to.be.rejected
     }

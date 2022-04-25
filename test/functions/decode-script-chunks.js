@@ -22,8 +22,8 @@ describe('decodeScriptChunks', () => {
     test([100, 255, 1, 2], [{ opcode: 100 }, { opcode: 255 }, { buf: [2] }])
   })
 
-  it('throws if invalid', () => {
-    const err = 'invalid script'
+  it('throws if bad', () => {
+    const err = 'bad script'
     expect(() => decodeScriptChunks([1])).to.throw(err)
     expect(() => decodeScriptChunks([75])).to.throw(err)
     expect(() => decodeScriptChunks([76])).to.throw(err)

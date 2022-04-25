@@ -28,7 +28,7 @@ function decodeScriptChunks (script) {
       chunks.push({ opcode: opcode })
     }
   }
-  if (i !== script.length) throw new Error('invalid script')
+  if (i !== script.length) throw new Error('bad script')
   return chunks
 }
 

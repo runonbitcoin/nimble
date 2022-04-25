@@ -84,7 +84,7 @@ describe('Script', () => {
 
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       expect(() => Script.fromString()).to.throw('not a string')
       expect(() => Script.fromString([])).to.throw('not a string')
       expect(() => Script.fromString('xyz')).to.throw('bad hex char')
@@ -98,7 +98,7 @@ describe('Script', () => {
       expect(Array.from(Script.fromHex('aabbcc').buffer)).to.deep.equal([0xaa, 0xbb, 0xcc])
     })
 
-    it('throws if invalid hex', () => {
+    it('throws if bad hex', () => {
       expect(() => Script.fromHex(null)).to.throw('not a string')
       expect(() => Script.fromHex('x')).to.throw('bad hex char')
     })

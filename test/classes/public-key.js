@@ -15,7 +15,7 @@ describe('PublicKey', () => {
       expect(publicKey.compressed).to.equal(false)
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       const privateKey = nimble.functions.generatePrivateKey()
       const publicKeyPoint = nimble.functions.calculatePublicKey(privateKey)
       expect(() => new PublicKey(0, true, true)).to.throw('bad point')

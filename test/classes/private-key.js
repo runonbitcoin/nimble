@@ -15,7 +15,7 @@ describe('PrivateKey', () => {
       expect(privateKey.compressed).to.equal(false)
     })
 
-    it('throws if invalid', () => {
+    it('throws if bad', () => {
       const number = nimble.functions.generatePrivateKey()
       expect(() => new PrivateKey(null, true, true)).to.throw('bad number')
       expect(() => new PrivateKey(0, true, true)).to.throw('bad number')
@@ -40,9 +40,9 @@ describe('PrivateKey', () => {
       expect(() => PrivateKey.fromString()).to.throw('not a string')
     })
 
-    it('throws if invalid WIF', () => {
-      const invalidPrivateKey = encodeBase58Check(0, [])
-      expect(() => PrivateKey.fromString(invalidPrivateKey)).to.throw('bad length')
+    it('throws if bad WIF', () => {
+      const badPrivateKey = encodeBase58Check(0, [])
+      expect(() => PrivateKey.fromString(badPrivateKey)).to.throw('bad length')
     })
 
     it('is immutable', () => {

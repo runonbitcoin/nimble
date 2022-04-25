@@ -12,7 +12,7 @@ describe('encodeASM', () => {
     expect(asm).to.equal(expected)
   })
 
-  it('invalid opcode', () => {
+  it('bad opcode', () => {
     expect(encodeASM([255])).to.equal('<unknown opcode 255>')
   })
 })

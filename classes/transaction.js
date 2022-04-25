@@ -117,7 +117,7 @@ class Transaction {
 
   input (input) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
-    if (typeof input !== 'object' || !input) throw new Error('invalid input')
+    if (typeof input !== 'object' || !input) throw new Error('bad input')
 
     input = input instanceof Input ? input : new Input(input.txid, input.vout, input.script, input.sequence, input.output)
     this.inputs.push(input)
@@ -224,8 +224,8 @@ class Transaction {
 
 class Input {
   constructor (txid, vout, script = [], sequence = 0, output = undefined) {
-    if (!isHex(txid) || txid.length !== 64) throw new Error(`invalid txid: ${txid}`)
-    if (!Number.isInteger(vout) || vout < 0) throw new Error(`invalid vout: ${vout}`)
+    if (!isHex(txid) || txid.length !== 64) throw new Error(`bad txid: ${txid}`)
+    if (!Number.isInteger(vout) || vout < 0) throw new Error(`bad vout: ${vout}`)
 
     this.txid = txid
     this.vout = vout
@@ -253,14 +253,14 @@ class Output {
 
 function verifySatoshis (satoshis) {
   if (!Number.isInteger(satoshis) || satoshis < 0 || satoshis > Number.MAX_SAFE_INTEGER) {
-    throw new Error(`invalid satoshis: ${satoshis}`)
+    throw new Error(`bad satoshis: ${satoshis}`)
   }
   return satoshis
 }
 
 function verifySequence (sequence) {
   if (!Number.isInteger(sequence) || sequence < 0 || sequence > 0xffffffff) {
-    throw new Error(`invalid sequence: ${sequence}`)
+    throw new Error(`bad sequence: ${sequence}`)
   }
   return sequence
 }

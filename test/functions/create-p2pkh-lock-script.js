@@ -14,7 +14,7 @@ describe('createP2PKHLockScript', () => {
     expect(Array.from(createP2PKHLockScript(testnetAddress.pubkeyhash))).to.deep.equal(testnetScript)
   })
 
-  it('throws if invalid address', () => {
+  it('throws if bad address', () => {
     expect(() => createP2PKHLockScript()).to.throw('not a buffer')
     expect(() => createP2PKHLockScript(null)).to.throw('not a buffer')
     expect(() => createP2PKHLockScript(new bsv.PrivateKey().toAddress())).to.throw('not a buffer')

@@ -20,8 +20,8 @@ describe('decodeDER', () => {
     expect(Array.from(signature2.s)).to.deep.equal(signature.s)
   })
 
-  it('throws if invalid der', () => {
-    const err = 'invalid der'
+  it('throws if bad der', () => {
+    const err = 'bad der'
     expect(() => decodeDER([0x00, 0x04, 0x02, 0, 0x02, 0])).to.throw(err)
     expect(() => decodeDER([0x30, 0x04, 0x03, 0, 0x02, 0])).to.throw(err)
     expect(() => decodeDER([0x30, 0x04, 0x02, 0, 0xFF, 0])).to.throw(err)
