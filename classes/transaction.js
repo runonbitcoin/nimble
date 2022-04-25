@@ -22,7 +22,7 @@ const TRANSACTION_TO_TXID_CACHE = new WeakMap()
 
 class Transaction {
   constructor (...args) {
-    if (args.length) throw new Error('Use Transaction.fromHex() to parse a transaction')
+    if (args.length) throw new Error('use Transaction.fromHex() to parse a transaction')
 
     // This basic data structure matches what the functions encodeTx and decodeTx expect
     this.version = 1
@@ -84,7 +84,7 @@ class Transaction {
     const incompleteInputIndex = this.inputs.findIndex(x => !x.output)
     if (incompleteInputIndex !== -1) {
       const hint = `Hint: Set tx.inputs[${incompleteInputIndex}].output = new Transaction.Output(script, satoshis)`
-      throw new Error(`Missing previous output information for input ${incompleteInputIndex}\n\n${hint}`)
+      throw new Error(`missing previous output information for input ${incompleteInputIndex}\n\n${hint}`)
     }
 
     const satoshisIn = this.inputs.reduce((prev, curr) => prev + curr.output.satoshis, 0)
@@ -94,7 +94,7 @@ class Transaction {
   }
 
   from (output) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     const input = new Input(output.txid, output.vout, [], 0, output)
     this.inputs.push(input)
@@ -103,7 +103,7 @@ class Transaction {
   }
 
   to (address, satoshis) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     address = Address.from(address)
     verifySatoshis(satoshis)
@@ -116,8 +116,8 @@ class Transaction {
   }
 
   input (input) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
-    if (typeof input !== 'object' || !input) throw new Error('Invalid input')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
+    if (typeof input !== 'object' || !input) throw new Error('invalid input')
 
     input = input instanceof Input ? input : new Input(input.txid, input.vout, input.script, input.sequence, input.output)
     this.inputs.push(input)
@@ -125,7 +125,7 @@ class Transaction {
   }
 
   output (output) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     output = output instanceof Output ? output : new Output(output.script, output.satoshis, this)
     output.tx = this
@@ -134,9 +134,9 @@ class Transaction {
   }
 
   change (address) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
-    if (this.changeOutput) throw new Error('Change output already added')
+    if (this.changeOutput) throw new Error('change output already added')
 
     const script = createP2PKHLockScript(Address.from(address).pubkeyhash)
     const output = new Output(script, 0, this)
@@ -148,11 +148,11 @@ class Transaction {
   }
 
   sign (privateKey) {
-    if (Object.isFrozen(this)) throw new Error('Transaction finalized')
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     if (typeof privateKey === 'string') { privateKey = PrivateKey.fromString(privateKey) }
 
-    if (!(privateKey instanceof PrivateKey)) throw new Error(`Not a private key: ${privateKey}`)
+    if (!(privateKey instanceof PrivateKey)) throw new Error(`not a private key: ${privateKey}`)
 
     for (let vin = 0; vin < this.inputs.length; vin++) {
       const input = this.inputs[vin]
@@ -224,8 +224,8 @@ class Transaction {
 
 class Input {
   constructor (txid, vout, script = [], sequence = 0, output = undefined) {
-    if (!isHex(txid) || txid.length !== 64) throw new Error(`Invalid txid: ${txid}`)
-    if (!Number.isInteger(vout) || vout < 0) throw new Error(`Invalid vout: ${vout}`)
+    if (!isHex(txid) || txid.length !== 64) throw new Error(`invalid txid: ${txid}`)
+    if (!Number.isInteger(vout) || vout < 0) throw new Error(`invalid vout: ${vout}`)
 
     this.txid = txid
     this.vout = vout
@@ -253,14 +253,14 @@ class Output {
 
 function verifySatoshis (satoshis) {
   if (!Number.isInteger(satoshis) || satoshis < 0 || satoshis > Number.MAX_SAFE_INTEGER) {
-    throw new Error(`Invalid satoshis: ${satoshis}`)
+    throw new Error(`invalid satoshis: ${satoshis}`)
   }
   return satoshis
 }
 
 function verifySequence (sequence) {
   if (!Number.isInteger(sequence) || sequence < 0 || sequence > 0xffffffff) {
-    throw new Error(`Invalid sequence: ${sequence}`)
+    throw new Error(`invalid sequence: ${sequence}`)
   }
   return sequence
 }

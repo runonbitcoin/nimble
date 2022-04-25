@@ -112,7 +112,7 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
   const unlockChunks = decodeScriptChunks(unlockScript)
   const lockChunks = decodeScriptChunks(lockScript)
 
-  if (unlockChunks.some(x => !x.buf)) throw new Error('Non-push data in unlock script')
+  if (unlockChunks.some(x => !x.buf)) throw new Error('non-push data in unlock script')
 
   const stack = unlockChunks.map(x => x.buf)
   const altStack = []

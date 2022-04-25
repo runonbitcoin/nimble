@@ -183,7 +183,7 @@ describe('Transaction', () => {
       const txid = new Transaction().hash
       const tx = new Transaction()
         .input({ txid, vout: 0, script: [], sequence: 0 })
-      expect(() => tx.fee).to.throw('Missing previous output information for input 0')
+      expect(() => tx.fee).to.throw('missing previous output information for input 0')
     })
   })
 
@@ -232,15 +232,15 @@ describe('Transaction', () => {
 
     it('throws if invalid txid', () => {
       const txidBuffer = nimble.functions.decodeHex(new Transaction().hash)
-      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('Invalid txid')
-      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('Invalid txid')
+      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('invalid txid')
+      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('invalid txid')
     })
 
     it('throws if invalid vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('Invalid vout')
-      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('Invalid vout')
-      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('Invalid vout')
+      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('invalid vout')
+      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('invalid vout')
+      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('invalid vout')
     })
 
     it('throws if invalid script', () => {
@@ -251,9 +251,9 @@ describe('Transaction', () => {
 
     it('throws if invalid satoshis', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('Invalid satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('Invalid satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('Invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('invalid satoshis')
+      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('invalid satoshis')
     })
   })
 
@@ -278,10 +278,10 @@ describe('Transaction', () => {
 
     it('throws if not a valid satoshis', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      expect(() => new Transaction().to(address)).to.throw('Invalid satoshis')
-      expect(() => new Transaction().to(address, -1)).to.throw('Invalid satoshis')
-      expect(() => new Transaction().to(address, 1.5)).to.throw('Invalid satoshis')
-      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('Invalid satoshis')
+      expect(() => new Transaction().to(address)).to.throw('invalid satoshis')
+      expect(() => new Transaction().to(address, -1)).to.throw('invalid satoshis')
+      expect(() => new Transaction().to(address, 1.5)).to.throw('invalid satoshis')
+      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('invalid satoshis')
     })
   })
 
@@ -314,20 +314,20 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid input', () => {
-      expect(() => new Transaction().input()).to.throw('Invalid input')
-      expect(() => new Transaction().input(null)).to.throw('Invalid input')
+      expect(() => new Transaction().input()).to.throw('invalid input')
+      expect(() => new Transaction().input(null)).to.throw('invalid input')
     })
 
     it('throws if invalid txid', () => {
-      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
-      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
-      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('Invalid txid')
+      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
+      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
+      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('invalid txid')
     })
 
     it('throws if invalid vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('Invalid vout')
-      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('Invalid vout')
+      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('invalid vout')
+      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('invalid vout')
     })
 
     it('throws if invalid script', () => {
@@ -338,9 +338,9 @@ describe('Transaction', () => {
 
     it('throws if invalid sequence', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('Invalid sequenc')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('Invalid sequence')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('Invalid sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('invalid sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('invalid sequence')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('invalid sequence')
     })
 
     it('supports output property', () => {
@@ -356,7 +356,7 @@ describe('Transaction', () => {
       const output1 = { script: 'xyz', satoshis: 0 }
       const output2 = { script: [], satoshis: -1 }
       expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('bad hex char')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('Invalid satoshis')
+      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('invalid satoshis')
     })
   })
 
@@ -388,7 +388,7 @@ describe('Transaction', () => {
 
     it('throws if not a valid output', () => {
       expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('unsupported type')
-      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('Invalid satoshis')
+      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('invalid satoshis')
     })
   })
 
@@ -423,7 +423,7 @@ describe('Transaction', () => {
       const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1000 }
       const address = PrivateKey.fromRandom().toAddress()
       const tx = new Transaction().from(utxo).change(address)
-      expect(() => tx.change(address)).to.throw('Change output already added')
+      expect(() => tx.change(address)).to.throw('change output already added')
     })
   })
 
@@ -482,9 +482,9 @@ describe('Transaction', () => {
     })
 
     it('throws if private key not provided', () => {
-      expect(() => new Transaction().sign()).to.throw('Not a private key: ')
-      expect(() => new Transaction().sign({})).to.throw('Not a private key: [object Object]')
-      expect(() => new Transaction().sign(123)).to.throw('Not a private key: 123')
+      expect(() => new Transaction().sign()).to.throw('not a private key: ')
+      expect(() => new Transaction().sign({})).to.throw('not a private key: [object Object]')
+      expect(() => new Transaction().sign(123)).to.throw('not a private key: 123')
       expect(() => new Transaction().sign('abc')).to.throw('bad checksum')
     })
   })
@@ -502,7 +502,7 @@ describe('Transaction', () => {
         .to(address, 1000)
         .finalize()
 
-      const err = 'Transaction finalized'
+      const err = 'transaction finalized'
       expect(() => tx.from({ txid, vout: 0, script: [], satoshis: 0 })).to.throw(err)
       expect(() => tx.to(address, 1000)).to.throw(err)
       expect(() => tx.input({ txid, vout: 0, script: [], sequence: 0 })).to.throw(err)

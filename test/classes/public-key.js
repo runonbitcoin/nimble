@@ -75,7 +75,7 @@ describe('PublicKey', () => {
     })
 
     it('throws if not a private key', () => {
-      expect(() => PublicKey.fromPrivateKey()).to.throw('Not a PrivateKey: ')
+      expect(() => PublicKey.fromPrivateKey()).to.throw('not a PrivateKey: ')
     })
 
     it('caches public key', () => {

@@ -24,7 +24,7 @@ if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
     const len = b64.length
 
     if (len % 4 > 0) {
-      throw new Error('Invalid string. Length must be a multiple of 4')
+      throw new Error('length must be a multiple of 4')
     }
 
     // Trim off extra bytes after placeholder bytes are found

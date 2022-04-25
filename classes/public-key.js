@@ -36,7 +36,7 @@ class PublicKey {
     if (PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.has(privateKey)) return PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.get(privateKey)
 
     const PrivateKey = require('./private-key')
-    if (!(privateKey instanceof PrivateKey)) throw new Error(`Not a PrivateKey: ${privateKey}`)
+    if (!(privateKey instanceof PrivateKey)) throw new Error(`not a PrivateKey: ${privateKey}`)
 
     const point = calculatePublicKey(privateKey.number)
     const testnet = privateKey.testnet

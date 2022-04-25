@@ -136,7 +136,7 @@ const patterns = process.env.SPECS ? JSON.parse(process.env.SPECS) : ['test']
 const paths = new Set()
 patterns.forEach(x => glob.sync(x).forEach(y => paths.add(y)))
 const entries = Array.from(paths).map(x => path.join(process.cwd(), x))
-if (!entries.length) throw new Error(`No test files found: ${patterns}`)
+if (!entries.length) throw new Error(`no test files found: ${patterns}`)
 
 const browserTests = {
   target: 'web',
