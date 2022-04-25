@@ -29,6 +29,7 @@ describe('functions', () => {
   require('./functions/decode-tx')
   require('./functions/decode-wif')
   require('./functions/ecdsa-sign')
+  require('./functions/ecdsa-sign-with-k')
   require('./functions/ecdsa-verify')
   require('./functions/encode-address')
   require('./functions/encode-asm')
