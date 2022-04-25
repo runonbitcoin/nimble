@@ -119,8 +119,17 @@ class Transaction {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
     if (typeof input !== 'object' || !input) throw new Error('bad input')
 
-    input = input instanceof Input ? input : new Input(input.txid, input.vout, input.script, input.sequence, input.output)
+    input = input instanceof Input
+      ? input
+      : new Input(
+        typeof input.txid === 'undefined' && input.output ? input.output.txid : input.txid,
+        typeof input.vout === 'undefined' && input.output ? input.output.vout : input.vout,
+        input.script,
+        input.sequence,
+        input.output)
+
     this.inputs.push(input)
+
     return this
   }
 
@@ -129,7 +138,9 @@ class Transaction {
 
     output = output instanceof Output ? output : new Output(output.script, output.satoshis, this)
     output.tx = this
+
     this.outputs.push(output)
+
     return this
   }
 

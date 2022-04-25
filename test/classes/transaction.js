@@ -351,6 +351,14 @@ describe('Transaction', () => {
       expect(tx.inputs[0].output.satoshis).to.equal(2)
     })
 
+    it('uses txid and vout from output property if unspecified', () => {
+      const txid = new Transaction().hash
+      const output = { txid, vout: 0, script: [2], satoshis: 2 }
+      const tx = new Transaction().input({ script: [], sequence: 0, output })
+      expect(Array.from(tx.inputs[0].output.script)).to.deep.equal([2])
+      expect(tx.inputs[0].output.satoshis).to.equal(2)
+    })
+
     it('throws if bad output property', () => {
       const txid = new Transaction().hash
       const output1 = { script: 'xyz', satoshis: 0 }
