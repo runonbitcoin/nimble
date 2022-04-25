@@ -12,6 +12,7 @@ const sha1 = require('./sha1')
 const sha256 = require('./sha256')
 
 // These are the same opcodes as constants/opcodes, but they get inlined
+const OP_0 = 0
 const OP_1NEGATE = 79
 const OP_1 = 81
 const OP_2 = 82
@@ -117,9 +118,10 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
     const unlockChunks = decodeScriptChunks(unlockScript)
     const lockChunks = decodeScriptChunks(lockScript)
 
-    if (unlockChunks.some(x => !x.buf)) throw new Error('non-push data in unlock script')
+    if (unlockChunks.some(x => x.opcode && x.opcode > 96)) throw new Error('non-push data in unlock script')
 
-    const stack = unlockChunks.map(x => x.buf)
+    const chunks = unlockChunks.concat(lockChunks)
+    const stack = []
     const altStack = []
     const branchExec = []
     let checkIndex = 0
@@ -189,8 +191,8 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
     // Skip branch
       if (branchExec.length > 0 && !branchExec[branchExec.length - 1]) {
         let sub = 0
-        while (i < lockChunks.length) {
-          const chunk = lockChunks[i]
+        while (i < chunks.length) {
+          const chunk = chunks[i]
           const opcode = chunk.opcode
           if (opcode === OP_IF || opcode === OP_NOTIF) {
             sub++
@@ -202,13 +204,13 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
           }
           i++
         }
-        if (i >= lockChunks.length) {
+        if (i >= chunks.length) {
           done = true
           return
         }
       }
 
-      const chunk = lockChunks[i++]
+      const chunk = chunks[i++]
 
       if (chunk.buf) {
         stack.push(chunk.buf)
@@ -217,6 +219,7 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
 
       switch (chunk.opcode) {
         case OP_1NEGATE: stack.push([0x81]); break
+        case OP_0: stack.push([]); break
         case OP_1: stack.push([1]); break
         case OP_2: stack.push([2]); break
         case OP_3: stack.push([3]); break
@@ -533,11 +536,11 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
 
     if (async) {
       return (async () => {
-        while (i < lockChunks.length && !done) await step()
+        while (i < chunks.length && !done) await step()
         finish()
       })()
     } else {
-      while (i < lockChunks.length && !done) step()
+      while (i < chunks.length && !done) step()
       finish()
     }
   } catch (e) {
