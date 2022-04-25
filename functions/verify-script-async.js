@@ -108,7 +108,7 @@ const OP_NOP8 = 183
 const OP_NOP9 = 184
 const OP_NOP10 = 185
 
-async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatoshis) {
+async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatoshis, async = true) {
   const unlockChunks = decodeScriptChunks(unlockScript)
   const lockChunks = decodeScriptChunks(lockScript)
 
@@ -178,9 +178,9 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
     ? !a.neg
     : (a.neg && a.num <= b.num) || (!a.neg && a.num >= b.num)
 
-  for (let i = 0; i < lockChunks.length; i++) {
-    if (done) break
+  let i = 0
 
+  async function step () {
     // Skip branch
     if (branchExec.length > 0 && !branchExec[branchExec.length - 1]) {
       let sub = 0
@@ -197,14 +197,17 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
         }
         i++
       }
-      if (i >= lockChunks.length) break
+      if (i >= lockChunks.length) {
+        done = true
+        return
+      }
     }
 
-    const chunk = lockChunks[i]
+    const chunk = lockChunks[i++]
 
     if (chunk.buf) {
       stack.push(chunk.buf)
-      continue
+      return
     }
 
     switch (chunk.opcode) {
@@ -456,6 +459,14 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
       case OP_NOP9: break
       case OP_NOP10: break
       default: throw new Error(`reserved opcode: ${chunk.opcode}`)
+    }
+  }
+
+  while (i < lockChunks.length && !done) {
+    if (async) {
+      await step()
+    } else {
+      step()
     }
   }
 
