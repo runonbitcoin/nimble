@@ -16,6 +16,7 @@ const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
 const isBuffer = require('../functions/is-buffer')
 const calculateDust = require('../functions/calculate-dust')
+const verifyTx = require('../functions/verify-tx')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
@@ -189,6 +190,13 @@ class Transaction {
       input.script = Script.fromBuffer(script)
     }
 
+    return this
+  }
+
+  verify () {
+    const parents = this.inputs.map(input => input.output)
+    const minFeePerKb = require('../index').feePerKb
+    verifyTx(this, parents, minFeePerKb)
     return this
   }
 

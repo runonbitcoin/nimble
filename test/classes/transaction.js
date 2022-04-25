@@ -497,6 +497,26 @@ describe('Transaction', () => {
     })
   })
 
+  describe('verify', () => {
+    it('does not throw if valid', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 2000)
+      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 1000).sign(privateKey)
+      expect(() => tx2.verify()).not.to.throw()
+    })
+
+    it('throws if invalid', () => {
+      expect(() => new Transaction().verify()).to.throw('no inputs')
+    })
+
+    it('returns self for chaining', () => {
+      const privateKey = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(privateKey.toAddress(), 2000)
+      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 1000).sign(privateKey)
+      expect(tx2.verify()).to.equal(tx2)
+    })
+  })
+
   describe('finalize', () => {
     it('locks transaction', () => {
       const privateKey = PrivateKey.fromRandom()
