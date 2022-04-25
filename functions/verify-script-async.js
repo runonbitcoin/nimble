@@ -137,7 +137,8 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
     if (BigInt(num) === BigInt(0)) return []
     const arr = Array.from(decodeHex(BigInt(num).toString(16))).reverse()
     const full = arr[arr.length - 1] & 0x80
-    if (neg || full) { if (full) { arr.push(0x80) } else { arr[arr.length - 1] |= 0x80 } }
+    if (full) arr.push(0x00)
+    if (neg) arr[arr.length - 1] |= 0x80
     return arr
   }
 
@@ -388,7 +389,8 @@ async function verifyScriptAsync (unlockScript, lockScript, tx, vin, parentSatos
       case OP_CODESEPARATOR: checkIndex = i + 1; break
       case OP_CHECKSIG:
       case OP_CHECKSIGVERIFY: {
-        const pubkey = decodePublicKey(pop())
+        const pubkeybytes = pop()
+        const pubkey = decodePublicKey(pubkeybytes)
         const signature = pop()
         const cleanedScript = lockScript.slice(checkIndex)
         const verified = await verifyTxSignatureAsync(tx, vin, signature, pubkey, cleanedScript, parentSatoshis)
