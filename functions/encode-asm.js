@@ -6,7 +6,7 @@ const OPCODE_MAP = []
 
 Object.entries(opcodes).forEach(([value, key]) => { OPCODE_MAP[key] = value })
 
-function encodeAsm (script) {
+function encodeASM (script) {
   const chunks = decodeScriptChunks(script)
 
   return chunks.map(chunk => {
@@ -18,4 +18,4 @@ function encodeAsm (script) {
   }).join(' ')
 }
 
-module.exports = encodeAsm
+module.exports = encodeASM

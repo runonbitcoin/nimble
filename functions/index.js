@@ -23,7 +23,7 @@ module.exports = {
   ecdsaVerifyAsync: require('./ecdsa-verify-async'),
   ecdsaVerify: require('./ecdsa-verify'),
   encodeAddress: require('./encode-address'),
-  encodeAsm: require('./encode-asm'),
+  encodeASM: require('./encode-asm'),
   encodeBase58Check: require('./encode-base58-check'),
   encodeBase58: require('./encode-base58'),
   encodeDER: require('./encode-der'),

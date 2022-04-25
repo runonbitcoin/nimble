@@ -6,6 +6,7 @@ const decodeHex = require('../functions/decode-hex')
 const decodeScriptChunks = require('../functions/decode-script-chunks')
 const Address = require('./address')
 const isBuffer = require('../functions/is-buffer')
+const encodeASM = require('../functions/encode-asm')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
@@ -79,6 +80,10 @@ class Script {
 
   toHex () {
     return encodeHex(this.buffer)
+  }
+
+  toASM () {
+    return encodeASM(this.buffer)
   }
 
   toBuffer () {

@@ -151,6 +151,12 @@ describe('Script', () => {
     })
   })
 
+  describe('toASM', () => {
+    it('encodes asm', () => {
+      expect(Script.fromBuffer([0, 81, 100]).toASM()).to.equal('0 OP_1 OP_NOTIF')
+    })
+  })
+
   describe('toBuffer', () => {
     it('returns buffer', () => {
       expect(Array.from(Script.fromBuffer([]).toBuffer())).to.deep.equal([])
