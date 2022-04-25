@@ -8,6 +8,7 @@ module.exports = {
   createP2PKHLockScript: require('./create-p2pkh-lock-script'),
   createP2PKHUnlockScript: require('./create-p2pkh-unlock-script'),
   decodeAddress: require('./decode-address'),
+  decodeASM: require('./decode-asm'),
   decodeBase58Check: require('./decode-base58-check'),
   decodeBase58: require('./decode-base58'),
   decodeBase64: require('./decode-base64'),

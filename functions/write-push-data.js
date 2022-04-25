@@ -1,5 +1,7 @@
 function writePushData (writer, buffer) {
-  if (buffer.length <= 75) {
+  if (buffer.length === 1 && buffer[0] <= 16) {
+    writer.write([buffer[0] ? buffer[0] + 80 : 0])
+  } else if (buffer.length <= 75) {
     writer.write([buffer.length]) // OP_PUSH(buffer.length)
     writer.write(buffer)
   } else if (buffer.length <= 0xFF) {
