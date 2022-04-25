@@ -22,6 +22,7 @@ describe('functions', () => {
   require('./functions/create-p2pkh-unlock-script')
   require('./functions/decode-address')
   require('./functions/decode-asm')
+  require('./functions/decode-base64')
   require('./functions/decode-der')
   require('./functions/decode-hex')
   require('./functions/decode-public-key')
