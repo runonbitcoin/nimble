@@ -604,4 +604,18 @@ describe('verifyScriptAsync', () => {
     await verifyScriptAsync(tx.inputs[vin].script, prevout.script, tx, vin, prevout.satoshis)
     verifyScript(tx.inputs[vin].script, prevout.script, tx, vin, prevout.satoshis)
   })
+
+  it('acceps unlock with pushdata script', async () => {
+    const unlock = [OP_1, OP_2]
+    const lock = [OP_ADD, OP_3, OP_EQUAL]
+    await verifyScriptAsync(unlock, lock)
+    verifyScript(unlock, lock)
+  })
+
+  it('rejects unlock with non-pushdata script', async () => {
+    const unlock = [OP_1, OP_2, OP_ADD]
+    const lock = [OP_3, OP_EQUAL]
+    await expect(verifyScriptAsync(unlock, lock)).to.be.rejected
+    expect(() => verifyScript(unlock, lock)).to.throw()
+  })
 })
