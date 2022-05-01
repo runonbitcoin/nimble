@@ -195,7 +195,7 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].txid).to.equal(tx1.hash)
       expect(tx2.inputs[0].vout).to.equal(0)
       expect(tx2.inputs[0].script.length).to.equal(0)
-      expect(tx2.inputs[0].sequence).to.equal(0)
+      expect(tx2.inputs[0].sequence).to.equal(0xffffffff)
       expect(tx2.inputs[0].output).to.equal(tx1.outputs[0])
     })
 
@@ -212,7 +212,7 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].txid).to.equal(tx1.hash)
       expect(tx2.inputs[0].vout).to.equal(0)
       expect(tx2.inputs[0].script.length).to.equal(0)
-      expect(tx2.inputs[0].sequence).to.equal(0)
+      expect(tx2.inputs[0].sequence).to.equal(0xffffffff)
       expect(tx2.inputs[0].output.script).to.equal(utxo.script)
       expect(tx2.inputs[0].output.satoshis).to.equal(utxo.satoshis)
     })

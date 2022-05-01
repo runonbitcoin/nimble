@@ -97,7 +97,7 @@ class Transaction {
   from (output) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
-    const input = new Input(output.txid, output.vout, [], 0, output)
+    const input = new Input(output.txid, output.vout, [], 0xffffffff, output)
     this.inputs.push(input)
 
     return this
