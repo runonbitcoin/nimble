@@ -12,10 +12,10 @@ describe('writePushData', () => {
     }
 
     testValid([], [0])
-    testValid([0], [0])
+    testValid([0], [1, 0])
     testValid([0, 0], [2, 0, 0])
-    testValid([1], [81])
-    testValid([16], [96])
+    testValid([1], [1, 1])
+    testValid([16], [1, 16])
     testValid(new Array(0xFF).fill(0), [76, 255].concat(new Array(0xFF).fill(0)))
     testValid(new Array(0xFF + 1).fill(0), [77, 0, 1].concat(new Array(0xFF + 1).fill(0)))
     testValid(new Array(0xFFFF).fill(0), [77, 255, 255].concat(new Array(0xFFFF).fill(0)))

@@ -197,7 +197,7 @@ describe('Script', () => {
 
   describe('chunks', () => {
     it('returns chunks', () => {
-      expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { buf: [2] }])
+      expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { opcode: 1, buf: [2] }])
     })
 
     it('caches chunks', () => {

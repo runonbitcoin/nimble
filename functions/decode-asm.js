@@ -10,7 +10,12 @@ function decodeASM (script) {
     if (part in opcodes) {
       writer.write([opcodes[part]])
     } else {
-      writePushData(writer, decodeHex(part))
+      const buf = decodeHex(part)
+      if (buf.length === 1 && buf[0] <= 16) {
+        writer.write(buf[0] ? [80 + buf[0]] : [0])
+      } else {
+        writePushData(writer, buf)
+      }
     }
   })
   return writer.toBuffer()
