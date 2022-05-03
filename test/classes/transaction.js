@@ -110,6 +110,17 @@ describe('Transaction', () => {
       expect(tx2.inputs[0].script instanceof Script).to.equal(true)
       expect(tx2.outputs[0].script instanceof Script).to.equal(true)
     })
+
+    it('1gb tx', function () {
+      this.timeout(3000)
+      const tx = { inputs: [], outputs: [] }
+      for (let i = 0; i < 1024; i++) {
+        tx.outputs.push({ script: new Uint8Array(1 * 1024 * 1024), satoshis: 123 })
+      }
+      const buffer = nimble.functions.encodeTx(tx)
+      const tx2 = Transaction.fromBuffer(buffer)
+      expect(tx2.outputs.length).to.equal(tx.outputs.length)
+    })
   })
 
   describe('toString', () => {

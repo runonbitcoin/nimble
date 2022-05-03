@@ -16,8 +16,7 @@ class Script {
   constructor (buffer = [], validate = true) {
     if (validate && !isBuffer(buffer)) throw new Error('not a buffer')
 
-    // Store the buffer. If a view, convert to standlone buffer, so that we can make immutable
-    this.buffer = ArrayBuffer.isView(buffer) ? Array.from(buffer) : buffer
+    this.buffer = buffer
 
     const isTemplate = this.constructor !== Script
     if (isTemplate) {
@@ -33,8 +32,9 @@ class Script {
       }
     }
 
-    // Make the script immutable, in part so that its safe to cache chunks
-    Object.freeze(this.buffer)
+    // Make the script class immutable, in part so that its safe to cache chunks
+    // We can't freeze the underlying buffer unfortunately because of a limitation in JS, and copying to
+    // an object we can freeze, like Array, is too slow. https://github.com/tc39/proposal-limited-arraybuffer
     Object.freeze(this)
 
     // Proxy the script so it may be used in place of a buffer in functions

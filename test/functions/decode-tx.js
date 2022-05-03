@@ -37,4 +37,14 @@ describe('decodeTx', () => {
     expect(() => decodeTx([1, 0, 0, 0, 0, 0])).to.throw(err)
     expect(() => decodeTx([1, 0, 0, 0, 0, 0, 0, 0, 0])).to.throw(err)
   })
+
+  it('1gb tx', function () {
+    this.timeout(3000)
+    const tx = { inputs: [], outputs: [] }
+    for (let i = 0; i < 1024; i++) {
+      tx.outputs.push({ script: new Uint8Array(1 * 1024 * 1024), satoshis: 123 })
+    }
+    const buffer = encodeTx(tx)
+    expect(buffer.length > 1024 * 1024 * 1024).to.equal(true)
+  })
 })
