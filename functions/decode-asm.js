@@ -9,13 +9,13 @@ function decodeASM (script) {
   parts.forEach(part => {
     if (part in opcodes) {
       writer.write([opcodes[part]])
+    } else if (part === '0') {
+      writer.write([opcodes.OP_0])
+    } else if (part === '-1') {
+      writer.write([opcodes.OP_1NEGATE])
     } else {
       const buf = decodeHex(part)
-      if (buf.length === 1 && buf[0] <= 16) {
-        writer.write(buf[0] ? [80 + buf[0]] : [0])
-      } else {
-        writePushData(writer, buf)
-      }
+      writePushData(writer, buf)
     }
   })
   return writer.toBuffer()

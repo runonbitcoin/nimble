@@ -12,6 +12,14 @@ describe('encodeASM', () => {
     expect(asm).to.equal(expected)
   })
 
+  it('encodes 0 an -1 properly', () => {
+    const asm = '0 00 OP_10 0a -1'
+    const hex = '0001005a010a4f'
+    const script = nimble.Script.fromString(hex)
+    const actual = encodeASM(script)
+    expect(actual).to.equal(asm)
+  })
+
   it('bad opcode', () => {
     expect(encodeASM([255])).to.equal('<unknown opcode 255>')
   })
