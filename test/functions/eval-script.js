@@ -4,12 +4,12 @@ require('chai').use(require('chai-as-promised'))
 const nimble = require('../env/nimble')
 
 const op = nimble.constants.opcodes
-const { evalScript} = nimble.functions
+const { evalScript } = nimble.functions
 
 describe('evalScript', () => {
   it('valid script returns vm including stack trace', () => {
     const vm = evalScript([op.OP_2, op.OP_3], [op.OP_ADD, op.OP_5, op.OP_EQUAL])
-    
+
     assert.isTrue(vm.success)
     assert.isNull(vm.error)
     assert.deepEqual(vm.stack, [[1]])
@@ -19,7 +19,7 @@ describe('evalScript', () => {
 
   it('valid script returns vm omitting stack trace', () => {
     const vm = evalScript([op.OP_2, op.OP_3], [op.OP_ADD, op.OP_5, op.OP_EQUAL], undefined, undefined, undefined, { trace: false })
-    
+
     assert.isTrue(vm.success)
     assert.isNull(vm.error)
     assert.deepEqual(vm.stack, [[1]])
@@ -38,13 +38,13 @@ describe('evalScript', () => {
 
   it('valid script returns vm asynchronosly', async () => {
     await evalScript([op.OP_2, op.OP_3], [op.OP_ADD, op.OP_5, op.OP_EQUAL], undefined, undefined, undefined, { async: true })
-      .then(vm => assert.isTrue(vm.success) )
+      .then(vm => assert.isTrue(vm.success))
     assert.isTrue(true)
   })
 
   it('invalid script returns vm asynchronosly (does not reject)', async () => {
     await evalScript([op.OP_2, op.OP_3, op.OP_CHECKSIGVERIFY], [op.OP_ADD, op.OP_5, op.OP_EQUAL], undefined, undefined, undefined, { async: true })
-      .then(vm => assert.isFalse(vm.success) )
+      .then(vm => assert.isFalse(vm.success))
     assert.isTrue(true)
   })
 })

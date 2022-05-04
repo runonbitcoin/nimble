@@ -115,7 +115,7 @@ const OP_NOP10 = 185
 
 const defaults = {
   async: false,
-  trace: true,
+  trace: true
 }
 
 function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {}) {
@@ -132,14 +132,14 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
   let checkIndex = 0
   let done = false
 
-  function traceStack(i) {
+  function traceStack (i) {
     if (trace && i >= 0) stackTrace.push([chunks[i], [...stack], [...altStack]])
   }
 
   function finish (error = null) {
-    traceStack(chunks.length-1)
+    traceStack(chunks.length - 1)
     if (!error && branchExec.length) error = new Error('ENDIF missing')
-    const success = !error && stack[stack.length-1].some(x => x)
+    const success = !error && stack[stack.length - 1].some(x => x)
     if (!error && !success) error = new Error('top of stack is false')
 
     return {
@@ -219,7 +219,7 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
     let i = 0
 
     function step () {
-      traceStack(i-1)
+      traceStack(i - 1)
 
       // Skip branch
       if (branchExec.length > 0 && !branchExec[branchExec.length - 1]) {
