@@ -10,7 +10,7 @@ function verifyScript (unlockScript, lockScript, tx, vin, parentSatoshis, async 
   } else {
     if (vm.error) throw vm.error
     return vm.success
-  }  
+  }
 }
 
 module.exports = verifyScript
