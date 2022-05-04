@@ -266,6 +266,25 @@ describe('Transaction', () => {
       expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('bad satoshis')
       expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('bad satoshis')
     })
+
+    it('supports array', () => {
+      const pk = PrivateKey.fromRandom()
+      const tx1 = new Transaction().to(pk.toAddress(), 1000)
+      const tx2 = new Transaction().to(pk.toAddress(), 1000)
+      const tx3 = new Transaction().from([tx1.outputs[0], tx2.outputs[0]])
+
+      expect(tx3.inputs[0].txid).to.equal(tx1.hash)
+      expect(tx3.inputs[0].vout).to.equal(0)
+      expect(tx3.inputs[0].script.length).to.equal(0)
+      expect(tx3.inputs[0].sequence).to.equal(0xffffffff)
+      expect(tx3.inputs[0].output).to.equal(tx1.outputs[0])
+
+      expect(tx3.inputs[1].txid).to.equal(tx2.hash)
+      expect(tx3.inputs[1].vout).to.equal(0)
+      expect(tx3.inputs[1].script.length).to.equal(0)
+      expect(tx3.inputs[1].sequence).to.equal(0xffffffff)
+      expect(tx3.inputs[1].output).to.equal(tx2.outputs[0])
+    })
   })
 
   describe('to', () => {
