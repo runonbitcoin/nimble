@@ -40,6 +40,7 @@ describe('functions', () => {
   require('./functions/encode-push-data')
   require('./functions/encode-tx')
   require('./functions/encode-wif')
+  require('./functions/eval-script')
   require('./functions/generate-private-key')
   require('./functions/generate-random-data')
   require('./functions/generate-tx-signature')

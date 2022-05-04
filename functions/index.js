@@ -33,6 +33,7 @@ module.exports = {
   encodePushData: require('./encode-push-data'),
   encodeTx: require('./encode-tx'),
   encodeWIF: require('./encode-wif'),
+  evalScript: require('./eval-script'),
   extractP2PKHLockScriptPubkeyhash: require('./extract-p2pkh-lock-script-pubkeyhash'),
   generatePrivateKey: require('./generate-private-key'),
   generateRandomData: require('./generate-random-data'),
