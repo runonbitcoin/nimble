@@ -145,6 +145,7 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
     return {
       success,
       error,
+      chunks,
       stack,
       stackTrace
     }
