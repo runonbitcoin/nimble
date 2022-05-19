@@ -97,6 +97,11 @@ class Transaction {
   from (output) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
+    if (Array.isArray(output)) {
+      output.forEach(output => this.from(output))
+      return this
+    }
+
     const input = new Input(output.txid, output.vout, [], 0xffffffff, output)
     this.inputs.push(input)
 
