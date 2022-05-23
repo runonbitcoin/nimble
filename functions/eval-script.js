@@ -139,7 +139,7 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
   function finish (error = null) {
     traceStack(chunks.length - 1)
     if (!error && branchExec.length) error = new Error('ENDIF missing')
-    const success = !error && stack[stack.length - 1].some(x => x)
+    const success = !error && !!stack.length && stack[stack.length - 1].some(x => x)
     if (!error && !success) error = new Error('top of stack is false')
 
     return {
@@ -565,8 +565,13 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
 
     if (async) {
       return (async () => {
-        while (i < chunks.length && !done) await step()
-        return finish()
+        try {
+          while (i < chunks.length && !done) await step()
+          return finish()
+        } catch (e) {
+          const vm = finish(e)
+          return Promise.resolve(vm)
+        }
       })()
     } else {
       while (i < chunks.length && !done) step()

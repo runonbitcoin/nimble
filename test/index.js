@@ -63,6 +63,7 @@ describe('functions', () => {
   require('./functions/verify-private-key')
   require('./functions/verify-tx-signature')
   require('./functions/verify-tx')
+  require('./functions/verify-script-async')
   require('./functions/verify-script')
   require('./functions/write-u32-le')
   require('./functions/write-u64-le')
