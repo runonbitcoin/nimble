@@ -112,7 +112,7 @@ describe('Transaction', () => {
     })
 
     it('1gb tx', function () {
-      this.timeout(3000)
+      this.timeout(10000)
       const tx = { inputs: [], outputs: [] }
       for (let i = 0; i < 1024; i++) {
         tx.outputs.push({ script: new Uint8Array(1 * 1024 * 1024), satoshis: 123 })
