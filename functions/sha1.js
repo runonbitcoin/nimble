@@ -4,7 +4,9 @@ const WasmHashes = require('../wasm/wasm-hashes')
 
 let sha1 = null
 
-if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
+// If we don't know the VARIANT, prefer our implementation to avoid the crypto shim in the browser
+
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
   sha1 = function (data) {
     const wasmMemory = WasmHashes.getMemoryBuffer()
     const wasmSha1 = WasmHashes.getSha1()
@@ -18,7 +20,7 @@ if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
 
     wasmSha1(hashDataPos, data.length, hashOutPos)
 
-    return Uint8Array.from(wasmMemory.slice(hashOutPos, hashOutPos + 20))
+    return new Uint8Array(wasmMemory.slice(hashOutPos, hashOutPos + 20))
   }
 } else {
   sha1 = (data) => {

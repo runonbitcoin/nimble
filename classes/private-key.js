@@ -1,28 +1,21 @@
-/**
- * private-key.js
- *
- * Immutable class for a Bitcoin private key
- */
-
 const generatePrivateKey = require('../functions/generate-private-key')
 const encodeWIF = require('../functions/encode-wif')
 const decodeWIF = require('../functions/decode-wif')
-
-// ------------------------------------------------------------------------------------------------
-// Globals
-// ------------------------------------------------------------------------------------------------
+const isBuffer = require('../functions/is-buffer')
+const verifyPrivateKey = require('../functions/verify-private-key')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
-
-// Cached to reduce sha256
-const PRIVATE_KEY_TO_WIF_CACHE = new WeakMap()
-
-// ------------------------------------------------------------------------------------------------
-// PrivateKey
-// ------------------------------------------------------------------------------------------------
+const PRIVATE_KEY_TO_WIF_CACHE = new WeakMap() // Cached to reduce sha256
 
 class PrivateKey {
-  constructor (number, testnet, compressed) {
+  constructor (number, testnet, compressed, validate = true) {
+    if (validate) {
+      if (!isBuffer(number)) throw new Error('bad number')
+      if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
+      if (typeof compressed !== 'boolean') throw new Error('bad compressed flag')
+      verifyPrivateKey(number)
+    }
+
     this.number = number
     this.testnet = testnet
     this.compressed = compressed
@@ -31,21 +24,23 @@ class PrivateKey {
   }
 
   static fromString (wif) {
-    try {
-      const { number, testnet, compressed } = decodeWIF(wif)
-      const privateKey = new PrivateKey(number, testnet, compressed)
-      PRIVATE_KEY_TO_WIF_CACHE.set(privateKey, wif)
-      return privateKey
-    } catch (e) {
-      throw new Error(`Cannot create PrivateKey: ${e.message}`)
-    }
+    const { number, testnet, compressed } = decodeWIF(wif)
+    const privateKey = new PrivateKey(number, testnet, compressed, false)
+    PRIVATE_KEY_TO_WIF_CACHE.set(privateKey, wif)
+    return privateKey
   }
 
-  static fromRandom () {
+  static fromRandom (testnet = require('../index').testnet) {
     const number = generatePrivateKey()
-    const testnet = require('../index').testnet
     const compressed = true
-    return new PrivateKey(number, testnet, compressed)
+    return new PrivateKey(number, testnet, compressed, false)
+  }
+
+  static from (privateKey) {
+    if (privateKey instanceof PrivateKey) return privateKey
+    if (typeof privateKey === 'object' && privateKey) privateKey = privateKey.toString()
+    if (typeof privateKey === 'string') return PrivateKey.fromString(privateKey)
+    throw new Error('unsupported type')
   }
 
   toString () {
@@ -64,7 +59,5 @@ class PrivateKey {
     return this.toPublicKey().toAddress()
   }
 }
-
-// ------------------------------------------------------------------------------------------------
 
 module.exports = PrivateKey

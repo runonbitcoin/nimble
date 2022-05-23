@@ -108,7 +108,7 @@ describe('sighash', () => {
 
   it('caches hashes', async () => {
     const txns = []
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
       const input = { txid: '0000000000000000000000000000000000000000000000000000000000000000', _vout: 0 }
       const tx = { inputs: [input] }
       txns.push(tx)

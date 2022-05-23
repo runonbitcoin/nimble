@@ -1,5 +1,10 @@
 function writePushData (writer, buffer) {
-  if (buffer.length <= 75) {
+  // It is possible to optimize buffers that only store numbers 1-16, or -1, by using the OP_N opcodes.
+  // But we say "push data" is always stored using OP_0 or OP_PUSH(N) so that it's easy to identify and
+  // extract, and also because there is some ambiguity around OP_0 if we don't do this.
+  if (buffer.length === 0) {
+    writer.write([0])
+  } else if (buffer.length <= 75) {
     writer.write([buffer.length]) // OP_PUSH(buffer.length)
     writer.write(buffer)
   } else if (buffer.length <= 0xFF) {

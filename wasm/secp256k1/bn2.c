@@ -1,7 +1,3 @@
-/**
- * bn2.c
- */
-
 #include "bn2.h"
 
 #define BARRET_SHIFT (256 * 2 / BN_DIGIT_BITS)

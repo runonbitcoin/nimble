@@ -1,8 +1,4 @@
-/**
- * nimble.js
- *
- * Provides the build of nimble for testing
- */
+// Provides the build of nimble for testing
 
 const path = require('path')
 

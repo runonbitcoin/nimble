@@ -1,7 +1,3 @@
-/**
- * bn.c
- */
-
 #include "bn.h"
 #include <stdlib.h>
 

@@ -1,19 +1,27 @@
 const decodeBase58Check = require('./decode-base58-check')
+const verifyPrivateKey = require('./verify-private-key')
 
 function decodeWIF (privkey) {
   const { version, payload } = decodeBase58Check(privkey)
 
   const testnet = version === 0xef
 
+  let number
+  let compressed
+
   if (payload.length === 32) {
-    return { number: payload, testnet, compressed: false }
+    compressed = false
+    number = payload
+  } else if (payload.length === 33) {
+    compressed = true
+    number = payload.slice(0, 32)
+  } else {
+    throw new Error('bad length')
   }
 
-  if (payload.length === 33 && payload[payload.length - 1] === 1) {
-    return { number: payload.slice(0, 32), testnet, compressed: true }
-  }
+  verifyPrivateKey(number)
 
-  throw new Error('bad payload')
+  return { number, testnet, compressed }
 }
 
 module.exports = decodeWIF

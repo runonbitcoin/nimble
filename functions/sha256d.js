@@ -4,7 +4,7 @@ const WasmHashes = require('../wasm/wasm-hashes')
 
 let sha256d = null
 
-if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
   sha256d = function (data) {
     const wasmMemory = WasmHashes.getMemoryBuffer()
     const wasmSha256 = WasmHashes.getSha256()
@@ -20,7 +20,7 @@ if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
     wasmSha256(hashDataPos, data.length, hashOutPos1)
     wasmSha256(hashOutPos1, 32, hashOutPos2)
 
-    return Uint8Array.from(wasmMemory.slice(hashOutPos2, hashOutPos2 + 32))
+    return new Uint8Array(wasmMemory.slice(hashOutPos2, hashOutPos2 + 32))
   }
 } else {
   const sha256 = require('./sha256')

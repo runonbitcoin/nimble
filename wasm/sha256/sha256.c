@@ -1,8 +1,4 @@
-/**
- * sha256.c
- *
- * Derived from https://github.com/B-Con/crypto-algorithms, public domain license
- */
+// Derived from https://github.com/B-Con/crypto-algorithms, public domain license
 
 /*************************** HEADER FILES ***************************/
 #include <stdlib.h>

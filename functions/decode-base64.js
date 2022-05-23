@@ -2,10 +2,11 @@
 
 let decodeBase64 = null
 
-if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
-  /**
-   * Credit to https://raw.githubusercontent.com/beatgammit/base64-js
-   */
+// Prefer our implementation of decodeBase64 over Buffer when we don't know the VARIANT
+// to avoid accidentally importing the Buffer shim in the browser.
+
+if (typeof VARIANT === 'undefined' || VARIANT === 'browser') {
+  // Credit to https://raw.githubusercontent.com/beatgammit/base64-js
 
   const REV_LOOKUP = []
 
@@ -22,9 +23,7 @@ if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
   function getLens (b64) {
     const len = b64.length
 
-    if (len % 4 > 0) {
-      throw new Error('Invalid string. Length must be a multiple of 4')
-    }
+    if (len % 4 > 0) throw new Error('length must be a multiple of 4')
 
     // Trim off extra bytes after placeholder bytes are found
     // See: https://github.com/beatgammit/base64-js/issues/42
@@ -88,7 +87,11 @@ if (typeof VARIANT !== 'undefined' && VARIANT === 'browser') {
     return arr
   }
 } else {
-  decodeBase64 = s => Buffer.from(s, 'base64')
+  decodeBase64 = s => {
+    if (s.length % 4 > 0) throw new Error('length must be a multiple of 4')
+
+    return Buffer.from(s, 'base64')
+  }
 }
 
 module.exports = decodeBase64

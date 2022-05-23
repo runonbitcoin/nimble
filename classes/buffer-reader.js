@@ -12,6 +12,7 @@ class BufferReader {
     const buffer = this.buffer.slice(start, end)
     this.pos = end
 
+    // The buffer returned may be a view, so should not be modified without first making a copy, including reverse()
     return buffer
   }
 
@@ -19,7 +20,7 @@ class BufferReader {
     if (this.pos !== this.buffer.length) throw new Error('unconsumed data')
   }
 
-  checkRemaining (length = 0) {
+  checkRemaining (length) {
     if (this.buffer.length - this.pos < length) throw new Error('not enough data')
   }
 }

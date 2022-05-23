@@ -1,32 +1,27 @@
-/**
- * address.js
- *
- * Tests for Address
- */
-
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { PrivateKey, Address } = nimble
-const { encodeBase58Check } = nimble.functions
+const { Address, PrivateKey, Script } = nimble
+const { encodeBase58Check, createP2PKHLockScript } = nimble.functions
 const bsv = require('bsv')
 
-// ------------------------------------------------------------------------------------------------
-// Address
-// ------------------------------------------------------------------------------------------------
-
 describe('Address', () => {
-  // --------------------------------------------------------------------------
-  // constructor
-  // --------------------------------------------------------------------------
-
   describe('constructor', () => {
-    // TODO
-  })
+    it('valid', () => {
+      const privateKey = nimble.functions.generatePrivateKey()
+      const publicKey = nimble.functions.calculatePublicKey(privateKey)
+      const pubkeyhash = nimble.functions.calculatePublicKeyHash(publicKey)
+      const address = new Address(pubkeyhash, true)
+      expect(address.pubkeyhash).to.equal(pubkeyhash)
+      expect(address.testnet).to.equal(true)
+    })
 
-  // --------------------------------------------------------------------------
-  // fromString
-  // --------------------------------------------------------------------------
+    it('throws if bad', () => {
+      expect(() => new Address('abc', true)).to.throw('bad pubkeyhash')
+      expect(() => new Address([], false)).to.throw('bad pubkeyhash')
+      expect(() => new Address(new Array(20), 0)).to.throw('bad testnet flag')
+    })
+  })
 
   describe('fromString', () => {
     it('decodes valid mainnet address', () => {
@@ -36,8 +31,6 @@ describe('Address', () => {
       expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(Buffer.from(address.pubkeyhash).toString('hex'))
     })
 
-    // ------------------------------------------------------------------------
-
     it('decodes valid testnet address', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
       const address = Address.fromString(bsvAddress.toString())
@@ -45,13 +38,9 @@ describe('Address', () => {
       expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(Buffer.from(address.pubkeyhash).toString('hex'))
     })
 
-    // ------------------------------------------------------------------------
-
-    it('throws if invalid checksum', () => {
+    it('throws if bad checksum', () => {
       expect(() => Address.fromString('1JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad checksum')
     })
-
-    // ------------------------------------------------------------------------
 
     it('throws if not a string', () => {
       expect(() => Address.fromString()).to.throw('not a string')
@@ -59,30 +48,20 @@ describe('Address', () => {
       expect(() => Address.fromString(Address.fromString(new bsv.PrivateKey().toAddress()))).to.throw('not a string')
     })
 
-    // ------------------------------------------------------------------------
-
-    it('throws if invalid chars', () => {
+    it('throws if bad chars', () => {
       expect(() => Address.fromString('!JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad base58 chars')
     })
 
-    // ------------------------------------------------------------------------
-
-    it('throws if invalid length', () => {
-      const invalidLengthAddress = encodeBase58Check(0, [])
-      expect(() => Address.fromString(invalidLengthAddress)).to.throw('bad payload')
+    it('throws if bad length', () => {
+      const badLengthAddress = encodeBase58Check(0, [])
+      expect(() => Address.fromString(badLengthAddress)).to.throw('bad payload')
     })
-
-    // ------------------------------------------------------------------------
 
     it('is immutable', () => {
       const address = Address.fromString(PrivateKey.fromRandom().toAddress().toString())
       expect(Object.isFrozen(address)).to.equal(true)
     })
   })
-
-  // --------------------------------------------------------------------------
-  // fromPublicKey
-  // --------------------------------------------------------------------------
 
   describe('fromPublicKey', () => {
     it('computes address', () => {
@@ -92,8 +71,6 @@ describe('Address', () => {
       const address = privateKey.toAddress()
       expect(address.toString()).to.equal(bsvAddress.toString())
     })
-
-    // ------------------------------------------------------------------------
 
     it('caches address', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
@@ -106,17 +83,40 @@ describe('Address', () => {
       expect(address1).to.equal(address2)
     })
 
-    // ------------------------------------------------------------------------
-
     it('is immutable', () => {
       const address = Address.fromPublicKey(PrivateKey.fromRandom().toPublicKey())
       expect(Object.isFrozen(address)).to.equal(true)
     })
   })
 
-  // --------------------------------------------------------------------------
-  // toString
-  // --------------------------------------------------------------------------
+  describe('from', () => {
+    it('from Address instance', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      expect(Address.from(address)).to.equal(address)
+    })
+
+    it('from bsv.Address', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      const bsvAddress = new bsv.Address(address.toString())
+      expect(Address.from(bsvAddress).toString()).to.equal(address.toString())
+    })
+
+    it('from string', () => {
+      const address = PrivateKey.fromRandom().toAddress()
+      expect(Address.from(address.toString()).toString()).to.equal(address.toString())
+    })
+
+    it('from PublicKey instance', () => {
+      const publicKey = PrivateKey.fromRandom().toPublicKey()
+      expect(Address.from(publicKey).toString()).to.equal(publicKey.toAddress().toString())
+    })
+
+    it('throws if unsupported', () => {
+      expect(() => Address.from()).to.throw()
+      expect(() => Address.from(null)).to.throw()
+      expect(() => Address.from('abc')).to.throw()
+    })
+  })
 
   describe('toString', () => {
     it('mainnet', () => {
@@ -124,25 +124,18 @@ describe('Address', () => {
       expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
     })
 
-    // ------------------------------------------------------------------------
-
     it('testnet', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
       expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
     })
+  })
 
-    // ------------------------------------------------------------------------
-
-    it('caches string', () => {
+  describe('toScript', () => {
+    it('returns p2pkh lock script', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      const t0 = new Date()
-      address.toString()
-      const t1 = new Date()
-      address.toString()
-      const t2 = new Date()
-      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
+      const script = address.toScript()
+      expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
+      expect(Array.from(script.toBuffer())).to.deep.equal(Array.from(createP2PKHLockScript(address.pubkeyhash)))
     })
   })
 })
-
-// ------------------------------------------------------------------------------------------------

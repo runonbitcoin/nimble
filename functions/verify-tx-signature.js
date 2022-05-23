@@ -6,11 +6,7 @@ function verifyTxSignature (tx, vin, signature, pubkey, parentScript, parentSato
   const dersig = signature.slice(0, signature.length - 1)
   const sighashFlags = signature[signature.length - 1]
   const hash = sighash(tx, vin, parentScript, parentSatoshis, sighashFlags)
-  try {
-    return ecdsaVerify(decodeDER(dersig), hash, pubkey)
-  } catch (e) {
-    return false
-  }
+  return ecdsaVerify(decodeDER(dersig), hash, pubkey)
 }
 
 module.exports = verifyTxSignature

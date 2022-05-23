@@ -1,9 +1,3 @@
-/**
- * bn2.h
- *
- * Big number library continued
- */
-
 #include "bn.h"
 
 void bn_mul(bn_digit_t* out, const bn_digit_t* a, const bn_digit_t* b);

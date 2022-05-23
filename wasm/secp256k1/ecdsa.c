@@ -1,7 +1,3 @@
-/**
- * ecdsa.c
- */
-
 #include "ecdsa.h"
 #include "bn2.h"
 #include "secp256k1.h"
@@ -99,18 +95,18 @@ int ecdsa_verify(const bn_digit_t* bn_r, const bn_digit_t* bn_s, const bn_digit_
   return bn_cmp(R, bn_r);
 }
 
-int validate_pubkey(bn_digit_t* pt_pubkey) { 
+int validate_point(bn_digit_t* pt_pubkey) { 
   // https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
   // https://research.nccgroup.com/2021/11/18/an-illustrated-guide-to-elliptic-curve-cryptography-validation/
 
   bn_digit_t* x = pt_x(pt_pubkey);
   bn_digit_t* y = pt_y(pt_pubkey);
 
-  if (bn_neg(x)) return 1;
-  if (bn_neg(y)) return 1;
-  if (bn_cmp(x, g_ecdsa_bn_P) >= 0) return 1;
-  if (bn_cmp(y, g_ecdsa_bn_P) >= 0) return 1;
-  if (bn_is_zero(x) && bn_is_zero(y)) return 1;
+  if (bn_neg(x)) return ERR_POINT_OUTSIDE_RANGE;
+  if (bn_neg(y)) return ERR_POINT_OUTSIDE_RANGE;
+  if (bn_cmp(x, g_ecdsa_bn_P) >= 0) return ERR_POINT_OUTSIDE_RANGE;
+  if (bn_cmp(y, g_ecdsa_bn_P) >= 0) return ERR_POINT_OUTSIDE_RANGE;
+  if (bn_is_zero(x) && bn_is_zero(y)) return ERR_POINT_OUTSIDE_RANGE;
 
   bn_t x2, x3, bn_7, right, tmp;
   bn_sq(x2, x);
@@ -126,13 +122,13 @@ int validate_pubkey(bn_digit_t* pt_pubkey) {
   bn_sq(tmp, y);
   bn_mod_barrett(left, tmp, g_ecdsa_bn_P, g_ecdsa_bn_P_barrett_factor);
 
-  if (bn_cmp(left, right) != 0) return 1;
+  if (bn_cmp(left, right) != 0) return ERR_POINT_NOT_ON_CURVE;
 
   // secp256k1 does not require checking if the point is in a valid subgroup
   // pt_t identity;
   // pt_mul(identity, pt_pubkey, g_bn_N);
-  // if (bn_cmp(pt_x(identity), g_bn_0) != 0) return 1;
-  // if (bn_cmp(pt_y(identity), g_bn_0) != 0) return 1;
+  // if (bn_cmp(pt_x(identity), g_bn_0) != 0) return 3;
+  // if (bn_cmp(pt_y(identity), g_bn_0) != 0) return 3;
 
   return 0;
 }
