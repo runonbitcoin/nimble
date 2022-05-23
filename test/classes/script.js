@@ -202,7 +202,7 @@ describe('Script', () => {
 
     it('caches chunks', () => {
       let buffer = []
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 10000; i++) {
         buffer = buffer.concat([100, 255, 1, 2])
       }
       const script = new Script(buffer)

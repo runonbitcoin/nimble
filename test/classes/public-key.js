@@ -143,16 +143,6 @@ describe('PublicKey', () => {
       expect(publicKey.compressed).to.equal(false)
       expect(publicKey.toString()).to.equal(bsvPublicKey.toString())
     })
-
-    it('caches string', () => {
-      const publicKey = PrivateKey.fromRandom().toPublicKey()
-      const t0 = new Date()
-      publicKey.toAddress()
-      const t1 = new Date()
-      publicKey.toAddress()
-      const t2 = new Date()
-      expect(t2 - t1).to.be.lessThanOrEqual(t1 - t0)
-    })
   })
 
   describe('toAddress', () => {
