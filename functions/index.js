@@ -1,7 +1,6 @@
 module.exports = {
   areBuffersEqual: require('./are-buffers-equal'),
   asyncify: require('./asyncify'),
-  calculateDust: require('./calculate-dust'),
   calculatePublicKeyHash: require('./calculate-public-key-hash'),
   calculatePublicKey: require('./calculate-public-key'),
   calculateTxid: require('./calculate-txid'),

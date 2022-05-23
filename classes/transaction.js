@@ -15,7 +15,6 @@ const Address = require('./address')
 const Script = require('./script')
 const BufferWriter = require('./buffer-writer')
 const isBuffer = require('../functions/is-buffer')
-const calculateDust = require('../functions/calculate-dust')
 const verifyTx = require('../functions/verify-tx')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
@@ -235,9 +234,9 @@ class Transaction {
     const expectedFee = Math.ceil(encodeTx(this).length * require('../index').feePerKb / 1000)
 
     const change = currentFee - expectedFee
-    const dust = calculateDust(this.changeOutput.script.length)
+    const minDust = 1
 
-    if (change > dust) {
+    if (change >= minDust) {
       this.changeOutput.satoshis = change
     } else {
       this.outputs.splice(changeIndex, 1)
