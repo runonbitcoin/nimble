@@ -14,7 +14,7 @@ describe('verifyTx', () => {
     const tx = nimble.Transaction.fromString(hex)
     const prevtx = nimble.Transaction.fromString(prevhex)
 
-    const minFeePerKb = 250
+    const minFeePerKb = 50
     const parents = [prevtx.outputs[3]]
 
     verifyTx(tx, parents, minFeePerKb)
@@ -30,7 +30,7 @@ describe('verifyTx', () => {
     const tx = nimble.Transaction.fromString(hex)
     const prevtx = nimble.Transaction.fromString(prevhex)
 
-    const minFeePerKb = 250
+    const minFeePerKb = 50
     const parents = [prevtx.outputs[3], prevtx.outputs[4]]
 
     verifyTx(tx, parents, minFeePerKb)
@@ -60,13 +60,13 @@ describe('verifyTx', () => {
     const input = { txid: new nimble.Transaction().hash, vout: 0 }
     const output = { script: [], satoshis: 1000 }
     const parents = [{ satoshis: 1000 }]
-    expect(() => verifyTx({ inputs: [input], outputs: [output] }, parents, 250)).to.throw('insufficient priority')
+    expect(() => verifyTx({ inputs: [input], outputs: [output] }, parents, 50)).to.throw('insufficient priority')
   })
 
   it('throws if duplicate input', () => {
     const input = { txid: new nimble.Transaction().hash, vout: 0 }
     const output = { script: [], satoshis: 1000 }
     const parents = [{ satoshis: 1000 }, { satoshis: 1000 }]
-    expect(() => verifyTx({ inputs: [input, input], outputs: [output] }, parents, 250)).to.throw('duplicate input')
+    expect(() => verifyTx({ inputs: [input, input], outputs: [output] }, parents, 50)).to.throw('duplicate input')
   })
 })

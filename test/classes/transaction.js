@@ -589,7 +589,7 @@ describe('Transaction', () => {
 
     it('removes change output if not enough to cover dust', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 50 }
+      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1 }
       const tx = new Transaction().from(utxo).change(address).finalize()
       expect(tx.outputs.length).to.equal(0)
       expect(tx.changeOutput).to.equal(undefined)

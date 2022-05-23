@@ -14,7 +14,7 @@ nimble.constants = require('./constants')
 nimble.functions = require('./functions')
 
 nimble.testnet = false
-nimble.feePerKb = 250
+nimble.feePerKb = 50
 
 nimble.version = typeof VERSION === 'undefined' ? require('./package.json').version : VERSION
 nimble.variant = typeof VARIANT === 'undefined' ? undefined : VARIANT
