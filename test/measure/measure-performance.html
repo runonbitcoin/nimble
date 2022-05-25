@@ -53,6 +53,13 @@
         }
         log('- sign tx (ms):', round((new Date() - start) / count))
 
+        const signature = nimble.functions.generateTxSignature(tx, 0, [], 1, privateKey, publicKey)
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            nimble.functions.verifyTxSignature(tx, 0, signature, publicKey, [], 1)
+        }
+        log('- verify sig (ms):', round((new Date() - start) / count))
+
         log('')
     </script>
 
@@ -86,13 +93,21 @@
         log('- sha256 (ms):', round((new Date() - start) / count))
 
         privateKey = new bsv.PrivateKey()
-        tx = new bsv.Transaction().from({ txid, vout: 0, script: new bsv.Script.fromAddress(privateKey.toAddress()), satoshis: 1 })
+        const script = bsv.Script.fromAddress(privateKey.toAddress())
+        tx = new bsv.Transaction().from({ txid, vout: 0, script, satoshis: 1 })
         start = new Date()
         for (let i = 0; i < count; i++) {
             tx.inputs[0].script = new bsv.Script()
             tx.sign(privateKey)
         }
         log('- sign tx (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        sig = tx.getSignatures(privateKey)[0].signature
+        for (let i = 0; i < count; i++) {
+            tx.verifySignature(sig, privateKey.toPublicKey(), 0, script, bsv.crypto.BN.One)
+        }
+        log('- verify sig (ms):', round((new Date() - start) / count))
 
         log('')
     </script>
@@ -144,6 +159,13 @@
         }
         log('- sign tx (ms):', round((new Date() - start) / count))
 
+        const sig = tx.sign(keyPair, bsvjs.Sig.SIGHASH_ALL, 0, new bsvjs.Script())
+        start = new Date()
+        for (let i = 0; i < count; i++) {
+            tx.verify(sig, keyPair.pubKey, 0, new bsvjs.Script())
+        }
+        log('- verify sig (ms):', round((new Date() - start) / count))
+
         log('')
     </script>
 
@@ -179,6 +201,7 @@
         log('- sha256 (ms):', round((new Date() - start) / count))
 
         const wasm_private_key = PrivateKey.fromWIF("L31JUXCGspUREe9Gya8F2WWjeoRz3bb8AQzJjAP8ntGYp37oYdSx");
+        const wasm_public_key = PublicKey.fromPrivateKey(wasm_private_key)
         const wasm_script = Script.fromASMString("OP_0 OP_RETURN");
         const wasm_tx = Transaction.fromHex("01000000029e8d016a7b0dc49a325922d05da1f916d1e4d4f0cb840c9727f3d22ce8d1363f000000008c493046022100e9318720bee5425378b4763b0427158b1051eec8b08442ce3fbfbf7b30202a44022100d4172239ebd701dae2fbaaccd9f038e7ca166707333427e3fb2a2865b19a7f27014104510c67f46d2cbb29476d1f0b794be4cb549ea59ab9cc1e731969a7bf5be95f7ad5e7f904e5ccf50a9dc1714df00fbeb794aa27aaff33260c1032d931a75c56f2ffffffffa3195e7a1ab665473ff717814f6881485dc8759bebe97e31c301ffe7933a656f020000008b48304502201c282f35f3e02a1f32d2089265ad4b561f07ea3c288169dedcf2f785e6065efa022100e8db18aadacb382eed13ee04708f00ba0a9c40e3b21cf91da8859d0f7d99e0c50141042b409e1ebbb43875be5edde9c452c82c01e3903d38fa4fd89f3887a52cb8aea9dc8aec7e2c9d5b3609c03eb16259a2537135a1bf0f9c5fbbcbdbaf83ba402442ffffffff02206b1000000000001976a91420bb5c3bfaef0231dc05190e7f1c8e22e098991e88acf0ca0100000000001976a9149e3e2d23973a04ec1b02be97c30ab9f2f27c3b2c88ac00000000");
         start = new Date()
@@ -187,6 +210,13 @@
             let wasm_sig = wasm_tx.sign(wasm_private_key, SigHash.InputsOutputs, 0, wasm_script, BigInt(0));
         }
         log('- sign tx (ms):', round((new Date() - start) / count))
+
+        start = new Date()
+        let wasm_sig = wasm_tx.sign(wasm_private_key, SigHash.InputsOutputs, 0, wasm_script, BigInt(0));
+        for (let i = 0; i < count; i++) {
+            wasm_tx.verify(wasm_public_key, wasm_sig)
+        }
+        log('- verify sig (ms):', round((new Date() - start) / count))
 
         log('')
     </script>
