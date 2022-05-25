@@ -133,10 +133,10 @@ nimble should always be faster than bsv.js and certainly fast enough for everyda
 
 | Library  | Load (ms) | Generate Keypair (ms) | Calculate Address (ms) | Sign Tx (ms) | Verify Signature (ms) | SHA256 (ms) |
 | -------- | --------- | --------------------- | ---------------------- | ------------ | --------------------- | ----------- |
-| nimble   | 9         | 1.6                   | 0                      | 1.7          | TBD                   | 0           |
-| bsv1     | 21        | 2                     | 0.2                    | 4.4          | TBD                   | 0.1         |
-| bsv2     | 25        | 1.4                   | 0.2                    | 2            | TBD                   | 0.1         |
-| bsv-wasm | 25        | 0.3                   | 0                      | 0.4          | TBD                   | 0           |
+| nimble   | 9         | 1.6                   | 0                      | 1.7          | 6                     | 0           |
+| bsv1     | 21        | 2                     | 0.2                    | 4.4          | 3.2                   | 0.1         |
+| bsv2     | 25        | 1.4                   | 0.2                    | 2            | 5.2                   | 0.1         |
+| bsv-wasm | 25        | 0.3                   | 0                      | 0.4          | 0.7                   | 0           |
 
 * Load performance was captured by loading the library from cache and calling any init functions
 * All others were captured by performing the operation 100 times in Chrome and taking the average
