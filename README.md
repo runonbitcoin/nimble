@@ -108,7 +108,7 @@ You can optimize the size further by telling your bundler where you intend to us
 
 ### Size
 
-nimble's main advantage is its small footprint. Other bsv libraries are hundreds of kilobytes, but sitting at a mere 64 kb, nimble is the smallest and fastest-loading library by a large margin. After gzipping, nimble is even further reduced to only 23 kb and may even be consumed peacemeal.
+nimble's main advantage is its small footprint. Other bsv libraries are hundreds of kilobytes, but sitting at a mere 69 kb, nimble is the smallest and fastest-loading library by a large margin. After gzipping, nimble is even further reduced to only 23 kb and may even be consumed peacemeal.
 
 ### Ease of use
 
@@ -124,19 +124,19 @@ nimble should always be faster than bsv.js and certainly fast enough for everyda
 
 | Library  | Size (KB) | Gzipped (KB) |
 | -------- | --------- | ------------ |
-| nimble   | 64        | 23           |
+| nimble   | 69        | 25           |
 | bsv1     | 326       | 98           |
 | bsv2     | 373       | 113          |
-| bsv-wasm | 687       | 206          |
+| bsv-wasm | 931       | 278          |
 
 **Performance Comparison**
 
 | Library  | Load (ms) | Generate Keypair (ms) | Calculate Address (ms) | Sign Tx (ms) | Verify Signature (ms) | SHA256 (ms) |
 | -------- | --------- | --------------------- | ---------------------- | ------------ | --------------------- | ----------- |
-| nimble   | 11        | 2                     | 0.2                    | TBD          | TBD                   | 0           |
-| bsv1     | 24        | 6.8                   | 0.3                    | TBD          | TBD                   | 1.2         |
-| bsv2     | 32        | 8.5                   | 0.5                    | TBD          | TBD                   | 0.7         |
-| bsv-wasm | 56        | 0.4                   | 0                      | TBD          | TBD                   | 0           |
+| nimble   | 9         | 1.6                   | 0                      | 1.7          | TBD                   | 0           |
+| bsv1     | 21        | 2                     | 0.2                    | 4.4          | TBD                   | 0.1         |
+| bsv2     | 25        | 1.4                   | 0.2                    | 2            | TBD                   | 0.1         |
+| bsv-wasm | 25        | 0.3                   | 0                      | 0.4          | TBD                   | 0           |
 
 * Load performance was captured by loading the library from cache and calling any init functions
 * All others were captured by performing the operation 100 times in Chrome and taking the average
