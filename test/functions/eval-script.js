@@ -665,3 +665,45 @@ describe('evalScript', () => {
     expect((await evalScript(unlock, lock, undefined, undefined, undefined, { async: true })).success).to.equal(false)
   })
 })
+
+
+describe('evalScript stackTrace', () => {
+  it('correctly traces stack through if/else branches', () => {
+    const vm = evalScript([OP_1], [OP_IF, OP_1, OP_1, OP_ELSE, OP_2, OP_2, OP_ENDIF, OP_ADD])
+    assert.equal(vm.chunks.length, vm.stackTrace.length)
+    assert.deepEqual(vm.stack, [ [ 2 ] ])
+  })
+
+  it('correctly traces stack through negative if/else branches', () => {
+    const vm = evalScript([OP_0], [OP_IF, OP_1, OP_1, OP_ELSE, OP_2, OP_2, OP_ENDIF, OP_ADD])
+    assert.equal(vm.chunks.length, vm.stackTrace.length)
+    assert.deepEqual(vm.stack, [ [ 4 ] ])
+  })
+
+  it('correctly traces stack through nested if/else branches', () => {
+    const vm = evalScript([OP_1], [OP_IF, OP_1, OP_1, OP_IF, OP_2, OP_ELSE, OP_3, OP_ENDIF, OP_ELSE, OP_2, OP_2, OP_ENDIF, OP_ADD])
+    assert.equal(vm.chunks.length, vm.stackTrace.length)
+    assert.deepEqual(vm.stack, [ [ 3 ] ])
+  })
+
+  it('does not trace after OP_RETURN', () => {
+    const vm = evalScript([OP_1], [OP_2, OP_RETURN, OP_10, { buf: [1, 2, 3, 4] }])
+    assert.equal(vm.chunks.length, 5)
+    assert.equal(vm.stackTrace.length, 3)
+    assert.deepEqual(vm.stack, [ [ 1 ], [ 2 ] ])
+  })
+
+  it('does not trace after eval error', () => {
+    const vm = evalScript([OP_1], [OP_FALSE, OP_VERIFY, OP_10, { buf: [1, 2, 3, 4] }])
+    assert.equal(vm.chunks.length, 5)
+    assert.equal(vm.stackTrace.length, 3)
+    assert.deepEqual(vm.stack, [ [ 1 ] ])
+  })
+
+  it('does not trace after setup error', () => {
+    const vm = evalScript([{ buf: [1, 2, 3, 4] }, OP_BIN2NUM], [OP_1, OP_FALSE, OP_VERIFY, OP_10])
+    assert.equal(vm.chunks.length, 0)
+    assert.equal(vm.stackTrace.length, 0)
+    assert.deepEqual(vm.stack, [])
+  })
+})

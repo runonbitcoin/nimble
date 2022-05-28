@@ -137,7 +137,7 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
   }
 
   function finish (error = null) {
-    traceStack(chunks.length - 1)
+    if (stackTrace.length) traceStack(stackTrace.length)
     if (!error && branchExec.length) error = new Error('ENDIF missing')
     const success = !error && !!stack.length && stack[stack.length - 1].some(x => x)
     if (!error && !success) error = new Error('top of stack is false')
@@ -220,12 +220,11 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
     let i = 0
 
     function step () {
-      traceStack(i - 1)
-
       // Skip branch
       if (branchExec.length > 0 && !branchExec[branchExec.length - 1]) {
         let sub = 0
         while (i < chunks.length) {
+          traceStack(i - 1)
           const chunk = chunks[i]
           const opcode = chunk.opcode
           if (opcode === OP_IF || opcode === OP_NOTIF) {
@@ -242,6 +241,8 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
           done = true
           return
         }
+      } else {
+        traceStack(i - 1)
       }
 
       const chunk = chunks[i++]
