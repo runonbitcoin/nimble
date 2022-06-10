@@ -13,7 +13,7 @@ describe('sha256', () => {
   })
 
   it('non-empty', () => {
-    const data = []
+    const data = [1, 2, 3, 4, 5]
     const expected = Array.from(bsv.crypto.Hash.sha256(bsv.deps.Buffer.from(data)))
     const actual = Array.from(sha256(data))
     expect(actual).to.deep.equal(expected)
