@@ -215,6 +215,27 @@ describe('Script', () => {
     })
   })
 
+  describe('concat', () => {
+    it('concatenates scripts', () => {
+      const emptyScript = new Script()
+      const script = new Script([1, 2])
+      const script2 = new Script([4, 5])
+      expect(Array.from(Script.concat().buffer)).to.deep.equal([])
+      expect(Array.from(Script.concat(emptyScript).buffer)).to.deep.equal([])
+      expect(Array.from(Script.concat(script).buffer)).to.deep.equal([1, 2])
+      expect(Array.from(Script.concat(emptyScript, script).buffer)).to.deep.equal([1, 2])
+      expect(Array.from(Script.concat(script, emptyScript).buffer)).to.deep.equal([1, 2])
+      expect(Array.from(Script.concat(script, script2).buffer)).to.deep.equal([1, 2, 4, 5])
+      expect(Array.from(Script.concat(script, script2, script).buffer)).to.deep.equal([1, 2, 4, 5, 1, 2])
+    })
+
+    it('thows if any argument is not a scripts', () => {
+      const script = new Script([1, 2])
+      expect(() => Script.concat('not a script')).to.throw('all arguments need to be scripts')
+      expect(() => Script.concat(script, 'not a script')).to.throw('all arguments need to be scripts')
+    })
+  })
+
   describe('P2PKHLockScript', () => {
     describe('fromAddress', () => {
       it('creates', () => {

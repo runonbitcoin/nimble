@@ -8,6 +8,7 @@ const isBuffer = require('../functions/is-buffer')
 const encodeASM = require('../functions/encode-asm')
 const decodeASM = require('../functions/decode-asm')
 const Address = require('./address')
+const BufferWriter = require('./buffer-writer')
 
 // These WeakMap caches allow the objects themselves to maintain their immutability
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
@@ -74,6 +75,17 @@ class Script {
     if (typeof script === 'object' && script) script = script.toHex ? script.toHex() : script.toString()
     if (typeof script === 'string') return Script.fromString(script)
     throw new Error('unsupported type')
+  }
+
+  static concat (...scripts) {
+    const writer = new BufferWriter()
+
+    for (const script of scripts) {
+      if (!(script instanceof Script)) throw new Error('all arguments need to be scripts')
+      writer.write(script.buffer)
+    }
+
+    return new Script(writer.toBuffer())
   }
 
   toString () {
