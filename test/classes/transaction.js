@@ -595,4 +595,23 @@ describe('Transaction', () => {
       expect(tx.changeOutput).to.equal(undefined)
     })
   })
+
+  describe('feePerKb', () => {
+    it('change the feePerKb', () => {
+      const tx = new Transaction().setFeePerKb(0)
+      const tx2 = new Transaction()
+      const bsvTx = new bsv.Transaction()
+      bsvTx.feePerKb = 0
+
+      expect(tx.feePerKb).to.equal(bsvTx.feePerKb)
+      expect(tx.feePerKb).to.not.equal(tx2.feePerKb)
+      expect(tx.feePerKb).to.equal(0)
+      expect(tx2.feePerKb).to.equal(nimble.feePerKb)
+    })
+
+    it('throws if invalid', () => {
+      expect(() => new Transaction().setFeePerKb(-1)).to.throw('bad satoshis: -1')
+      expect(() => new Transaction().finalize().setFeePerKb(-1)).to.throw('transaction finalized')
+    })
+  })
 })
