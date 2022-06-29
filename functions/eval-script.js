@@ -229,11 +229,11 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
         let psub = 0 // previous sub
         while (i < chunks.length) {
           const opcode = chunks[i].opcode
-          const prevOp = chunks[i-1].opcode
+          const prevOp = chunks[i - 1].opcode
           // Because we trace the previous chunk, this funky code works out if
           // it is an opcode that is executed or not
           const executed = (prevOp === OP_IF && sub === 0) || ([OP_ELSE, OP_ENDIF].includes(prevOp) && psub === 0)
-          traceStack(i-1, executed)
+          traceStack(i - 1, executed)
           psub = sub
           if (opcode === OP_IF || opcode === OP_NOTIF) {
             sub++
