@@ -3,6 +3,7 @@
   "version": "1.0.13",
   "description": "A practical everyday JS library for BSV",
   "main": "index.js",
+  "types": "index.d.ts",
   "browser": "dist/nimble.browser.min.js",
   "license": "MIT",
   "repository": "git+https://github.com/runonbitcoin/nimble.git",
@@ -11,7 +12,8 @@
     "constants",
     "dist/**.min.js",
     "functions",
-    "wasm/*.js"
+    "wasm/*.js",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "webpack",
@@ -19,9 +21,16 @@
     "test": "env LIB=. mocha",
     "test:cover": "env LIB=. env COVER=1 nyc --clean=${CLEAN:=true} -r=text -r=lcovonly -x=test/** mocha",
     "test:node": "webpack && env LIB=dist/nimble.node.min.js env VARIANT=node mocha",
-    "test:browser": "node test/env/browser"
+    "test:browser": "node test/env/browser",
+    "test:types": "tsd"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/selenium-webdriver": "^4.1.1",
     "bsv": "^1.5.6",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
@@ -31,7 +40,11 @@
     "nyc": "^15.1.0",
     "selenium-webdriver": "^4.1.1",
     "standard": "^16.0.4",
+    "tsd": "^0.21.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
+  },
+  "tsd": {
+    "directory": "test"
   }
 }
