@@ -19,6 +19,7 @@ describe('functions', () => {
   require('./functions/calculate-txid')
   require('./functions/create-p2pkh-lock-script')
   require('./functions/create-p2pkh-unlock-script')
+  require('./functions/create-safedata-script')
   require('./functions/decode-address')
   require('./functions/decode-asm')
   require('./functions/decode-base64')

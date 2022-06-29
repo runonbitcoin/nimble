@@ -6,6 +6,7 @@ module.exports = {
   calculateTxid: require('./calculate-txid'),
   createP2PKHLockScript: require('./create-p2pkh-lock-script'),
   createP2PKHUnlockScript: require('./create-p2pkh-unlock-script'),
+  createSafeDataScript: require('./create-safedata-script'),
   decodeAddress: require('./decode-address'),
   decodeASM: require('./decode-asm'),
   decodeBase58Check: require('./decode-base58-check'),
