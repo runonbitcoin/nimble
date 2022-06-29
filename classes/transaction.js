@@ -29,7 +29,7 @@ class Transaction {
     this.inputs = []
     this.outputs = []
     this.locktime = 0
-    this.feePerKb = require('../index').feePerKb;
+    this.feePerKb = require('../index').feePerKb
 
     // An actual output object matching an entry in this.outputs
     this.changeOutput = undefined
@@ -200,7 +200,7 @@ class Transaction {
 
   verify () {
     const parents = this.inputs.map(input => input.output)
-    const minFeePerKb = require('../index').feePerKb
+    const minFeePerKb = this.feePerKb
     verifyTx(this, parents, minFeePerKb)
     return this
   }
