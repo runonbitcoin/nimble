@@ -132,8 +132,10 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
   let checkIndex = 0
   let done = false
 
-  function traceStack (i) {
-    if (trace && i >= 0) stackTrace.push([chunks[i], [...stack], [...altStack]])
+  function traceStack (i, ex = true) {
+    if (trace && i >= 0) {
+      stackTrace.push([{ op: chunks[i].opcode, ex }, [...stack], [...altStack]])
+    }
   }
 
   function finish (error = null) {
@@ -222,11 +224,16 @@ function evalScript (unlockScript, lockScript, tx, vin, parentSatoshis, opts = {
     function step () {
       // Skip branch
       if (branchExec.length > 0 && !branchExec[branchExec.length - 1]) {
-        let sub = 0
+        let sub = 0   // sub branch
+        let psub = 0  // previous sub
         while (i < chunks.length) {
-          traceStack(i - 1)
-          const chunk = chunks[i]
-          const opcode = chunk.opcode
+          const opcode = chunks[i].opcode
+          const prevOp = chunks[i-1].opcode
+          // Because we trace the stack for the previous chunk, this funky code
+          // works out if it is an opcode that is executed or not
+          const executed = (prevOp === OP_IF && sub === 0) || [OP_ELSE, OP_ENDIF].includes(prevOp) && psub === 0
+          traceStack(i - 1, executed)
+          psub = sub
           if (opcode === OP_IF || opcode === OP_NOTIF) {
             sub++
           } else if (opcode === OP_ENDIF) {
