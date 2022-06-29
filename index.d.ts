@@ -4,9 +4,9 @@ export const feePerKb: number;
 
 export module classes {
   export class BufferReader {
-    constructor(buffer: Buffer, pos?: number);
+    constructor(buffer: Uint8Array | number[], pos?: number);
       
-    read(length: number): Buffer;
+    read(length: number): Uint8Array;
     close(): void;
     checkRemaining(length: number): void;
   }
@@ -14,16 +14,16 @@ export module classes {
   export class BufferWriter {
     constructor();
       
-    write(buffer: Buffer | number[]): BufferWriter;
+    write(buffer: Uint8Array | number[]): BufferWriter;
     toBuffer(): Uint8Array;
   }
 
   export class PrivateKey {
-    constructor(number: Buffer, testnet: boolean, compressed: boolean, validate?: boolean);
+    constructor(number: Uint8Array, testnet: boolean, compressed: boolean, validate?: boolean);
   
     readonly compressed: boolean;
     readonly testnet: boolean;
-    readonly number: Buffer;
+    readonly number: Uint8Array;
   
     static from(privateKey: PrivateKey | string | Object ): PrivateKey;
     static fromString(wif: string): PrivateKey;
@@ -51,7 +51,7 @@ export module classes {
   }
 
   export class Address {
-    constructor(pubkeyhash: Buffer, testnet: boolean, validate?: boolean);
+    constructor(pubkeyhash: Uint8Array, testnet: boolean, validate?: boolean);
 
     readonly testnet: boolean;
     readonly pubkeyhash: Uint8Array;
@@ -69,19 +69,19 @@ export module classes {
   }
 
   export class Script {
-    constructor(buffer?: Buffer, validate?: boolean);
+    constructor(buffer?: Uint8Array | number[], validate?: boolean);
 
     readonly buffer: Uint8Array;
     readonly length: number;
     readonly chunks: Chunks[];
 
-    static slice(start: number, end: number): Buffer;
+    static slice(start: number, end: number): Uint8Array;
 
     static fromString(s: string): Script;
     static fromHex(s: string): Script;
     static fromASM(s: string): Script;
-    static fromBuffer(buffer: Buffer| Uint8Array): Script;
-    static from(script: Script | Buffer| Uint8Array | string | Object): Script;
+    static fromBuffer(buffer: Uint8Array | number[]): Script;
+    static from(script: Script | Uint8Array | number[] | string | Object): Script;
     
     static templates: scriptTemplates;
 
@@ -93,7 +93,7 @@ export module classes {
 
   export namespace Transaction {
     export class Output {
-      constructor(script: Script | Buffer | string, satoshis: number, tx?: Transaction);
+      constructor(script: Script | Uint8Array | number[] | string, satoshis: number, tx?: Transaction);
 
       readonly txid: string;
       readonly vout: number;
@@ -140,7 +140,7 @@ export module classes {
 
     static fromString(hex: string): Transaction;
     static fromHex(hex: string): Transaction;
-    static fromBuffer(buffer: Buffer | Uint8Array): Transaction;
+    static fromBuffer(buffer: Uint8Array): Transaction;
     static from(output: Transaction.Output | Transaction.Output[]): Transaction;
   
     toString(): string;
@@ -150,7 +150,7 @@ export module classes {
 }
 
 declare interface P2PKHLockScript extends Script {
-  matches(buffer: Buffer): boolean;
+  matches(buffer: Uint8Array | number[]): boolean;
   fromAddress(address: Address | PublicKey | string | Object): P2PKHLockScript;
   toAddress(): Address;
 }
@@ -165,11 +165,11 @@ export type BufferReader = classes.BufferReader
 export type BufferWriter = classes.BufferWriter
 
 export type Point = {
-  x: Buffer;
-  y: Buffer;
+  x: Uint8Array;
+  y: Uint8Array;
 };
 
 export type Chunks = {
   opcode: number;
-  buf?: Uint8Array;
+  buf?: Uint8Array | number[];
 };

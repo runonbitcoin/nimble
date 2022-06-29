@@ -14,12 +14,12 @@ expectType<boolean>(nimble.testnet)
 expectType<number>(nimble.feePerKb)
 
 // Buffer reader & writer
-const buffer = Buffer.from('nimble');
+const buffer = new Uint8Array([1,2,3,4]);
 expectType<BufferReader>(new nimble.classes.BufferReader(buffer))
 expectType<BufferReader>(new nimble.classes.BufferReader(buffer, 0))
 
 const bufferReader = new nimble.classes.BufferReader(buffer)
-expectType<Buffer>(bufferReader.read(0))
+expectType<Uint8Array>(bufferReader.read(0))
 expectType<void>(bufferReader.close())
 expectType<void>(bufferReader.checkRemaining(0))
 
@@ -43,7 +43,7 @@ expectType<PrivateKey>(nimble.PrivateKey.from(object))
 
 expectType<boolean>(privkey.compressed)
 expectType<boolean>(privkey.testnet)
-expectType<Buffer>(privkey.number)
+expectType<Uint8Array>(privkey.number)
 
 expectType<Address>(privkey.toAddress())
 expectType<string>(privkey.toString())
@@ -97,11 +97,9 @@ const script = new Script()
 expectType<Script>(nimble.Script.fromString(script.toString()))
 expectType<Script>(nimble.Script.fromASM(script.toASM()))
 expectType<Script>(nimble.Script.fromBuffer(script.toBuffer()))
-expectType<Script>(nimble.Script.fromBuffer(Buffer.from(script.toBuffer())))
 expectType<Script>(nimble.Script.fromHex(script.toHex()))
 expectType<Script>(nimble.Script.from(script))
 expectType<Script>(nimble.Script.from(script.toBuffer()))
-expectType<Script>(nimble.Script.from(Buffer.from(script.toBuffer())))
 expectType<Script>(nimble.Script.from(script.toString()))
 expectType<Script>(nimble.Script.from(object))
 
@@ -189,7 +187,6 @@ expectType<void>(tx._calculateChange())
 expectType<Transaction>(nimble.Transaction.fromString(tx.toString()))
 expectType<Transaction>(nimble.Transaction.fromHex(tx.toHex()))
 expectType<Transaction>(nimble.Transaction.fromBuffer(tx.toBuffer()))
-expectType<Transaction>(nimble.Transaction.fromBuffer(Buffer.from(tx.toBuffer())))
 expectType<Transaction>(nimble.Transaction.from(output))
 expectType<Transaction>(nimble.Transaction.from(tx.outputs))
 

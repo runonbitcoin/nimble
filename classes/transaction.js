@@ -247,11 +247,8 @@ class Transaction {
 
   setFeePerKb (satoshis) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
-
     verifySatoshis(satoshis)
-
     this.feePerKb = satoshis
-
     return this
   }
 }
