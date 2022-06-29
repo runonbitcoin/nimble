@@ -29,6 +29,7 @@ class Transaction {
     this.inputs = []
     this.outputs = []
     this.locktime = 0
+    this.feePerKb = require('../index').feePerKb;
 
     // An actual output object matching an entry in this.outputs
     this.changeOutput = undefined
@@ -231,7 +232,7 @@ class Transaction {
     this.changeOutput.satoshis = 0
 
     const currentFee = this.fee
-    const expectedFee = Math.ceil(encodeTx(this).length * require('../index').feePerKb / 1000)
+    const expectedFee = Math.ceil(encodeTx(this).length * this.feePerKb / 1000)
 
     const change = currentFee - expectedFee
     const minDust = 1
@@ -242,6 +243,16 @@ class Transaction {
       this.outputs.splice(changeIndex, 1)
       this.changeOutput = undefined
     }
+  }
+
+  setFeePerKb (satoshis) {
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
+
+    verifySatoshis(satoshis)
+
+    this.feePerKb = satoshis
+
+    return this
   }
 }
 
