@@ -166,7 +166,7 @@ export type BufferWriter = classes.BufferWriter
 
 export interface ByteArray extends Iterable<number> {
   length: number;
-};
+}
 
 export type Point = {
   x: ByteArray;
