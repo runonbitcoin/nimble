@@ -137,6 +137,7 @@ export module classes {
     verify(): Transaction;
     finalize(): Transaction;
     _calculateChange(): void;
+    setFeePerKb(satoshis: number): Transaction;
 
     static fromString(hex: string): Transaction;
     static fromHex(hex: string): Transaction;

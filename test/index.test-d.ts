@@ -185,6 +185,7 @@ expectType<Transaction>(tx.sign(privkey.toString()))
 expectType<Transaction>(tx.verify())
 expectType<Transaction>(tx.finalize())
 expectType<void>(tx._calculateChange())
+expectType<Transaction>(tx.setFeePerKb(satoshis))
 
 expectType<Transaction>(nimble.Transaction.fromString(tx.toString()))
 expectType<Transaction>(nimble.Transaction.fromHex(tx.toHex()))
