@@ -4,9 +4,9 @@ export const feePerKb: number;
 
 export module classes {
   export class BufferReader {
-    constructor(buffer: Uint8Array | number[], pos?: number);
+    constructor(buffer: ByteArray, pos?: number);
       
-    read(length: number): Uint8Array;
+    read(length: number): ByteArray;
     close(): void;
     checkRemaining(length: number): void;
   }
@@ -14,16 +14,16 @@ export module classes {
   export class BufferWriter {
     constructor();
       
-    write(buffer: Uint8Array | number[]): BufferWriter;
-    toBuffer(): Uint8Array;
+    write(buffer: ByteArray): BufferWriter;
+    toBuffer(): ByteArray;
   }
 
   export class PrivateKey {
-    constructor(number: Uint8Array, testnet: boolean, compressed: boolean, validate?: boolean);
+    constructor(number: ByteArray, testnet: boolean, compressed: boolean, validate?: boolean);
   
     readonly compressed: boolean;
     readonly testnet: boolean;
-    readonly number: Uint8Array;
+    readonly number: ByteArray;
   
     static from(privateKey: PrivateKey | string | Object ): PrivateKey;
     static fromString(wif: string): PrivateKey;
@@ -47,14 +47,14 @@ export module classes {
 
     toAddress(): Address;
     toString(): string;
-    toBuffer(): Uint8Array;
+    toBuffer(): ByteArray;
   }
 
   export class Address {
-    constructor(pubkeyhash: Uint8Array, testnet: boolean, validate?: boolean);
+    constructor(pubkeyhash: ByteArray, testnet: boolean, validate?: boolean);
 
     readonly testnet: boolean;
-    readonly pubkeyhash: Uint8Array;
+    readonly pubkeyhash: ByteArray;
 
     static from(x: Address | PublicKey | string | Object): Address;
     static fromString(s: string): Address;
@@ -69,31 +69,31 @@ export module classes {
   }
 
   export class Script {
-    constructor(buffer?: Uint8Array | number[], validate?: boolean);
+    constructor(buffer?: ByteArray, validate?: boolean);
 
-    readonly buffer: Uint8Array;
+    readonly buffer: ByteArray;
     readonly length: number;
     readonly chunks: Chunks[];
 
-    static slice(start: number, end: number): Uint8Array;
+    static slice(start: number, end: number): ByteArray;
 
     static fromString(s: string): Script;
     static fromHex(s: string): Script;
     static fromASM(s: string): Script;
-    static fromBuffer(buffer: Uint8Array | number[]): Script;
-    static from(script: Script | Uint8Array | number[] | string | Object): Script;
+    static fromBuffer(buffer: ByteArray): Script;
+    static from(script: Script | ByteArray | string | Object): Script;
     
     static templates: scriptTemplates;
 
     toString(): string;
     toASM(): string;
     toHex(): string;
-    toBuffer(): Uint8Array;
+    toBuffer(): ByteArray;
   }
 
   export namespace Transaction {
     export class Output {
-      constructor(script: Script | Uint8Array | number[] | string, satoshis: number, tx?: Transaction);
+      constructor(script: Script | ByteArray | string, satoshis: number, tx?: Transaction);
 
       readonly txid: string;
       readonly vout: number;
@@ -140,17 +140,17 @@ export module classes {
 
     static fromString(hex: string): Transaction;
     static fromHex(hex: string): Transaction;
-    static fromBuffer(buffer: Uint8Array): Transaction;
+    static fromBuffer(buffer: ByteArray): Transaction;
     static from(output: Transaction.Output | Transaction.Output[]): Transaction;
   
     toString(): string;
     toHex(): string;
-    toBuffer(): Uint8Array;
+    toBuffer(): ByteArray;
   }
 }
 
 declare interface P2PKHLockScript extends Script {
-  matches(buffer: Uint8Array | number[]): boolean;
+  matches(buffer: ByteArray): boolean;
   fromAddress(address: Address | PublicKey | string | Object): P2PKHLockScript;
   toAddress(): Address;
 }
@@ -164,12 +164,16 @@ export class Transaction extends classes.Transaction {}
 export type BufferReader = classes.BufferReader
 export type BufferWriter = classes.BufferWriter
 
+export interface ByteArray extends Iterable<number> {
+  length: number;
+};
+
 export type Point = {
-  x: Uint8Array;
-  y: Uint8Array;
+  x: ByteArray;
+  y: ByteArray;
 };
 
 export type Chunks = {
   opcode: number;
-  buf?: Uint8Array | number[];
+  buf?: ByteArray;
 };

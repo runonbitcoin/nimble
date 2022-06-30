@@ -2,12 +2,14 @@ import { expectType } from 'tsd'
 import nimble, {
   Address,
   BufferReader,
+  ByteArray,
   classes,
   P2PKHLockScript,
   PrivateKey,
   PublicKey,
   Script, 
-  Transaction} from '../index'
+  Transaction
+} from '../index'
 
 expectType<string>(nimble.version)
 expectType<boolean>(nimble.testnet)
@@ -19,7 +21,7 @@ expectType<BufferReader>(new nimble.classes.BufferReader(buffer))
 expectType<BufferReader>(new nimble.classes.BufferReader(buffer, 0))
 
 const bufferReader = new nimble.classes.BufferReader(buffer)
-expectType<Uint8Array>(bufferReader.read(0))
+expectType<ByteArray>(bufferReader.read(0))
 expectType<void>(bufferReader.close())
 expectType<void>(bufferReader.checkRemaining(0))
 
@@ -27,7 +29,7 @@ const bufferWriter = new nimble.classes.BufferWriter()
 expectType<classes.BufferWriter>(new nimble.classes.BufferWriter())
 expectType<classes.BufferWriter>(bufferWriter.write(buffer))
 expectType<classes.BufferWriter>(bufferWriter.write([0, 106]))
-expectType<Uint8Array>(bufferWriter.toBuffer())
+expectType<ByteArray>(bufferWriter.toBuffer())
 
 // PrivateKey
 expectType<PrivateKey>(new nimble.PrivateKey(buffer, false, false))
@@ -43,7 +45,7 @@ expectType<PrivateKey>(nimble.PrivateKey.from(object))
 
 expectType<boolean>(privkey.compressed)
 expectType<boolean>(privkey.testnet)
-expectType<Uint8Array>(privkey.number)
+expectType<ByteArray>(privkey.number)
 
 expectType<Address>(privkey.toAddress())
 expectType<string>(privkey.toString())
@@ -68,7 +70,7 @@ expectType<nimble.Point>(pubkey.point)
 
 expectType<Address>(pubkey.toAddress())
 expectType<string>(pubkey.toString())
-expectType<Uint8Array>(pubkey.toBuffer())
+expectType<ByteArray>(pubkey.toBuffer())
 
 // Address
 expectType<Address>(new nimble.Address(buffer, false))
@@ -82,7 +84,7 @@ expectType<Address>(nimble.Address.from(pubkey.toAddress().toString()))
 expectType<Address>(nimble.Address.from(object))
 
 const address = pubkey.toAddress()
-expectType<Uint8Array>(address.pubkeyhash)
+expectType<ByteArray>(address.pubkeyhash)
 expectType<boolean>(address.testnet)
 
 expectType<string>(address.toString())
@@ -103,12 +105,12 @@ expectType<Script>(nimble.Script.from(script.toBuffer()))
 expectType<Script>(nimble.Script.from(script.toString()))
 expectType<Script>(nimble.Script.from(object))
 
-expectType<Uint8Array>(script.buffer)
+expectType<ByteArray>(script.buffer)
 expectType<number>(script.length)
 expectType<nimble.Chunks[]>(script.chunks)
 
 expectType<string>(script.toASM())
-expectType<Uint8Array>(script.toBuffer())
+expectType<ByteArray>(script.toBuffer())
 expectType<string>(script.toHex())
 expectType<string>(script.toString())
 
@@ -192,4 +194,4 @@ expectType<Transaction>(nimble.Transaction.from(tx.outputs))
 
 expectType<string>(tx.toString())
 expectType<string>(tx.toHex())
-expectType<Uint8Array>(tx.toBuffer())
+expectType<ByteArray>(tx.toBuffer())
