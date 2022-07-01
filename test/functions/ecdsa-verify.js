@@ -1,7 +1,13 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { generatePrivateKey, calculatePublicKey, ecdsaSign, ecdsaVerify, sha256 } = nimble.functions
+const {
+  generatePrivateKey,
+  calculatePublicKey,
+  ecdsaSign,
+  ecdsaVerify,
+  sha256,
+} = nimble.functions
 
 describe('ecdsaVerify', () => {
   it('valid', () => {

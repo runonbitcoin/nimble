@@ -1,7 +1,13 @@
-const { BN_SIZE, getMemoryBuffer, getSecp256k1Exports, writeBN, readBN } = require('../wasm/wasm-secp256k1')
+const {
+  BN_SIZE,
+  getMemoryBuffer,
+  getSecp256k1Exports,
+  writeBN,
+  readBN,
+} = require('../wasm/wasm-secp256k1')
 const verifyPoint = require('./verify-point')
 
-function decodePublicKey (buffer) {
+function decodePublicKey(buffer) {
   const prefix = buffer[0]
 
   if (prefix === 0x04) {
@@ -19,7 +25,7 @@ function decodePublicKey (buffer) {
   throw new Error(`bad prefix: ${prefix}`)
 }
 
-function decodeCompressedPublicKey (buffer) {
+function decodeCompressedPublicKey(buffer) {
   if (buffer.length !== 33) throw new Error('bad length')
 
   let xstart = 1
@@ -39,7 +45,7 @@ function decodeCompressedPublicKey (buffer) {
   return { x, y }
 }
 
-function decodeUncompressedPublicKey (buffer) {
+function decodeUncompressedPublicKey(buffer) {
   if (buffer.length !== 65) throw new Error('bad length')
 
   let xstart = 1

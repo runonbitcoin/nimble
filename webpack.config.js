@@ -18,9 +18,15 @@ const DIST_PATH = path.join(__dirname, 'dist/')
 const PKG_NAME = pkg.name.split('/').pop()
 const LIBRARY_NAME = 'nimble'
 
-const VERSION_PLUGIN = new webpack.DefinePlugin({ VERSION: JSON.stringify(pkg.version) })
-const VARIANT_BROWSER_PLUGIN = new webpack.DefinePlugin({ VARIANT: JSON.stringify('browser') })
-const VARIANT_NODE_PLUGIN = new webpack.DefinePlugin({ VARIANT: JSON.stringify('node') })
+const VERSION_PLUGIN = new webpack.DefinePlugin({
+  VERSION: JSON.stringify(pkg.version),
+})
+const VARIANT_BROWSER_PLUGIN = new webpack.DefinePlugin({
+  VARIANT: JSON.stringify('browser'),
+})
+const VARIANT_NODE_PLUGIN = new webpack.DefinePlugin({
+  VARIANT: JSON.stringify('node'),
+})
 
 fs.removeSync(DIST_PATH)
 fs.mkdirSync(DIST_PATH)
@@ -35,11 +41,11 @@ const terserPluginConfig = {
     ecma: 2015,
     mangle: {
       reserved: ['P2PKHLockScript'],
-      properties: false
-    }
+      properties: false,
+    },
   },
   // Leave license comments intact
-  extractComments: false
+  extractComments: false,
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -52,22 +58,17 @@ const browserMin = {
     filename: `${PKG_NAME}.browser.min.js`,
     path: DIST_PATH,
     library: LIBRARY_NAME,
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   resolve: {
     mainFields: ['browser', 'main', 'module'],
-    extensions: ['.js', '.mjs', '.wasm', '.json']
+    extensions: ['.js', '.mjs', '.wasm', '.json'],
   },
   optimization: {
-    minimizer: [
-      new TerserPlugin(terserPluginConfig)
-    ]
+    minimizer: [new TerserPlugin(terserPluginConfig)],
   },
-  plugins: [
-    VERSION_PLUGIN,
-    VARIANT_BROWSER_PLUGIN
-  ],
-  stats: 'errors-only'
+  plugins: [VERSION_PLUGIN, VARIANT_BROWSER_PLUGIN],
+  stats: 'errors-only',
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -80,16 +81,13 @@ const nodeMin = {
   output: {
     filename: `${PKG_NAME}.node.min.js`,
     path: DIST_PATH,
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
   resolve: {
     mainFields: ['main', 'module'],
-    extensions: ['.js', '.mjs', '.wasm', '.json']
+    extensions: ['.js', '.mjs', '.wasm', '.json'],
   },
-  plugins: [
-    VERSION_PLUGIN,
-    VARIANT_NODE_PLUGIN
-  ]
+  plugins: [VERSION_PLUGIN, VARIANT_NODE_PLUGIN],
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -101,13 +99,10 @@ const browser = {
   output: {
     filename: `${PKG_NAME}.browser.js`,
     path: DIST_PATH,
-    library: LIBRARY_NAME
+    library: LIBRARY_NAME,
   },
-  plugins: [
-    VERSION_PLUGIN,
-    VARIANT_BROWSER_PLUGIN
-  ],
-  optimization: { minimize: false }
+  plugins: [VERSION_PLUGIN, VARIANT_BROWSER_PLUGIN],
+  optimization: { minimize: false },
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -119,13 +114,10 @@ const node = {
   output: {
     filename: `${PKG_NAME}.node.js`,
     path: DIST_PATH,
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
-  plugins: [
-    VERSION_PLUGIN,
-    VARIANT_NODE_PLUGIN
-  ],
-  optimization: { minimize: false }
+  plugins: [VERSION_PLUGIN, VARIANT_NODE_PLUGIN],
+  optimization: { minimize: false },
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -134,8 +126,8 @@ const node = {
 
 const patterns = process.env.SPECS ? JSON.parse(process.env.SPECS) : ['test']
 const paths = new Set()
-patterns.forEach(x => glob.sync(x).forEach(y => paths.add(y)))
-const entries = Array.from(paths).map(x => path.join(process.cwd(), x))
+patterns.forEach((x) => glob.sync(x).forEach((y) => paths.add(y)))
+const entries = Array.from(paths).map((x) => path.join(process.cwd(), x))
 if (!entries.length) throw new Error(`no test files found: ${patterns}`)
 
 const browserTests = {
@@ -143,7 +135,7 @@ const browserTests = {
   entry: entries,
   output: {
     filename: `${PKG_NAME}.browser.tests.js`,
-    path: DIST_PATH
+    path: DIST_PATH,
   },
   node: { fs: 'empty' },
   externals: {
@@ -151,11 +143,11 @@ const browserTests = {
     chai: 'chai',
     jsdom: 'jsdom',
     bsv: 'bsv',
-    target: LIBRARY_NAME
+    target: LIBRARY_NAME,
   },
   optimization: { minimize: false },
   plugins: [new webpack.EnvironmentPlugin(process.env), VARIANT_BROWSER_PLUGIN],
-  stats: 'errors-only'
+  stats: 'errors-only',
 }
 
 // ------------------------------------------------------------------------------------------------

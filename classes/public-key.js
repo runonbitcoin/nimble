@@ -10,11 +10,13 @@ const verifyPoint = require('../functions/verify-point')
 const PRIVATE_KEY_TO_PUBLIC_KEY_CACHE = new WeakMap() // Cached to reduce secp256k1 multiplication
 
 class PublicKey {
-  constructor (point, testnet, compressed, validate = true) {
+  constructor(point, testnet, compressed, validate = true) {
     if (validate) {
-      if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y)) throw new Error('bad point')
+      if (typeof point !== 'object' || !isBuffer(point.x) || !isBuffer(point.y))
+        throw new Error('bad point')
       if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
-      if (typeof compressed !== 'boolean') throw new Error('bad compressed flag')
+      if (typeof compressed !== 'boolean')
+        throw new Error('bad compressed flag')
       verifyPoint(point)
     }
 
@@ -25,18 +27,20 @@ class PublicKey {
     Object.freeze(this)
   }
 
-  static fromString (pubkey) {
+  static fromString(pubkey) {
     const point = decodePublicKey(decodeHex(pubkey))
     const testnet = require('../index').testnet
     const compressed = pubkey.length === 66
     return new PublicKey(point, testnet, compressed, false)
   }
 
-  static fromPrivateKey (privateKey) {
-    if (PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.has(privateKey)) return PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.get(privateKey)
+  static fromPrivateKey(privateKey) {
+    if (PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.has(privateKey))
+      return PRIVATE_KEY_TO_PUBLIC_KEY_CACHE.get(privateKey)
 
     const PrivateKey = require('./private-key')
-    if (!(privateKey instanceof PrivateKey)) throw new Error(`not a PrivateKey: ${privateKey}`)
+    if (!(privateKey instanceof PrivateKey))
+      throw new Error(`not a PrivateKey: ${privateKey}`)
 
     const point = calculatePublicKey(privateKey.number)
     const testnet = privateKey.testnet
@@ -48,7 +52,7 @@ class PublicKey {
     return publicKey
   }
 
-  static from (x) {
+  static from(x) {
     if (x instanceof PublicKey) return x
     const PrivateKey = require('./private-key')
     if (x instanceof PrivateKey) return PublicKey.fromPrivateKey(x)
@@ -57,15 +61,15 @@ class PublicKey {
     throw new Error('unsupported type')
   }
 
-  toString () {
+  toString() {
     return encodeHex(this.toBuffer())
   }
 
-  toBuffer () {
+  toBuffer() {
     return encodePublicKey(this.point, this.compressed)
   }
 
-  toAddress () {
+  toAddress() {
     const Address = require('./address')
     return Address.fromPublicKey(this)
   }

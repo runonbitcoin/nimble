@@ -21,8 +21,9 @@ const verifyTx = require('../functions/verify-tx')
 const TRANSACTION_TO_TXID_CACHE = new WeakMap()
 
 class Transaction {
-  constructor (...args) {
-    if (args.length) throw new Error('use Transaction.fromHex() to parse a transaction')
+  constructor(...args) {
+    if (args.length)
+      throw new Error('use Transaction.fromHex() to parse a transaction')
 
     // This basic data structure matches what the functions encodeTx and decodeTx expect
     this.version = 1
@@ -35,44 +36,45 @@ class Transaction {
     this.changeOutput = undefined
   }
 
-  static fromHex (hex) {
+  static fromHex(hex) {
     const buffer = decodeHex(hex)
     return Transaction.fromBuffer(buffer)
   }
 
-  static fromString (hex) {
+  static fromString(hex) {
     return this.fromHex(hex)
   }
 
-  static fromBuffer (buffer) {
+  static fromBuffer(buffer) {
     if (!isBuffer(buffer)) throw new Error('not a buffer')
     const txData = decodeTx(buffer)
 
     const tx = new this()
-    txData.inputs.forEach(inp => tx.input(inp))
-    txData.outputs.forEach(out => tx.output(out))
+    txData.inputs.forEach((inp) => tx.input(inp))
+    txData.outputs.forEach((out) => tx.output(out))
     tx.locktime = txData.locktime
     tx.version = txData.version
 
     return tx
   }
 
-  toHex () {
+  toHex() {
     return encodeHex(this.toBuffer())
   }
 
-  toString () {
+  toString() {
     return this.toHex()
   }
 
-  toBuffer () {
+  toBuffer() {
     this._calculateChange()
     return encodeTx(this)
   }
 
-  get hash () {
+  get hash() {
     if (Object.isFrozen(this)) {
-      if (TRANSACTION_TO_TXID_CACHE.has(this)) return TRANSACTION_TO_TXID_CACHE.get(this)
+      if (TRANSACTION_TO_TXID_CACHE.has(this))
+        return TRANSACTION_TO_TXID_CACHE.get(this)
       const txid = calculateTxid(this.toBuffer())
       TRANSACTION_TO_TXID_CACHE.set(this, txid)
       return txid
@@ -81,24 +83,32 @@ class Transaction {
     return calculateTxid(this.toBuffer())
   }
 
-  get fee () {
-    const incompleteInputIndex = this.inputs.findIndex(x => !x.output)
+  get fee() {
+    const incompleteInputIndex = this.inputs.findIndex((x) => !x.output)
     if (incompleteInputIndex !== -1) {
       const hint = `Hint: Set tx.inputs[${incompleteInputIndex}].output = new Transaction.Output(script, satoshis)`
-      throw new Error(`missing previous output information for input ${incompleteInputIndex}\n\n${hint}`)
+      throw new Error(
+        `missing previous output information for input ${incompleteInputIndex}\n\n${hint}`
+      )
     }
 
-    const satoshisIn = this.inputs.reduce((prev, curr) => prev + curr.output.satoshis, 0)
-    const satoshisOut = this.outputs.reduce((prev, curr) => prev + curr.satoshis, 0)
+    const satoshisIn = this.inputs.reduce(
+      (prev, curr) => prev + curr.output.satoshis,
+      0
+    )
+    const satoshisOut = this.outputs.reduce(
+      (prev, curr) => prev + curr.satoshis,
+      0
+    )
 
     return satoshisIn - satoshisOut
   }
 
-  from (output) {
+  from(output) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     if (Array.isArray(output)) {
-      output.forEach(output => this.from(output))
+      output.forEach((output) => this.from(output))
       return this
     }
 
@@ -108,7 +118,7 @@ class Transaction {
     return this
   }
 
-  to (address, satoshis) {
+  to(address, satoshis) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     address = Address.from(address)
@@ -121,28 +131,37 @@ class Transaction {
     return this
   }
 
-  input (input) {
+  input(input) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
     if (typeof input !== 'object' || !input) throw new Error('bad input')
 
-    input = input instanceof Input
-      ? input
-      : new Input(
-        typeof input.txid === 'undefined' && input.output ? input.output.txid : input.txid,
-        typeof input.vout === 'undefined' && input.output ? input.output.vout : input.vout,
-        input.script,
-        input.sequence,
-        input.output)
+    input =
+      input instanceof Input
+        ? input
+        : new Input(
+            typeof input.txid === 'undefined' && input.output
+              ? input.output.txid
+              : input.txid,
+            typeof input.vout === 'undefined' && input.output
+              ? input.output.vout
+              : input.vout,
+            input.script,
+            input.sequence,
+            input.output
+          )
 
     this.inputs.push(input)
 
     return this
   }
 
-  output (output) {
+  output(output) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
-    output = output instanceof Output ? output : new Output(output.script, output.satoshis, this)
+    output =
+      output instanceof Output
+        ? output
+        : new Output(output.script, output.satoshis, this)
     output.tx = this
 
     this.outputs.push(output)
@@ -150,7 +169,7 @@ class Transaction {
     return this
   }
 
-  change (address) {
+  change(address) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     if (this.changeOutput) throw new Error('change output already added')
@@ -164,12 +183,15 @@ class Transaction {
     return this
   }
 
-  sign (privateKey) {
+  sign(privateKey) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
-    if (typeof privateKey === 'string') { privateKey = PrivateKey.fromString(privateKey) }
+    if (typeof privateKey === 'string') {
+      privateKey = PrivateKey.fromString(privateKey)
+    }
 
-    if (!(privateKey instanceof PrivateKey)) throw new Error(`not a private key: ${privateKey}`)
+    if (!(privateKey instanceof PrivateKey))
+      throw new Error(`not a private key: ${privateKey}`)
 
     for (let vin = 0; vin < this.inputs.length; vin++) {
       const input = this.inputs[vin]
@@ -182,10 +204,22 @@ class Transaction {
       const outputSatoshis = output.satoshis
 
       if (!isP2PKHLockScript(output.script)) continue
-      if (!areBuffersEqual(extractP2PKHLockScriptPubkeyhash(output.script), privateKey.toAddress().pubkeyhash)) continue
+      if (
+        !areBuffersEqual(
+          extractP2PKHLockScriptPubkeyhash(output.script),
+          privateKey.toAddress().pubkeyhash
+        )
+      )
+        continue
 
-      const txsignature = generateTxSignature(this, vin, outputScript, outputSatoshis,
-        privateKey.number, privateKey.toPublicKey().point)
+      const txsignature = generateTxSignature(
+        this,
+        vin,
+        outputScript,
+        outputSatoshis,
+        privateKey.number,
+        privateKey.toPublicKey().point
+      )
 
       const writer = new BufferWriter()
       writePushData(writer, txsignature)
@@ -198,15 +232,15 @@ class Transaction {
     return this
   }
 
-  verify () {
-    const parents = this.inputs.map(input => input.output)
+  verify() {
+    const parents = this.inputs.map((input) => input.output)
     const minFeePerKb = this.feePerKb
     verifyTx(this, parents, minFeePerKb)
     return this
   }
 
   // Calculates change and then locks a transaction so that no further changes may be made
-  finalize () {
+  finalize() {
     if (Object.isFrozen(this)) return this
 
     this._calculateChange()
@@ -214,13 +248,13 @@ class Transaction {
     Object.freeze(this)
     Object.freeze(this.inputs)
     Object.freeze(this.outputs)
-    this.inputs.forEach(input => Object.freeze(input))
-    this.outputs.forEach(output => Object.freeze(output))
+    this.inputs.forEach((input) => Object.freeze(input))
+    this.outputs.forEach((output) => Object.freeze(output))
 
     return this
   }
 
-  _calculateChange () {
+  _calculateChange() {
     if (Object.isFrozen(this)) return
 
     const changeIndex = this.outputs.indexOf(this.changeOutput)
@@ -232,7 +266,9 @@ class Transaction {
     this.changeOutput.satoshis = 0
 
     const currentFee = this.fee
-    const expectedFee = Math.ceil(encodeTx(this).length * this.feePerKb / 1000)
+    const expectedFee = Math.ceil(
+      (encodeTx(this).length * this.feePerKb) / 1000
+    )
 
     const change = currentFee - expectedFee
     const minDust = 1
@@ -245,7 +281,7 @@ class Transaction {
     }
   }
 
-  setFeePerKb (satoshis) {
+  setFeePerKb(satoshis) {
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
     verifySatoshis(satoshis)
     this.feePerKb = satoshis
@@ -254,9 +290,10 @@ class Transaction {
 }
 
 class Input {
-  constructor (txid, vout, script = [], sequence = 0, output = undefined) {
+  constructor(txid, vout, script = [], sequence = 0, output = undefined) {
     if (!isHex(txid) || txid.length !== 64) throw new Error(`bad txid: ${txid}`)
-    if (!Number.isInteger(vout) || vout < 0) throw new Error(`bad vout: ${vout}`)
+    if (!Number.isInteger(vout) || vout < 0)
+      throw new Error(`bad vout: ${vout}`)
 
     this.txid = txid
     this.vout = vout
@@ -272,24 +309,32 @@ class Input {
 }
 
 class Output {
-  constructor (script, satoshis, tx = undefined) {
+  constructor(script, satoshis, tx = undefined) {
     this.script = Script.from(script)
     this.satoshis = verifySatoshis(satoshis)
     this.tx = tx
   }
 
-  get txid () { return this.tx.hash }
-  get vout () { return this.tx.outputs.indexOf(this) }
+  get txid() {
+    return this.tx.hash
+  }
+  get vout() {
+    return this.tx.outputs.indexOf(this)
+  }
 }
 
-function verifySatoshis (satoshis) {
-  if (!Number.isInteger(satoshis) || satoshis < 0 || satoshis > Number.MAX_SAFE_INTEGER) {
+function verifySatoshis(satoshis) {
+  if (
+    !Number.isInteger(satoshis) ||
+    satoshis < 0 ||
+    satoshis > Number.MAX_SAFE_INTEGER
+  ) {
     throw new Error(`bad satoshis: ${satoshis}`)
   }
   return satoshis
 }
 
-function verifySequence (sequence) {
+function verifySequence(sequence) {
   if (!Number.isInteger(sequence) || sequence < 0 || sequence > 0xffffffff) {
     throw new Error(`bad sequence: ${sequence}`)
   }

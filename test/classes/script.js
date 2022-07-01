@@ -38,13 +38,17 @@ describe('Script', () => {
 
     it('detects p2pkh lockscript template', () => {
       const address = nimble.PrivateKey.fromRandom().toAddress()
-      const script = new Script(nimble.functions.createP2PKHLockScript(address.pubkeyhash))
+      const script = new Script(
+        nimble.functions.createP2PKHLockScript(address.pubkeyhash)
+      )
       expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
     })
 
     it('detects custom script templates', () => {
       class CustomScript extends Script {
-        static matches (buffer) { return buffer[0] === 0xab }
+        static matches(buffer) {
+          return buffer[0] === 0xab
+        }
       }
       Script.templates.CustomScript = CustomScript
       expect(new Script([0xab]) instanceof CustomScript).to.equal(true)
@@ -60,29 +64,40 @@ describe('Script', () => {
     })
 
     it('throws if create from non-matching template', () => {
-      expect(() => new Script.templates.P2PKHLockScript([])).to.throw('not a P2PKHLockScript')
+      expect(() => new Script.templates.P2PKHLockScript([])).to.throw(
+        'not a P2PKHLockScript'
+      )
     })
 
     it('throws if template has constructor', () => {
       class CustomScript extends Script {
-        constructor (buffer) { super(buffer); this.prefix = buffer[0] }
-        static matches (buffer) { return buffer[0] === 0xab }
+        constructor(buffer) {
+          super(buffer)
+          this.prefix = buffer[0]
+        }
+        static matches(buffer) {
+          return buffer[0] === 0xab
+        }
       }
       Script.templates.CustomScript = CustomScript
-      expect(() => new CustomScript([0xab])).to.throw('template constructors not allowed')
-      expect(() => new Script([0xab])).to.throw('template constructors not allowed')
+      expect(() => new CustomScript([0xab])).to.throw(
+        'template constructors not allowed'
+      )
+      expect(() => new Script([0xab])).to.throw(
+        'template constructors not allowed'
+      )
       delete Script.templates.CustomScript
     })
   })
 
   describe('fromString', () => {
     it('decodes hex', () => {
-      expect(Array.from(Script.fromString('000102').buffer)).to.deep.equal([0, 1, 2])
+      expect(Array.from(Script.fromString('000102').buffer)).to.deep.equal([
+        0, 1, 2,
+      ])
     })
 
-    it('decodes asm', () => {
-
-    })
+    it('decodes asm', () => {})
 
     it('throws if bad', () => {
       expect(() => Script.fromString()).to.throw('not a string')
@@ -95,7 +110,9 @@ describe('Script', () => {
   describe('fromHex', () => {
     it('decodes hex', () => {
       expect(Array.from(Script.fromHex('').buffer)).to.deep.equal([])
-      expect(Array.from(Script.fromHex('aabbcc').buffer)).to.deep.equal([0xaa, 0xbb, 0xcc])
+      expect(Array.from(Script.fromHex('aabbcc').buffer)).to.deep.equal([
+        0xaa, 0xbb, 0xcc,
+      ])
     })
 
     it('throws if bad hex', () => {
@@ -168,15 +185,21 @@ describe('Script', () => {
 
   describe('toASM', () => {
     it('encodes asm', () => {
-      expect(Script.fromBuffer([0, 81, 100]).toASM()).to.equal('0 OP_1 OP_NOTIF')
+      expect(Script.fromBuffer([0, 81, 100]).toASM()).to.equal(
+        '0 OP_1 OP_NOTIF'
+      )
     })
   })
 
   describe('toBuffer', () => {
     it('returns buffer', () => {
       expect(Array.from(Script.fromBuffer([]).toBuffer())).to.deep.equal([])
-      expect(Array.from(Script.fromBuffer([0xff]).toBuffer())).to.deep.equal([0xff])
-      expect(Array.from(Script.fromBuffer([1, 2, 3]).toBuffer())).to.deep.equal([1, 2, 3])
+      expect(Array.from(Script.fromBuffer([0xff]).toBuffer())).to.deep.equal([
+        0xff,
+      ])
+      expect(Array.from(Script.fromBuffer([1, 2, 3]).toBuffer())).to.deep.equal(
+        [1, 2, 3]
+      )
     })
   })
 
@@ -197,7 +220,11 @@ describe('Script', () => {
 
   describe('chunks', () => {
     it('returns chunks', () => {
-      expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([{ opcode: 100 }, { opcode: 255 }, { opcode: 1, buf: [2] }])
+      expect(new Script([100, 255, 1, 2]).chunks).to.deep.equal([
+        { opcode: 100 },
+        { opcode: 255 },
+        { opcode: 1, buf: [2] },
+      ])
     })
 
     it('caches chunks', () => {
@@ -220,13 +247,19 @@ describe('Script', () => {
       it('creates', () => {
         const address = nimble.PrivateKey.fromRandom().toAddress()
         const script = Script.templates.P2PKHLockScript.fromAddress(address)
-        expect(Array.from(script.buffer)).to.deep.equal(Array.from(nimble.functions.createP2PKHLockScript(address.pubkeyhash)))
+        expect(Array.from(script.buffer)).to.deep.equal(
+          Array.from(nimble.functions.createP2PKHLockScript(address.pubkeyhash))
+        )
       })
 
       it('throws if not an address', () => {
         expect(() => Script.templates.P2PKHLockScript.fromAddress()).to.throw()
-        expect(() => Script.templates.P2PKHLockScript.fromAddress('abc')).to.throw()
-        expect(() => Script.templates.P2PKHLockScript.fromAddress({})).to.throw()
+        expect(() =>
+          Script.templates.P2PKHLockScript.fromAddress('abc')
+        ).to.throw()
+        expect(() =>
+          Script.templates.P2PKHLockScript.fromAddress({})
+        ).to.throw()
       })
     })
 

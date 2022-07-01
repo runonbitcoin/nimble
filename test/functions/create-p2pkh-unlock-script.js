@@ -7,7 +7,12 @@ describe('createP2PKHUnlockScript', () => {
   it('valid', () => {
     const sig = new Array(71).fill(1)
     const pubkey = new Array(33).fill(2)
-    expect(Array.from(createP2PKHUnlockScript(sig, pubkey))).to.deep.equal([71, ...sig, 33, ...pubkey])
+    expect(Array.from(createP2PKHUnlockScript(sig, pubkey))).to.deep.equal([
+      71,
+      ...sig,
+      33,
+      ...pubkey,
+    ])
   })
 
   it('throws if bad address', () => {

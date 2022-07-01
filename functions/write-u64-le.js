@@ -1,4 +1,4 @@
-function writeU64LE (writer, n) {
+function writeU64LE(writer, n) {
   if (n > Number.MAX_SAFE_INTEGER) throw new Error('number too large')
 
   const buffer = new Uint8Array(8)

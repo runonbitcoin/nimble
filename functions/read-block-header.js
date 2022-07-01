@@ -1,6 +1,6 @@
 const readU32LE = require('./read-u32-le')
 
-function readBlockHeader (reader) {
+function readBlockHeader(reader) {
   const version = readU32LE(reader)
   const prevBlock = reader.read(32)
   const merkleRoot = reader.read(32)

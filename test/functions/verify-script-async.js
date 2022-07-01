@@ -10,6 +10,7 @@ describe('verifyScriptAsync', () => {
   })
 
   it('promise is rejected if script fails and async', async () => {
-    await expect(verifyScriptAsync([], [nimble.constants.opcodes.OP_FALSE])).to.be.rejected
+    await expect(verifyScriptAsync([], [nimble.constants.opcodes.OP_FALSE])).to
+      .be.rejected
   })
 })

@@ -1,6 +1,6 @@
 const BASE58_CHARS = require('../constants/base58-chars')
 
-function decodeBase58 (s) {
+function decodeBase58(s) {
   if (typeof s !== 'string') throw new Error('not a string')
   // Credit: https://gist.github.com/diafygi/90a3e80ca1c2793220e5/
   const d = [] // the array for storing the stream of decoded bytes
@@ -13,7 +13,8 @@ function decodeBase58 (s) {
     c = BASE58_CHARS.indexOf(s[i]) // set the initial carry amount equal to the current base58 digit
     if (c < 0) throw new Error('bad base58 chars')
     if (!(c || b.length ^ i)) b.push(0) // prepend the result array with a zero if the base58 digit is zero and non-zero characters haven't been seen yet (to ensure correct decode length)
-    while (j in d || c) { // start looping through the bytes until there are no more bytes and no carry amount
+    while (j in d || c) {
+      // start looping through the bytes until there are no more bytes and no carry amount
       n = d[j] // set the placeholder for the current byte
       n = n ? n * 58 + c : c // shift the current byte 58 units and add the carry amount (or just add the carry amount if this is a new byte)
       c = n >> 8 // find the new carry amount (1-byte shift of current byte value)
@@ -21,7 +22,9 @@ function decodeBase58 (s) {
       j++ // iterate to the next byte
     }
   }
-  while (j--) { b.push(d[j]) } // since the byte array is backwards, loop through it in reverse order, and append
+  while (j--) {
+    b.push(d[j])
+  } // since the byte array is backwards, loop through it in reverse order, and append
   return b
 }
 

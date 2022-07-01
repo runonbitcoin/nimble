@@ -7,8 +7,8 @@ import nimble, {
   P2PKHLockScript,
   PrivateKey,
   PublicKey,
-  Script, 
-  Transaction
+  Script,
+  Transaction,
 } from '../index'
 
 expectType<string>(nimble.version)
@@ -16,7 +16,7 @@ expectType<boolean>(nimble.testnet)
 expectType<number>(nimble.feePerKb)
 
 // Buffer reader & writer
-const buffer = new Uint8Array([1,2,3,4]);
+const buffer = new Uint8Array([1, 2, 3, 4])
 expectType<BufferReader>(new nimble.classes.BufferReader(buffer))
 expectType<BufferReader>(new nimble.classes.BufferReader(buffer, 0))
 
@@ -36,7 +36,7 @@ expectType<PrivateKey>(new nimble.PrivateKey(buffer, false, false))
 expectType<PrivateKey>(new nimble.PrivateKey(buffer, false, false, false))
 expectType<PrivateKey>(nimble.PrivateKey.fromRandom())
 
-const object = new Object
+const object = new Object()
 const privkey = nimble.PrivateKey.fromRandom()
 expectType<PrivateKey>(nimble.PrivateKey.fromString(privkey.toString()))
 expectType<PrivateKey>(nimble.PrivateKey.from(privkey))
@@ -52,7 +52,7 @@ expectType<string>(privkey.toString())
 expectType<PublicKey>(privkey.toPublicKey())
 
 // PublicKey
-const point: nimble.Point = { x: buffer, y: buffer}
+const point: nimble.Point = { x: buffer, y: buffer }
 expectType<PublicKey>(new nimble.PublicKey(point, false, false))
 expectType<PublicKey>(new nimble.PublicKey(point, false, false, false))
 
@@ -119,20 +119,40 @@ const p2pkhLockScript = address.toScript()
 expectType<Address>(p2pkhLockScript.toAddress())
 expectType<P2PKHLockScript>(nimble.Script.templates.P2PKHLockScript)
 expectType<boolean>(nimble.Script.templates.P2PKHLockScript.matches(buffer))
-expectType<P2PKHLockScript>(nimble.Script.templates.P2PKHLockScript.fromAddress(address))
-expectType<P2PKHLockScript>(nimble.Script.templates.P2PKHLockScript.fromAddress(pubkey))
-expectType<P2PKHLockScript>(nimble.Script.templates.P2PKHLockScript.fromAddress(address.toString()))
-expectType<P2PKHLockScript>(nimble.Script.templates.P2PKHLockScript.fromAddress(object))
+expectType<P2PKHLockScript>(
+  nimble.Script.templates.P2PKHLockScript.fromAddress(address)
+)
+expectType<P2PKHLockScript>(
+  nimble.Script.templates.P2PKHLockScript.fromAddress(pubkey)
+)
+expectType<P2PKHLockScript>(
+  nimble.Script.templates.P2PKHLockScript.fromAddress(address.toString())
+)
+expectType<P2PKHLockScript>(
+  nimble.Script.templates.P2PKHLockScript.fromAddress(object)
+)
 
 // Transaction Output
 const satoshis = 1
 const tx = new nimble.Transaction()
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(script, satoshis))
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(buffer, satoshis))
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(tx.output.toString(), satoshis))
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(script, satoshis, tx))
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(buffer, satoshis, tx))
-expectType<classes.Transaction.Output>(new nimble.Transaction.Output(tx.output.toString(), satoshis, tx))
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(script, satoshis)
+)
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(buffer, satoshis)
+)
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(tx.output.toString(), satoshis)
+)
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(script, satoshis, tx)
+)
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(buffer, satoshis, tx)
+)
+expectType<classes.Transaction.Output>(
+  new nimble.Transaction.Output(tx.output.toString(), satoshis, tx)
+)
 
 const output = tx.outputs[0]
 expectType<string>(output.txid)
@@ -144,10 +164,18 @@ expectType<Transaction>(output.tx)
 // Transaction Input
 const vout = 0
 const sequence = 0
-expectType<classes.Transaction.Input>(new nimble.Transaction.Input(tx.hash, vout))
-expectType<classes.Transaction.Input>(new nimble.Transaction.Input(tx.hash, vout, script))
-expectType<classes.Transaction.Input>(new nimble.Transaction.Input(tx.hash, vout, script, sequence))
-expectType<classes.Transaction.Input>(new nimble.Transaction.Input(tx.hash, vout, script, sequence, output))
+expectType<classes.Transaction.Input>(
+  new nimble.Transaction.Input(tx.hash, vout)
+)
+expectType<classes.Transaction.Input>(
+  new nimble.Transaction.Input(tx.hash, vout, script)
+)
+expectType<classes.Transaction.Input>(
+  new nimble.Transaction.Input(tx.hash, vout, script, sequence)
+)
+expectType<classes.Transaction.Input>(
+  new nimble.Transaction.Input(tx.hash, vout, script, sequence, output)
+)
 
 const input = tx.inputs[0]
 expectType<Script>(input.script)
@@ -171,11 +199,23 @@ expectType<Transaction>(tx.to(pubkey, satoshis))
 expectType<Transaction>(tx.to(address.toString(), satoshis))
 expectType<Transaction>(tx.to(object, satoshis))
 expectType<Transaction>(tx.input(input))
-expectType<Transaction>(tx.input({ txid: tx.hash, vout, script, sequence, output}))
-expectType<Transaction>(tx.input({ txid: tx.hash, vout, script: address.toScript(), sequence, output}))
-expectType<Transaction>(tx.input({ txid: undefined, vout: undefined, script, sequence, output}))
+expectType<Transaction>(
+  tx.input({ txid: tx.hash, vout, script, sequence, output })
+)
+expectType<Transaction>(
+  tx.input({
+    txid: tx.hash,
+    vout,
+    script: address.toScript(),
+    sequence,
+    output,
+  })
+)
+expectType<Transaction>(
+  tx.input({ txid: undefined, vout: undefined, script, sequence, output })
+)
 expectType<Transaction>(tx.output(output))
-expectType<Transaction>(tx.output({script, satoshis}))
+expectType<Transaction>(tx.output({ script, satoshis }))
 expectType<Transaction>(tx.change(address))
 expectType<Transaction>(tx.change(pubkey))
 expectType<Transaction>(tx.change(address.toString()))

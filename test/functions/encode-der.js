@@ -38,7 +38,10 @@ describe('encodeDER', () => {
   })
 
   it('negative', () => {
-    const signature = { r: [0x80].concat(new Array(31).fill(0)), s: new Array(32).fill(255) }
+    const signature = {
+      r: [0x80].concat(new Array(31).fill(0)),
+      s: new Array(32).fill(255),
+    }
     const der = encodeDER(signature)
     expect(der[0]).to.equal(0x30)
     expect(der[1]).to.equal(70)
@@ -55,10 +58,14 @@ describe('encodeDER', () => {
   it('matches bsv lib', () => {
     for (let i = 0; i < 100; i++) {
       let r = generateRandomData(32)
-      while (r[0] === 0) { r = r.slice(1) }
+      while (r[0] === 0) {
+        r = r.slice(1)
+      }
 
       let s = generateRandomData(32)
-      while (s[0] === 0) { s = s.slice(1) }
+      while (s[0] === 0) {
+        s = s.slice(1)
+      }
 
       const signature = { r, s }
       const der = encodeDER(signature)

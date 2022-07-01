@@ -1,4 +1,4 @@
-function extractP2PKHLockScriptPubkeyhash (script) {
+function extractP2PKHLockScriptPubkeyhash(script) {
   return script.slice(3, 23)
 }
 

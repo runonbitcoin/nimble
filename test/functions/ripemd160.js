@@ -7,14 +7,18 @@ const bsv = require('bsv')
 describe('ripemd160', () => {
   it('empty', () => {
     const data = []
-    const expected = Array.from(bsv.crypto.Hash.ripemd160(bsv.deps.Buffer.from(data)))
+    const expected = Array.from(
+      bsv.crypto.Hash.ripemd160(bsv.deps.Buffer.from(data))
+    )
     const actual = Array.from(ripemd160(data))
     expect(actual).to.deep.equal(expected)
   })
 
   it('non-empty', () => {
     const data = [1, 2, 3, 4, 5]
-    const expected = Array.from(bsv.crypto.Hash.ripemd160(bsv.deps.Buffer.from(data)))
+    const expected = Array.from(
+      bsv.crypto.Hash.ripemd160(bsv.deps.Buffer.from(data))
+    )
     const actual = Array.from(ripemd160(data))
     expect(actual).to.deep.equal(expected)
   })

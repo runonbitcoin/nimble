@@ -1,6 +1,12 @@
-const { BN_SIZE, getMemoryBuffer, getBnExports, writeBN, getNPos } = require('../wasm/wasm-secp256k1')
+const {
+  BN_SIZE,
+  getMemoryBuffer,
+  getBnExports,
+  writeBN,
+  getNPos,
+} = require('../wasm/wasm-secp256k1')
 
-function verifyPrivateKey (privateKey) {
+function verifyPrivateKey(privateKey) {
   if (privateKey.length !== 32) throw new Error('bad length')
 
   const memory = getMemoryBuffer()

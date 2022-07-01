@@ -21,11 +21,21 @@ describe('PublicKey', () => {
       expect(() => new PublicKey(0, true, true)).to.throw('bad point')
       expect(() => new PublicKey('', true, true)).to.throw('bad point')
       expect(() => new PublicKey({}, true, true)).to.throw('bad point')
-      expect(() => new PublicKey({ x: [], y: publicKeyPoint.y }, true, true)).to.throw('not on curve')
-      expect(() => new PublicKey({ x: publicKeyPoint.x, y: 1 }, true, true)).to.throw('bad point')
-      expect(() => new PublicKey(publicKeyPoint, 0, true)).to.throw('bad testnet flag')
-      expect(() => new PublicKey(publicKeyPoint, 'testnet', true)).to.throw('bad testnet flag')
-      expect(() => new PublicKey(publicKeyPoint, true, 'compressed')).to.throw('bad compressed flag')
+      expect(
+        () => new PublicKey({ x: [], y: publicKeyPoint.y }, true, true)
+      ).to.throw('not on curve')
+      expect(
+        () => new PublicKey({ x: publicKeyPoint.x, y: 1 }, true, true)
+      ).to.throw('bad point')
+      expect(() => new PublicKey(publicKeyPoint, 0, true)).to.throw(
+        'bad testnet flag'
+      )
+      expect(() => new PublicKey(publicKeyPoint, 'testnet', true)).to.throw(
+        'bad testnet flag'
+      )
+      expect(() => new PublicKey(publicKeyPoint, true, 'compressed')).to.throw(
+        'bad compressed flag'
+      )
     })
   })
 
@@ -36,8 +46,12 @@ describe('PublicKey', () => {
       const publicKey = PublicKey.fromString(bsvPublicKey.toString())
       expect(publicKey.compressed).to.equal(bsvPublicKey.compressed)
       expect(publicKey.testnet).to.equal(false)
-      expect([...publicKey.point.x]).to.deep.equal([...bsvPublicKey.point.x.toArray()])
-      expect([...publicKey.point.y]).to.deep.equal([...bsvPublicKey.point.y.toArray()])
+      expect([...publicKey.point.x]).to.deep.equal([
+        ...bsvPublicKey.point.x.toArray(),
+      ])
+      expect([...publicKey.point.y]).to.deep.equal([
+        ...bsvPublicKey.point.y.toArray(),
+      ])
     })
 
     it('throws if not a string', () => {
@@ -54,13 +68,17 @@ describe('PublicKey', () => {
       const privateKey = nimble.functions.generatePrivateKey()
       const publicKey = nimble.functions.calculatePublicKey(privateKey)
       publicKey.y = publicKey.x
-      const compressed = nimble.functions.encodeHex(nimble.functions.encodePublicKey(publicKey, false))
+      const compressed = nimble.functions.encodeHex(
+        nimble.functions.encodePublicKey(publicKey, false)
+      )
       expect(() => PublicKey.fromString(compressed)).to.throw('not on curve')
     })
 
     it('is immutable', () => {
       const privateKey = PrivateKey.fromRandom()
-      const publicKey = PublicKey.fromString(privateKey.toPublicKey().toString())
+      const publicKey = PublicKey.fromString(
+        privateKey.toPublicKey().toString()
+      )
       expect(Object.isFrozen(publicKey)).to.equal(true)
     })
   })
@@ -105,17 +123,23 @@ describe('PublicKey', () => {
     it('from bsv.PublicKey', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
       const bsvPublicKey = new bsv.PublicKey(publicKey.toString())
-      expect(PublicKey.from(bsvPublicKey).toString()).to.equal(publicKey.toString())
+      expect(PublicKey.from(bsvPublicKey).toString()).to.equal(
+        publicKey.toString()
+      )
     })
 
     it('from string', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
-      expect(PublicKey.from(publicKey.toString()).toString()).to.equal(publicKey.toString())
+      expect(PublicKey.from(publicKey.toString()).toString()).to.equal(
+        publicKey.toString()
+      )
     })
 
     it('from PrivateKey instance', () => {
       const privateKey = PrivateKey.fromRandom()
-      expect(PublicKey.from(privateKey).toString()).to.equal(privateKey.toPublicKey().toString())
+      expect(PublicKey.from(privateKey).toString()).to.equal(
+        privateKey.toPublicKey().toString()
+      )
     })
 
     it('throws if unsupported', () => {
@@ -137,7 +161,10 @@ describe('PublicKey', () => {
 
     it('uncompressed', () => {
       const bsvPrivateKey = new bsv.PrivateKey()
-      const bsvPublicKey = new bsv.PublicKey(bsvPrivateKey.toPublicKey().point, { compressed: false })
+      const bsvPublicKey = new bsv.PublicKey(
+        bsvPrivateKey.toPublicKey().point,
+        { compressed: false }
+      )
       expect(bsvPublicKey.compressed).to.equal(false)
       const publicKey = PublicKey.fromString(bsvPublicKey.toString())
       expect(publicKey.compressed).to.equal(false)

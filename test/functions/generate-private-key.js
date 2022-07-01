@@ -8,9 +8,13 @@ describe('generatePrivateKey', () => {
   it('valid', () => {
     for (let i = 0; i < 100; i++) {
       const privateKey = generatePrivateKey()
-      const bsvPrivateKey = bsv.PrivateKey.fromBuffer(bsv.deps.Buffer.from(privateKey))
+      const bsvPrivateKey = bsv.PrivateKey.fromBuffer(
+        bsv.deps.Buffer.from(privateKey)
+      )
       bsvPrivateKey.toPublicKey()
-      expect(Buffer.from(privateKey).toString('hex')).to.equal(bsvPrivateKey.toBuffer().toString('hex'))
+      expect(Buffer.from(privateKey).toString('hex')).to.equal(
+        bsvPrivateKey.toBuffer().toString('hex')
+      )
     }
   })
 

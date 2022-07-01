@@ -7,7 +7,9 @@ const bsv = require('bsv')
 describe('sha256', () => {
   it('valid', () => {
     const data = [1, 2, 3]
-    const expected = Array.from(bsv.crypto.Hash.sha256(bsv.crypto.Hash.sha256(bsv.deps.Buffer.from(data))))
+    const expected = Array.from(
+      bsv.crypto.Hash.sha256(bsv.crypto.Hash.sha256(bsv.deps.Buffer.from(data)))
+    )
     const actual = Array.from(sha256d(data))
     expect(actual).to.deep.equal(expected)
   })

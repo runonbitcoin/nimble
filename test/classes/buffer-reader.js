@@ -16,7 +16,9 @@ describe('BufferReader', () => {
   describe('read', () => {
     it('reads buffer', () => {
       expect(Array.from(new BufferReader([]).read(0))).to.deep.equal([])
-      expect(Array.from(new BufferReader([0x00, 0x01, 0x02]).read(3))).to.deep.equal([0x00, 0x01, 0x02])
+      expect(
+        Array.from(new BufferReader([0x00, 0x01, 0x02]).read(3))
+      ).to.deep.equal([0x00, 0x01, 0x02])
     })
 
     it('throws if not enough data', () => {
@@ -46,8 +48,12 @@ describe('BufferReader', () => {
 
   describe('checkRemaining', () => {
     it('throws if not enough data left', () => {
-      expect(() => new BufferReader([]).checkRemaining(1)).to.throw('not enough data')
-      expect(() => new BufferReader([2]).checkRemaining(2)).to.throw('not enough data')
+      expect(() => new BufferReader([]).checkRemaining(1)).to.throw(
+        'not enough data'
+      )
+      expect(() => new BufferReader([2]).checkRemaining(2)).to.throw(
+        'not enough data'
+      )
     })
 
     it('does not throw if data left', () => {

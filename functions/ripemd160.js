@@ -1,6 +1,6 @@
 const WasmHashes = require('../wasm/wasm-hashes')
 
-function ripemd160 (data) {
+function ripemd160(data) {
   const wasmMemory = WasmHashes.getMemoryBuffer()
   const wasmRipemd160 = WasmHashes.getRipemd160()
 

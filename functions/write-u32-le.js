@@ -1,4 +1,4 @@
-function writeU32LE (writer, n) {
+function writeU32LE(writer, n) {
   if (n > 0xffffffff) throw new Error('number too large')
 
   const buffer = new Uint8Array(4)

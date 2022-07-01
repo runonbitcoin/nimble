@@ -11,22 +11,36 @@ describe('preimageAsync', () => {
       txid: '0000000000000000000000000000000000000000000000000000000000000000',
       vout: 0,
       script: '00',
-      satoshis: 1000
+      satoshis: 1000,
     }
     const utxo2 = {
       txid: '1111111111111111111111111111111111111111111111111111111111111111',
       vout: 1,
       script: '01',
-      satoshis: 2000
+      satoshis: 2000,
     }
     const addr = new bsv.PrivateKey().toAddress()
     const bsvtx = new bsv.Transaction().from(utxo1).from(utxo2).to(addr, 4000)
-    const bsvPreimageBuf = bsv.Transaction.Sighash.sighashPreimage(bsvtx,
+    const bsvPreimageBuf = bsv.Transaction.Sighash.sighashPreimage(
+      bsvtx,
       bsv.crypto.Signature.SIGHASH_ALL | bsv.crypto.Signature.SIGHASH_FORKID,
-      1, new bsv.Script('01'), new bsv.deps.bnjs.BN(2000))
-    const bsvPreimage = new Uint8Array(bsvPreimageBuf.buffer, bsvPreimageBuf.byteOffset, bsvPreimageBuf.byteLength)
+      1,
+      new bsv.Script('01'),
+      new bsv.deps.bnjs.BN(2000)
+    )
+    const bsvPreimage = new Uint8Array(
+      bsvPreimageBuf.buffer,
+      bsvPreimageBuf.byteOffset,
+      bsvPreimageBuf.byteLength
+    )
     const tx = decodeTx(decodeHex(bsvtx.toString()))
-    const runPreimage = await preimageAsync(tx, 1, [0x01], 2000, SIGHASH_ALL | SIGHASH_FORKID)
+    const runPreimage = await preimageAsync(
+      tx,
+      1,
+      [0x01],
+      2000,
+      SIGHASH_ALL | SIGHASH_FORKID
+    )
     expect(bsvPreimage).to.deep.equal(runPreimage)
   })
 })

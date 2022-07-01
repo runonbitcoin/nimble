@@ -20,10 +20,16 @@ describe('PrivateKey', () => {
       expect(() => new PrivateKey(null, true, true)).to.throw('bad number')
       expect(() => new PrivateKey(0, true, true)).to.throw('bad number')
       expect(() => new PrivateKey(number, 1, true)).to.throw('bad testnet flag')
-      expect(() => new PrivateKey(number, false, undefined)).to.throw('bad compressed flag')
+      expect(() => new PrivateKey(number, false, undefined)).to.throw(
+        'bad compressed flag'
+      )
       expect(() => new PrivateKey([], true, true)).to.throw('bad length')
-      expect(() => new PrivateKey(new Array(33), true, true)).to.throw('bad length')
-      expect(() => new PrivateKey(new Array(32).fill(255), true, true)).to.throw('outside range')
+      expect(() => new PrivateKey(new Array(33), true, true)).to.throw(
+        'bad length'
+      )
+      expect(
+        () => new PrivateKey(new Array(32).fill(255), true, true)
+      ).to.throw('outside range')
     })
   })
 
@@ -33,7 +39,9 @@ describe('PrivateKey', () => {
       const privateKey = PrivateKey.fromString(bsvPrivateKey.toString())
       expect(privateKey.testnet).to.equal(false)
       expect(privateKey.compressed).to.equal(bsvPrivateKey.compressed)
-      expect([...privateKey.number]).to.deep.equal([...bsvPrivateKey.toBuffer()])
+      expect([...privateKey.number]).to.deep.equal([
+        ...bsvPrivateKey.toBuffer(),
+      ])
     })
 
     it('throws if not a string', () => {
@@ -79,12 +87,16 @@ describe('PrivateKey', () => {
     it('from bsv.PrivateKey', () => {
       const privateKey = PrivateKey.fromRandom()
       const bsvPrivateKey = new bsv.PrivateKey(privateKey.toString())
-      expect(PrivateKey.from(bsvPrivateKey).toString()).to.equal(privateKey.toString())
+      expect(PrivateKey.from(bsvPrivateKey).toString()).to.equal(
+        privateKey.toString()
+      )
     })
 
     it('from string', () => {
       const privateKey = PrivateKey.fromRandom()
-      expect(PrivateKey.from(privateKey.toString()).toString()).to.equal(privateKey.toString())
+      expect(PrivateKey.from(privateKey.toString()).toString()).to.equal(
+        privateKey.toString()
+      )
     })
 
     it('throws if unsupported', () => {

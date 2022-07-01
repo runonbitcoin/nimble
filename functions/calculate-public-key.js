@@ -1,6 +1,13 @@
-const { BN_SIZE, PT_SIZE, getMemoryBuffer, getSecp256k1Exports, writeBN, readBN } = require('../wasm/wasm-secp256k1')
+const {
+  BN_SIZE,
+  PT_SIZE,
+  getMemoryBuffer,
+  getSecp256k1Exports,
+  writeBN,
+  readBN,
+} = require('../wasm/wasm-secp256k1')
 
-function calculatePublicKey (privateKey) {
+function calculatePublicKey(privateKey) {
   const memory = getMemoryBuffer()
   const privateKeyPos = memory.length - BN_SIZE
   const publicKeyPos = privateKeyPos - PT_SIZE
@@ -11,7 +18,7 @@ function calculatePublicKey (privateKey) {
 
   return {
     x: readBN(memory, publicKeyPos),
-    y: readBN(memory, publicKeyPos + BN_SIZE)
+    y: readBN(memory, publicKeyPos + BN_SIZE),
   }
 }
 

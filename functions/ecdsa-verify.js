@@ -1,6 +1,12 @@
-const { BN_SIZE, PT_SIZE, getMemoryBuffer, getEcdsaExports, writeBN } = require('../wasm/wasm-secp256k1')
+const {
+  BN_SIZE,
+  PT_SIZE,
+  getMemoryBuffer,
+  getEcdsaExports,
+  writeBN,
+} = require('../wasm/wasm-secp256k1')
 
-function ecdsaVerify (signature, hash32, publicKey) {
+function ecdsaVerify(signature, hash32, publicKey) {
   const memory = getMemoryBuffer()
   const rPos = memory.length - BN_SIZE
   const sPos = rPos - BN_SIZE
