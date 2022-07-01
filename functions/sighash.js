@@ -3,7 +3,7 @@ const preimageAsync = require('./preimage-async')
 const sha256d = require('./sha256d')
 const sha256Async = require('./sha256-async')
 
-function sighash (tx, vin, parentScript, parentSatoshis, sighashFlags, async) {
+function sighash (tx, vin, parentScript, parentSatoshis, sighashFlags, async = false) {
   if (async) {
     return preimageAsync(tx, vin, parentScript, parentSatoshis, sighashFlags)
       .then(sha256Async)

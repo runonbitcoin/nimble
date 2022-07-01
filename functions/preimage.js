@@ -6,7 +6,7 @@ const decodeHex = require('./decode-hex')
 const sha256d = require('./sha256d')
 const sha256Async = require('./sha256-async')
 
-function preimage (tx, vin, parentScript, parentSatoshis, sighashFlags, async) {
+function preimage (tx, vin, parentScript, parentSatoshis, sighashFlags, async = false) {
   const input = tx.inputs[vin]
   const outputs = tx.outputs || []
 
