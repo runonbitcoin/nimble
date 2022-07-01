@@ -8,9 +8,10 @@ const PUBLIC_KEY_TO_ADDRESS_CACHE = new WeakMap() // Cached to reduce ripemd160 
 const ADDRESS_TO_STRING_CACHE = new WeakMap() // Cached to reduce sha256 hashing
 
 class Address {
-  constructor (pubkeyhash, testnet, validate = true) {
+  constructor(pubkeyhash, testnet, validate = true) {
     if (validate) {
-      if (!isBuffer(pubkeyhash) || pubkeyhash.length !== 20) throw new Error('bad pubkeyhash')
+      if (!isBuffer(pubkeyhash) || pubkeyhash.length !== 20)
+        throw new Error('bad pubkeyhash')
       if (typeof testnet !== 'boolean') throw new Error('bad testnet flag')
     }
 
@@ -20,15 +21,16 @@ class Address {
     Object.freeze(this)
   }
 
-  static fromString (s) {
+  static fromString(s) {
     const { pubkeyhash, testnet } = decodeAddress(s)
     const address = new Address(pubkeyhash, testnet, false)
     ADDRESS_TO_STRING_CACHE.set(address, s)
     return address
   }
 
-  static fromPublicKey (publicKey) {
-    if (PUBLIC_KEY_TO_ADDRESS_CACHE.has(publicKey)) return PUBLIC_KEY_TO_ADDRESS_CACHE.get(publicKey)
+  static fromPublicKey(publicKey) {
+    if (PUBLIC_KEY_TO_ADDRESS_CACHE.has(publicKey))
+      return PUBLIC_KEY_TO_ADDRESS_CACHE.get(publicKey)
 
     const testnet = publicKey.testnet
     const pubkeyhash = calculatePublicKeyHash(publicKey.point)
@@ -39,7 +41,7 @@ class Address {
     return address
   }
 
-  static from (x) {
+  static from(x) {
     if (x instanceof Address) return x
     const PublicKey = require('./public-key')
     if (x instanceof PublicKey) return Address.fromPublicKey(x)
@@ -48,14 +50,15 @@ class Address {
     throw new Error('unsupported type')
   }
 
-  toString () {
-    if (ADDRESS_TO_STRING_CACHE.has(this)) return ADDRESS_TO_STRING_CACHE.get(this)
+  toString() {
+    if (ADDRESS_TO_STRING_CACHE.has(this))
+      return ADDRESS_TO_STRING_CACHE.get(this)
     const address = encodeAddress(this.pubkeyhash, this.testnet)
     ADDRESS_TO_STRING_CACHE.set(this, address)
     return address
   }
 
-  toScript () {
+  toScript() {
     const Script = require('./script')
     return Script.templates.P2PKHLockScript.fromAddress(this)
   }

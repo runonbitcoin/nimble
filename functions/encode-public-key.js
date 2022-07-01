@@ -1,4 +1,4 @@
-function encodePublicKey (publicKey, compressed = true) {
+function encodePublicKey(publicKey, compressed = true) {
   if (!compressed) {
     const arr = new Uint8Array(65)
     arr[0] = 4

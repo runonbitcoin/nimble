@@ -9,7 +9,9 @@ describe('calculatePublicKey', () => {
     for (let i = 0; i < 100; i++) {
       const privateKey = generatePrivateKey()
       const publicKey = calculatePublicKey(privateKey)
-      const bsvPrivateKey = bsv.PrivateKey.fromBuffer(bsv.deps.Buffer.from(privateKey))
+      const bsvPrivateKey = bsv.PrivateKey.fromBuffer(
+        bsv.deps.Buffer.from(privateKey)
+      )
       const bsvPublicKey = bsvPrivateKey.toPublicKey()
       const xhex1 = Buffer.from(publicKey.x).toString('hex')
       const xhex2 = bsvPublicKey.point.getX().toBuffer().toString('hex')

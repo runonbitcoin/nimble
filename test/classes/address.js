@@ -28,28 +28,38 @@ describe('Address', () => {
       const bsvAddress = new bsv.PrivateKey().toAddress()
       const address = Address.fromString(bsvAddress.toString())
       expect(address.testnet).to.equal(false)
-      expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(Buffer.from(address.pubkeyhash).toString('hex'))
+      expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(
+        Buffer.from(address.pubkeyhash).toString('hex')
+      )
     })
 
     it('decodes valid testnet address', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
       const address = Address.fromString(bsvAddress.toString())
       expect(address.testnet).to.equal(true)
-      expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(Buffer.from(address.pubkeyhash).toString('hex'))
+      expect(Buffer.from(bsvAddress.hashBuffer).toString('hex')).to.equal(
+        Buffer.from(address.pubkeyhash).toString('hex')
+      )
     })
 
     it('throws if bad checksum', () => {
-      expect(() => Address.fromString('1JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad checksum')
+      expect(() =>
+        Address.fromString('1JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')
+      ).to.throw('bad checksum')
     })
 
     it('throws if not a string', () => {
       expect(() => Address.fromString()).to.throw('not a string')
       expect(() => Address.fromString(null)).to.throw('not a string')
-      expect(() => Address.fromString(Address.fromString(new bsv.PrivateKey().toAddress()))).to.throw('not a string')
+      expect(() =>
+        Address.fromString(Address.fromString(new bsv.PrivateKey().toAddress()))
+      ).to.throw('not a string')
     })
 
     it('throws if bad chars', () => {
-      expect(() => Address.fromString('!JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')).to.throw('bad base58 chars')
+      expect(() =>
+        Address.fromString('!JMckZqEF3194i3TCe2eJrvLyL74RAJ36k')
+      ).to.throw('bad base58 chars')
     })
 
     it('throws if bad length', () => {
@@ -58,7 +68,9 @@ describe('Address', () => {
     })
 
     it('is immutable', () => {
-      const address = Address.fromString(PrivateKey.fromRandom().toAddress().toString())
+      const address = Address.fromString(
+        PrivateKey.fromRandom().toAddress().toString()
+      )
       expect(Object.isFrozen(address)).to.equal(true)
     })
   })
@@ -84,7 +96,9 @@ describe('Address', () => {
     })
 
     it('is immutable', () => {
-      const address = Address.fromPublicKey(PrivateKey.fromRandom().toPublicKey())
+      const address = Address.fromPublicKey(
+        PrivateKey.fromRandom().toPublicKey()
+      )
       expect(Object.isFrozen(address)).to.equal(true)
     })
   })
@@ -103,12 +117,16 @@ describe('Address', () => {
 
     it('from string', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      expect(Address.from(address.toString()).toString()).to.equal(address.toString())
+      expect(Address.from(address.toString()).toString()).to.equal(
+        address.toString()
+      )
     })
 
     it('from PublicKey instance', () => {
       const publicKey = PrivateKey.fromRandom().toPublicKey()
-      expect(Address.from(publicKey).toString()).to.equal(publicKey.toAddress().toString())
+      expect(Address.from(publicKey).toString()).to.equal(
+        publicKey.toAddress().toString()
+      )
     })
 
     it('throws if unsupported', () => {
@@ -121,12 +139,16 @@ describe('Address', () => {
   describe('toString', () => {
     it('mainnet', () => {
       const bsvAddress = new bsv.PrivateKey().toAddress()
-      expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
+      expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(
+        bsvAddress.toString()
+      )
     })
 
     it('testnet', () => {
       const bsvAddress = new bsv.PrivateKey(undefined, 'testnet').toAddress()
-      expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(bsvAddress.toString())
+      expect(Address.fromString(bsvAddress.toString()).toString()).to.equal(
+        bsvAddress.toString()
+      )
     })
   })
 
@@ -135,7 +157,9 @@ describe('Address', () => {
       const address = PrivateKey.fromRandom().toAddress()
       const script = address.toScript()
       expect(script instanceof Script.templates.P2PKHLockScript).to.equal(true)
-      expect(Array.from(script.toBuffer())).to.deep.equal(Array.from(createP2PKHLockScript(address.pubkeyhash)))
+      expect(Array.from(script.toBuffer())).to.deep.equal(
+        Array.from(createP2PKHLockScript(address.pubkeyhash))
+      )
     })
   })
 })

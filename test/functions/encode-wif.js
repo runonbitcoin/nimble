@@ -9,7 +9,9 @@ describe('encodeWIF', () => {
     for (let i = 0; i < 100; i++) {
       const privateKey = generatePrivateKey()
       const wif = encodeWIF(privateKey, false, false)
-      expect([...new bsv.PrivateKey(wif).toBuffer()]).to.deep.equal([...privateKey])
+      expect([...new bsv.PrivateKey(wif).toBuffer()]).to.deep.equal([
+        ...privateKey,
+      ])
     }
   })
 
@@ -17,7 +19,9 @@ describe('encodeWIF', () => {
     for (let i = 0; i < 100; i++) {
       const privateKey = generatePrivateKey()
       const wif = encodeWIF(privateKey, true, true)
-      expect([...new bsv.PrivateKey(wif).toBuffer()]).to.deep.equal([...privateKey])
+      expect([...new bsv.PrivateKey(wif).toBuffer()]).to.deep.equal([
+        ...privateKey,
+      ])
     }
   })
 })

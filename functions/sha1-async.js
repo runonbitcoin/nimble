@@ -1,12 +1,15 @@
 /* global VARIANT */
 
-const subtleCrypto = typeof window !== 'undefined' && window.crypto && window.crypto.subtle
+const subtleCrypto =
+  typeof window !== 'undefined' && window.crypto && window.crypto.subtle
 
 let sha1Async = null
 
 if (typeof VARIANT !== 'undefined' && VARIANT === 'browser' && subtleCrypto) {
   sha1Async = async (data) => {
-    return new Uint8Array(await subtleCrypto.digest('SHA-1', new Uint8Array(data)))
+    return new Uint8Array(
+      await subtleCrypto.digest('SHA-1', new Uint8Array(data))
+    )
   }
 } else {
   const asyncify = require('./asyncify')

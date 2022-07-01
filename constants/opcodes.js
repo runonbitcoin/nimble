@@ -104,5 +104,5 @@ module.exports = {
   OP_NOP7: 182,
   OP_NOP8: 183,
   OP_NOP9: 184,
-  OP_NOP10: 185
+  OP_NOP10: 185,
 }

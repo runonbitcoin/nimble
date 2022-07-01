@@ -13,7 +13,10 @@ describe('decodeDER', () => {
   })
 
   it('negative', () => {
-    const signature = { r: [0x80].concat(new Array(31).fill(0)), s: new Array(32).fill(255) }
+    const signature = {
+      r: [0x80].concat(new Array(31).fill(0)),
+      s: new Array(32).fill(255),
+    }
     const der = encodeDER(signature)
     const signature2 = decodeDER(der)
     expect(Array.from(signature2.r)).to.deep.equal(signature.r)
@@ -24,7 +27,7 @@ describe('decodeDER', () => {
     const err = 'bad der'
     expect(() => decodeDER([0x00, 0x04, 0x02, 0, 0x02, 0])).to.throw(err)
     expect(() => decodeDER([0x30, 0x04, 0x03, 0, 0x02, 0])).to.throw(err)
-    expect(() => decodeDER([0x30, 0x04, 0x02, 0, 0xFF, 0])).to.throw(err)
+    expect(() => decodeDER([0x30, 0x04, 0x02, 0, 0xff, 0])).to.throw(err)
     expect(() => decodeDER([0x30, 100, 0x02, 0, 0x02, 0])).to.throw(err)
   })
 
@@ -40,6 +43,8 @@ describe('decodeDER', () => {
 
   it('throws if unconsumed data', () => {
     const err = 'unconsumed data'
-    expect(() => decodeDER([0x30, 0x04, 0x02, 0x00, 0x02, 0x00, 0xFF])).to.throw(err)
+    expect(() =>
+      decodeDER([0x30, 0x04, 0x02, 0x00, 0x02, 0x00, 0xff])
+    ).to.throw(err)
   })
 })

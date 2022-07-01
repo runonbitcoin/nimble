@@ -3,7 +3,7 @@ const readU32LE = require('./read-u32-le')
 const readU64LE = require('./read-u64-le')
 const readVarint = require('./read-varint')
 
-function readTx (reader) {
+function readTx(reader) {
   const version = readU32LE(reader)
 
   const nin = readVarint(reader)

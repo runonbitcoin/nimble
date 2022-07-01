@@ -1,7 +1,8 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 const nimble = require('../env/nimble')
-const { encodeWIF, decodeWIF, generatePrivateKey, encodeBase58Check } = nimble.functions
+const { encodeWIF, decodeWIF, generatePrivateKey, encodeBase58Check } =
+  nimble.functions
 
 describe('decodeWIF', () => {
   it('uncompressed', () => {

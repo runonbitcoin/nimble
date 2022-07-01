@@ -38,9 +38,13 @@ describe('Transaction', () => {
       expect(tx2.outputs.length).to.equal(tx.outputs.length)
       expect(tx2.inputs[0].txid).to.equal(tx.inputs[0].txid)
       expect(tx2.inputs[0].vout).to.equal(tx.inputs[0].vout)
-      expect(Array.from([...tx2.inputs[0].script])).to.deep.equal(Array.from([...tx.inputs[0].script]))
+      expect(Array.from([...tx2.inputs[0].script])).to.deep.equal(
+        Array.from([...tx.inputs[0].script])
+      )
       expect(tx2.inputs[0].sequence).to.equal(tx.inputs[0].sequence)
-      expect(Array.from(tx2.outputs[0].script)).to.deep.equal(Array.from(tx.outputs[0].script))
+      expect(Array.from(tx2.outputs[0].script)).to.deep.equal(
+        Array.from(tx.outputs[0].script)
+      )
       expect(tx2.outputs[0].satoshis).to.equal(tx.outputs[0].satoshis)
     })
 
@@ -59,7 +63,9 @@ describe('Transaction', () => {
     it('creates from string', () => {
       const tx = new Transaction()
       const tx2 = Transaction.fromString(tx.toString())
-      expect(Array.from(tx2.toBuffer())).to.deep.equal(Array.from(tx.toBuffer()))
+      expect(Array.from(tx2.toBuffer())).to.deep.equal(
+        Array.from(tx.toBuffer())
+      )
     })
 
     it('throws if bad', () => {
@@ -84,9 +90,13 @@ describe('Transaction', () => {
       expect(tx2.outputs.length).to.equal(tx.outputs.length)
       expect(tx2.inputs[0].txid).to.equal(tx.inputs[0].txid)
       expect(tx2.inputs[0].vout).to.equal(tx.inputs[0].vout)
-      expect(Array.from(tx2.inputs[0].script)).to.deep.equal(Array.from(tx.inputs[0].script))
+      expect(Array.from(tx2.inputs[0].script)).to.deep.equal(
+        Array.from(tx.inputs[0].script)
+      )
       expect(tx2.inputs[0].sequence).to.equal(tx.inputs[0].sequence)
-      expect(Array.from(tx2.outputs[0].script)).to.deep.equal(Array.from(tx.outputs[0].script))
+      expect(Array.from(tx2.outputs[0].script)).to.deep.equal(
+        Array.from(tx.outputs[0].script)
+      )
       expect(tx2.outputs[0].satoshis).to.equal(tx.outputs[0].satoshis)
     })
 
@@ -97,7 +107,9 @@ describe('Transaction', () => {
 
     it('throws if bad', () => {
       const badBuffer = [0].concat(Array.from(new Transaction().toBuffer()))
-      expect(() => Transaction.fromBuffer(badBuffer)).to.throw('unconsumed data')
+      expect(() => Transaction.fromBuffer(badBuffer)).to.throw(
+        'unconsumed data'
+      )
     })
 
     it('creates script objects', () => {
@@ -115,7 +127,10 @@ describe('Transaction', () => {
       this.timeout(10000)
       const tx = { inputs: [], outputs: [] }
       for (let i = 0; i < 1024; i++) {
-        tx.outputs.push({ script: new Uint8Array(1 * 1024 * 1024), satoshis: 123 })
+        tx.outputs.push({
+          script: new Uint8Array(1 * 1024 * 1024),
+          satoshis: 123,
+        })
       }
       const buffer = nimble.functions.encodeTx(tx)
       const tx2 = Transaction.fromBuffer(buffer)
@@ -127,9 +142,15 @@ describe('Transaction', () => {
     it('returns hex string', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
-      expect(new bsv.Transaction(tx2.toString()).toString()).to.deep.equal(tx2.toString())
-      expect(new bsv.Transaction(tx2.toHex()).toString()).to.deep.equal(tx2.toHex())
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 2000)
+      expect(new bsv.Transaction(tx2.toString()).toString()).to.deep.equal(
+        tx2.toString()
+      )
+      expect(new bsv.Transaction(tx2.toHex()).toString()).to.deep.equal(
+        tx2.toHex()
+      )
     })
   })
 
@@ -137,8 +158,12 @@ describe('Transaction', () => {
     it('returns buffer', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
-      expect(Array.from(new bsv.Transaction(tx2.toString()).toBuffer())).to.deep.equal(Array.from(tx2.toBuffer()))
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 2000)
+      expect(
+        Array.from(new bsv.Transaction(tx2.toString()).toBuffer())
+      ).to.deep.equal(Array.from(tx2.toBuffer()))
     })
   })
 
@@ -192,9 +217,15 @@ describe('Transaction', () => {
 
     it('throws if missing previous output information', () => {
       const txid = new Transaction().hash
-      const tx = new Transaction()
-        .input({ txid, vout: 0, script: [], sequence: 0 })
-      expect(() => tx.fee).to.throw('missing previous output information for input 0')
+      const tx = new Transaction().input({
+        txid,
+        vout: 0,
+        script: [],
+        sequence: 0,
+      })
+      expect(() => tx.fee).to.throw(
+        'missing previous output information for input 0'
+      )
     })
   })
 
@@ -217,7 +248,7 @@ describe('Transaction', () => {
         txid: tx1.hash,
         vout: 0,
         script: tx1.outputs[0].script,
-        satoshis: tx1.outputs[0].satoshis
+        satoshis: tx1.outputs[0].satoshis,
       }
       const tx2 = new Transaction().from(utxo)
       expect(tx2.inputs[0].txid).to.equal(tx1.hash)
@@ -243,28 +274,63 @@ describe('Transaction', () => {
 
     it('throws if bad txid', () => {
       const txidBuffer = nimble.functions.decodeHex(new Transaction().hash)
-      expect(() => new Transaction().from({ txid: undefined, vout: 0, script: [], satoshis: 1000 })).to.throw('bad txid')
-      expect(() => new Transaction().from({ txid: txidBuffer, vout: 0, script: [], satoshis: 1000 })).to.throw('bad txid')
+      expect(() =>
+        new Transaction().from({
+          txid: undefined,
+          vout: 0,
+          script: [],
+          satoshis: 1000,
+        })
+      ).to.throw('bad txid')
+      expect(() =>
+        new Transaction().from({
+          txid: txidBuffer,
+          vout: 0,
+          script: [],
+          satoshis: 1000,
+        })
+      ).to.throw('bad txid')
     })
 
     it('throws if bad vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })).to.throw('bad vout')
-      expect(() => new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })).to.throw('bad vout')
-      expect(() => new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })).to.throw('bad vout')
+      expect(() =>
+        new Transaction().from({ txid, vout: -1, script: [], satoshis: 1000 })
+      ).to.throw('bad vout')
+      expect(() =>
+        new Transaction().from({ txid, vout: 1.5, script: [], satoshis: 1000 })
+      ).to.throw('bad vout')
+      expect(() =>
+        new Transaction().from({ txid, vout: null, script: [], satoshis: 1000 })
+      ).to.throw('bad vout')
     })
 
     it('throws if bad script', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })).to.throw('unsupported type')
-      expect(() => new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })).to.throw('bad hex char')
+      expect(() =>
+        new Transaction().from({ txid, vout: 0, script: null, satoshis: 1000 })
+      ).to.throw('unsupported type')
+      expect(() =>
+        new Transaction().from({ txid, vout: 0, script: {}, satoshis: 1000 })
+      ).to.throw('bad hex char')
     })
 
     it('throws if bad satoshis', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })).to.throw('bad satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })).to.throw('bad satoshis')
-      expect(() => new Transaction().from({ txid, vout: 0, script: [], satoshis: Number.MAX_VALUE })).to.throw('bad satoshis')
+      expect(() =>
+        new Transaction().from({ txid, vout: 0, script: [], satoshis: -1 })
+      ).to.throw('bad satoshis')
+      expect(() =>
+        new Transaction().from({ txid, vout: 0, script: [], satoshis: 1.5 })
+      ).to.throw('bad satoshis')
+      expect(() =>
+        new Transaction().from({
+          txid,
+          vout: 0,
+          script: [],
+          satoshis: Number.MAX_VALUE,
+        })
+      ).to.throw('bad satoshis')
     })
 
     it('supports array', () => {
@@ -291,7 +357,9 @@ describe('Transaction', () => {
     it('adds output', () => {
       const pk = PrivateKey.fromRandom()
       const tx = new Transaction().to(pk.toAddress(), 1000)
-      expect(Array.from(tx.outputs[0].script)).to.deep.equal(Array.from(createP2PKHLockScript(pk.toAddress().pubkeyhash)))
+      expect(Array.from(tx.outputs[0].script)).to.deep.equal(
+        Array.from(createP2PKHLockScript(pk.toAddress().pubkeyhash))
+      )
       expect(tx.outputs[0].satoshis).to.equal(1000)
     })
 
@@ -302,7 +370,9 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid address', () => {
-      expect(() => new Transaction().to(null, 1000)).to.throw('unsupported type')
+      expect(() => new Transaction().to(null, 1000)).to.throw(
+        'unsupported type'
+      )
       expect(() => new Transaction().to({}, 1000)).to.throw('bad base58 chars')
     })
 
@@ -311,7 +381,9 @@ describe('Transaction', () => {
       expect(() => new Transaction().to(address)).to.throw('bad satoshis')
       expect(() => new Transaction().to(address, -1)).to.throw('bad satoshis')
       expect(() => new Transaction().to(address, 1.5)).to.throw('bad satoshis')
-      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw('bad satoshis')
+      expect(() => new Transaction().to(address, Number.MAX_VALUE)).to.throw(
+        'bad satoshis'
+      )
     })
   })
 
@@ -349,34 +421,75 @@ describe('Transaction', () => {
     })
 
     it('throws if bad txid', () => {
-      expect(() => new Transaction().input({ txid: undefined, vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
-      expect(() => new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
-      expect(() => new Transaction().input({ txid: 'abc', vout: 0, script: [], sequence: 0 })).to.throw('bad txid')
+      expect(() =>
+        new Transaction().input({
+          txid: undefined,
+          vout: 0,
+          script: [],
+          sequence: 0,
+        })
+      ).to.throw('bad txid')
+      expect(() =>
+        new Transaction().input({ txid: [], vout: 0, script: [], sequence: 0 })
+      ).to.throw('bad txid')
+      expect(() =>
+        new Transaction().input({
+          txid: 'abc',
+          vout: 0,
+          script: [],
+          sequence: 0,
+        })
+      ).to.throw('bad txid')
     })
 
     it('throws if bad vout', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })).to.throw('bad vout')
-      expect(() => new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })).to.throw('bad vout')
+      expect(() =>
+        new Transaction().input({ txid, vout: 1.5, script: [], sequence: 0 })
+      ).to.throw('bad vout')
+      expect(() =>
+        new Transaction().input({ txid, vout: -1, script: [], sequence: 0 })
+      ).to.throw('bad vout')
     })
 
     it('throws if bad script', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })).to.throw('bad hex char')
-      expect(() => new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })).to.throw('unsupported type')
+      expect(() =>
+        new Transaction().input({ txid, vout: 0, script: 'xy', sequence: 0 })
+      ).to.throw('bad hex char')
+      expect(() =>
+        new Transaction().input({ txid, vout: 0, script: null, sequence: 0 })
+      ).to.throw('unsupported type')
     })
 
     it('throws if bad sequence', () => {
       const txid = new Transaction().hash
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })).to.throw('bad sequence')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })).to.throw('bad sequence')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0xffffffff + 1 })).to.throw('bad sequence')
+      expect(() =>
+        new Transaction().input({ txid, vout: 0, script: [], sequence: -1 })
+      ).to.throw('bad sequence')
+      expect(() =>
+        new Transaction().input({ txid, vout: 0, script: [], sequence: '0' })
+      ).to.throw('bad sequence')
+      expect(() =>
+        new Transaction().input({
+          txid,
+          vout: 0,
+          script: [],
+          sequence: 0xffffffff + 1,
+        })
+      ).to.throw('bad sequence')
     })
 
     it('supports output property', () => {
       const txid = new Transaction().hash
       const output = { script: [2], satoshis: 2 }
-      const tx = new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output })
+      const tx = new Transaction().input({
+        txid,
+        vout: 0,
+        script: [],
+        sequence: 0,
+        output,
+      })
       expect(Array.from(tx.inputs[0].output.script)).to.deep.equal([2])
       expect(tx.inputs[0].output.satoshis).to.equal(2)
     })
@@ -393,8 +506,24 @@ describe('Transaction', () => {
       const txid = new Transaction().hash
       const output1 = { script: 'xyz', satoshis: 0 }
       const output2 = { script: [], satoshis: -1 }
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output1 })).to.throw('bad hex char')
-      expect(() => new Transaction().input({ txid, vout: 0, script: [], sequence: 0, output: output2 })).to.throw('bad satoshis')
+      expect(() =>
+        new Transaction().input({
+          txid,
+          vout: 0,
+          script: [],
+          sequence: 0,
+          output: output1,
+        })
+      ).to.throw('bad hex char')
+      expect(() =>
+        new Transaction().input({
+          txid,
+          vout: 0,
+          script: [],
+          sequence: 0,
+          output: output2,
+        })
+      ).to.throw('bad satoshis')
     })
   })
 
@@ -425,8 +554,12 @@ describe('Transaction', () => {
     })
 
     it('throws if not a valid output', () => {
-      expect(() => new Transaction().output({ script: null, satoshis: 0 })).to.throw('unsupported type')
-      expect(() => new Transaction().output({ script: [], satoshis: null })).to.throw('bad satoshis')
+      expect(() =>
+        new Transaction().output({ script: null, satoshis: 0 })
+      ).to.throw('unsupported type')
+      expect(() =>
+        new Transaction().output({ script: [], satoshis: null })
+      ).to.throw('bad satoshis')
     })
   })
 
@@ -440,7 +573,9 @@ describe('Transaction', () => {
         .change(privateKey.toAddress())
         .sign(privateKey)
         .finalize()
-      expect(Math.ceil(tx2.toBuffer().length * nimble.feePerKb / 1000)).to.equal(tx2.fee)
+      expect(
+        Math.ceil((tx2.toBuffer().length * nimble.feePerKb) / 1000)
+      ).to.equal(tx2.fee)
     })
 
     it('returns self for chaining', () => {
@@ -449,7 +584,12 @@ describe('Transaction', () => {
     })
 
     it('delete change output', () => {
-      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1000 }
+      const utxo = {
+        txid: new Transaction().hash,
+        vout: 0,
+        script: [],
+        satoshis: 1000,
+      }
       const address = PrivateKey.fromRandom().toAddress()
       const tx = new Transaction().from(utxo).change(address)
       tx.outputs = []
@@ -458,7 +598,12 @@ describe('Transaction', () => {
     })
 
     it('throws if already has change output', () => {
-      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1000 }
+      const utxo = {
+        txid: new Transaction().hash,
+        vout: 0,
+        script: [],
+        satoshis: 1000,
+      }
       const address = PrivateKey.fromRandom().toAddress()
       const tx = new Transaction().from(utxo).change(address)
       expect(() => tx.change(address)).to.throw('change output already added')
@@ -469,9 +614,18 @@ describe('Transaction', () => {
     it('signs matching p2pkh scripts', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000).sign(privateKey)
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 2000)
+        .sign(privateKey)
       expect(tx2.inputs[0].script.length > 0).to.equal(true)
-      nimble.functions.verifyScript(tx2.inputs[0].script, tx1.outputs[0].script, tx2, 0, tx1.outputs[0].satoshis)
+      nimble.functions.verifyScript(
+        tx2.inputs[0].script,
+        tx1.outputs[0].script,
+        tx2,
+        0,
+        tx1.outputs[0].satoshis
+      )
     })
 
     it('supports string private key', () => {
@@ -484,15 +638,29 @@ describe('Transaction', () => {
       const privateKey2 = PrivateKey.fromRandom()
       const tx0 = new Transaction().to(privateKey1.toAddress(), 1000)
       const tx1 = new Transaction().to(privateKey2.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey2.toAddress(), 2000).sign(privateKey2)
+      const tx2 = new Transaction()
+        .from(tx0.outputs[0])
+        .from(tx1.outputs[0])
+        .to(privateKey2.toAddress(), 2000)
+        .sign(privateKey2)
       expect(tx2.inputs[0].script.length === 0).to.equal(true)
       expect(tx2.inputs[1].script.length > 0).to.equal(true)
     })
 
     it('does not sign non-p2pkh', () => {
       const privateKey = PrivateKey.fromRandom()
-      const script = Array.from([...nimble.functions.createP2PKHLockScript(privateKey.toAddress().pubkeyhash), 1])
-      const utxo = { txid: new Transaction().hash, vout: 0, script, satoshis: 1000 }
+      const script = Array.from([
+        ...nimble.functions.createP2PKHLockScript(
+          privateKey.toAddress().pubkeyhash
+        ),
+        1,
+      ])
+      const utxo = {
+        txid: new Transaction().hash,
+        vout: 0,
+        script,
+        satoshis: 1000,
+      }
       const tx = new Transaction().from(utxo).sign(privateKey)
       expect(tx.inputs[0].script.length).to.equal(0)
     })
@@ -501,14 +669,19 @@ describe('Transaction', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const input = { txid: tx1.hash, vout: 0, script: [], sequence: 0 }
-      const tx2 = new Transaction().input(input).to(privateKey.toAddress(), 2000).sign(privateKey)
+      const tx2 = new Transaction()
+        .input(input)
+        .to(privateKey.toAddress(), 2000)
+        .sign(privateKey)
       expect(tx2.inputs[0].script.length).to.equal(0)
     })
 
     it('does not sign if already have sign data', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 2000)
       tx2.inputs[0].script = [0x01]
       tx2.sign(privateKey)
       expect(tx2.inputs[0].script).to.deep.equal([0x01])
@@ -521,8 +694,12 @@ describe('Transaction', () => {
 
     it('throws if private key not provided', () => {
       expect(() => new Transaction().sign()).to.throw('not a private key: ')
-      expect(() => new Transaction().sign({})).to.throw('not a private key: [object Object]')
-      expect(() => new Transaction().sign(123)).to.throw('not a private key: 123')
+      expect(() => new Transaction().sign({})).to.throw(
+        'not a private key: [object Object]'
+      )
+      expect(() => new Transaction().sign(123)).to.throw(
+        'not a private key: 123'
+      )
       expect(() => new Transaction().sign('abc')).to.throw('bad checksum')
     })
   })
@@ -531,7 +708,10 @@ describe('Transaction', () => {
     it('does not throw if valid', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 2000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 1000).sign(privateKey)
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 1000)
+        .sign(privateKey)
       expect(() => tx2.verify()).not.to.throw()
     })
 
@@ -542,7 +722,10 @@ describe('Transaction', () => {
     it('returns self for chaining', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 2000)
-      const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 1000).sign(privateKey)
+      const tx2 = new Transaction()
+        .from(tx1.outputs[0])
+        .to(privateKey.toAddress(), 1000)
+        .sign(privateKey)
       expect(tx2.verify()).to.equal(tx2)
     })
   })
@@ -561,9 +744,13 @@ describe('Transaction', () => {
         .finalize()
 
       const err = 'transaction finalized'
-      expect(() => tx.from({ txid, vout: 0, script: [], satoshis: 0 })).to.throw(err)
+      expect(() =>
+        tx.from({ txid, vout: 0, script: [], satoshis: 0 })
+      ).to.throw(err)
       expect(() => tx.to(address, 1000)).to.throw(err)
-      expect(() => tx.input({ txid, vout: 0, script: [], sequence: 0 })).to.throw(err)
+      expect(() =>
+        tx.input({ txid, vout: 0, script: [], sequence: 0 })
+      ).to.throw(err)
       expect(() => tx.output({ script: [], satoshis: 0 })).to.throw(err)
       expect(() => tx.change(address)).to.throw(err)
       expect(() => tx.sign(privateKey)).to.throw(err)
@@ -589,7 +776,12 @@ describe('Transaction', () => {
 
     it('removes change output if not enough to cover dust', () => {
       const address = PrivateKey.fromRandom().toAddress()
-      const utxo = { txid: new Transaction().hash, vout: 0, script: [], satoshis: 1 }
+      const utxo = {
+        txid: new Transaction().hash,
+        vout: 0,
+        script: [],
+        satoshis: 1,
+      }
       const tx = new Transaction().from(utxo).change(address).finalize()
       expect(tx.outputs.length).to.equal(0)
       expect(tx.changeOutput).to.equal(undefined)
@@ -610,8 +802,12 @@ describe('Transaction', () => {
     })
 
     it('throws if invalid', () => {
-      expect(() => new Transaction().setFeePerKb(-1)).to.throw('bad satoshis: -1')
-      expect(() => new Transaction().finalize().setFeePerKb(-1)).to.throw('transaction finalized')
+      expect(() => new Transaction().setFeePerKb(-1)).to.throw(
+        'bad satoshis: -1'
+      )
+      expect(() => new Transaction().finalize().setFeePerKb(-1)).to.throw(
+        'transaction finalized'
+      )
     })
   })
 })

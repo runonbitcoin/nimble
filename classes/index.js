@@ -5,5 +5,5 @@ module.exports = {
   PrivateKey: require('./private-key'),
   PublicKey: require('./public-key'),
   Script: require('./script'),
-  Transaction: require('./transaction')
+  Transaction: require('./transaction'),
 }

@@ -1,4 +1,4 @@
-function writeVarint (writer, n) {
+function writeVarint(writer, n) {
   if (n > Number.MAX_SAFE_INTEGER) throw new Error('varint too large')
 
   if (n <= 0xfc) {

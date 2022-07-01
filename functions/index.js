@@ -71,5 +71,5 @@ module.exports = {
   writeTx: require('./write-tx'),
   writeU32LE: require('./write-u32-le'),
   writeU64LE: require('./write-u64-le'),
-  writeVarint: require('./write-varint')
+  writeVarint: require('./write-varint'),
 }

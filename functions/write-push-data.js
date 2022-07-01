@@ -1,4 +1,4 @@
-function writePushData (writer, buffer) {
+function writePushData(writer, buffer) {
   // It is possible to optimize buffers that only store numbers 1-16, or -1, by using the OP_N opcodes.
   // But we say "push data" is always stored using OP_0 or OP_PUSH(N) so that it's easy to identify and
   // extract, and also because there is some ambiguity around OP_0 if we don't do this.
@@ -7,13 +7,13 @@ function writePushData (writer, buffer) {
   } else if (buffer.length <= 75) {
     writer.write([buffer.length]) // OP_PUSH(buffer.length)
     writer.write(buffer)
-  } else if (buffer.length <= 0xFF) {
+  } else if (buffer.length <= 0xff) {
     writer.write([76, buffer.length]) // OP_PUSHDATA1
     writer.write(buffer)
-  } else if (buffer.length <= 0xFFFF) {
+  } else if (buffer.length <= 0xffff) {
     writer.write([77, buffer.length % 256, buffer.length >> 8]) // OP_PUSHDATA2
     writer.write(buffer)
-  } else if (buffer.length <= 0xFFFFFFFF) {
+  } else if (buffer.length <= 0xffffffff) {
     const prefix = new Uint8Array(5)
     prefix[0] = 78 // OP_PUSHDATA4
     let n = buffer.length

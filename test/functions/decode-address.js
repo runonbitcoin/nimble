@@ -8,11 +8,15 @@ describe('decodeAddress', () => {
   it('valid', () => {
     expect(decodeAddress('14kPnFashu7rYZKTXvJU8gXpJMf9e3f8k1')).to.deep.equal({
       testnet: false,
-      pubkeyhash: Array.from(new bsv.Address('14kPnFashu7rYZKTXvJU8gXpJMf9e3f8k1').hashBuffer)
+      pubkeyhash: Array.from(
+        new bsv.Address('14kPnFashu7rYZKTXvJU8gXpJMf9e3f8k1').hashBuffer
+      ),
     })
     expect(decodeAddress('mhZZFmSiUqcmf8wQrBNjPAVHUCFsHso9ni')).to.deep.equal({
       testnet: true,
-      pubkeyhash: Array.from(new bsv.Address('mhZZFmSiUqcmf8wQrBNjPAVHUCFsHso9ni').hashBuffer)
+      pubkeyhash: Array.from(
+        new bsv.Address('mhZZFmSiUqcmf8wQrBNjPAVHUCFsHso9ni').hashBuffer
+      ),
     })
   })
 
@@ -22,11 +26,15 @@ describe('decodeAddress', () => {
   })
 
   it('throws if unsupported version', () => {
-    expect(() => decodeAddress('3P14159f73E4gFr7JterCCQh9QjiTjiZrG')).to.throw('unsupported version')
+    expect(() => decodeAddress('3P14159f73E4gFr7JterCCQh9QjiTjiZrG')).to.throw(
+      'unsupported version'
+    )
   })
 
   it('throws if bad checksum', () => {
-    expect(() => decodeAddress('mhZZFmSiUqcmf8wQrBNjPAVHUCFsHso9n')).to.throw('bad checksum')
+    expect(() => decodeAddress('mhZZFmSiUqcmf8wQrBNjPAVHUCFsHso9n')).to.throw(
+      'bad checksum'
+    )
   })
 
   it('throws if unsupported base58', () => {

@@ -13,7 +13,7 @@ const Address = require('./address')
 const SCRIPT_TO_CHUNKS_CACHE = new WeakMap()
 
 class Script {
-  constructor (buffer = [], validate = true) {
+  constructor(buffer = [], validate = true) {
     if (validate && !isBuffer(buffer)) throw new Error('not a buffer')
 
     this.buffer = buffer
@@ -21,13 +21,18 @@ class Script {
     const isTemplate = this.constructor !== Script
     if (isTemplate) {
       // If we are using a template, make sure it matches, and that there is no custom constructor
-      if (!this.constructor.matches(buffer)) throw new Error(`not a ${this.constructor.name}`)
-      if (this.constructor.toString().includes('constructor')) throw new Error('template constructors not allowed')
+      if (!this.constructor.matches(buffer))
+        throw new Error(`not a ${this.constructor.name}`)
+      if (this.constructor.toString().includes('constructor'))
+        throw new Error('template constructors not allowed')
     } else {
       // If we are not using a template, see if we can detect one
-      const T = Object.values(Script.templates).find(template => template.matches(buffer))
+      const T = Object.values(Script.templates).find((template) =>
+        template.matches(buffer)
+      )
       if (T) {
-        if (T.toString().includes('constructor')) throw new Error('template constructors not allowed')
+        if (T.toString().includes('constructor'))
+          throw new Error('template constructors not allowed')
         Object.setPrototypeOf(this, T.prototype)
       }
     }
@@ -40,14 +45,16 @@ class Script {
     // Proxy the script so it may be used in place of a buffer in functions
     return new Proxy(this, {
       get: (target, prop, receiver) => {
-        if (prop === Symbol.iterator) return target.buffer[Symbol.iterator].bind(target.buffer)
-        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop))) return target.buffer[prop]
+        if (prop === Symbol.iterator)
+          return target.buffer[Symbol.iterator].bind(target.buffer)
+        if (typeof prop !== 'symbol' && Number.isInteger(parseInt(prop)))
+          return target.buffer[prop]
         return Reflect.get(target, prop, receiver)
-      }
+      },
     })
   }
 
-  static fromString (s) {
+  static fromString(s) {
     if (typeof s !== 'string') throw new Error('not a string')
     try {
       return Script.fromHex(s)
@@ -56,47 +63,53 @@ class Script {
     }
   }
 
-  static fromHex (s) {
+  static fromHex(s) {
     return new Script(decodeHex(s), false)
   }
 
-  static fromASM (asm) {
+  static fromASM(asm) {
     return this.fromBuffer(decodeASM(asm))
   }
 
-  static fromBuffer (buffer) {
+  static fromBuffer(buffer) {
     return new Script(buffer || null, true)
   }
 
-  static from (script) {
+  static from(script) {
     if (script instanceof Script) return script
     if (isBuffer(script)) return Script.fromBuffer(script)
-    if (typeof script === 'object' && script) script = script.toHex ? script.toHex() : script.toString()
+    if (typeof script === 'object' && script)
+      script = script.toHex ? script.toHex() : script.toString()
     if (typeof script === 'string') return Script.fromString(script)
     throw new Error('unsupported type')
   }
 
-  toString () {
+  toString() {
     return this.toHex()
   }
 
-  toHex () {
+  toHex() {
     return encodeHex(this.buffer)
   }
 
-  toASM () {
+  toASM() {
     return encodeASM(this.buffer)
   }
 
-  toBuffer () {
+  toBuffer() {
     return this.buffer
   }
 
-  get length () { return this.buffer.length }
-  slice (start, end) { return this.buffer.slice(start, end) }
+  get length() {
+    return this.buffer.length
+  }
+  slice(start, end) {
+    return this.buffer.slice(start, end)
+  }
 
-  get chunks () {
-    if (SCRIPT_TO_CHUNKS_CACHE.has(this)) return SCRIPT_TO_CHUNKS_CACHE.get(this)
+  get chunks() {
+    if (SCRIPT_TO_CHUNKS_CACHE.has(this))
+      return SCRIPT_TO_CHUNKS_CACHE.get(this)
     const chunks = decodeScriptChunks(this.buffer)
     SCRIPT_TO_CHUNKS_CACHE.set(this, chunks)
     return chunks
@@ -104,16 +117,21 @@ class Script {
 }
 
 class P2PKHLockScript extends Script {
-  static matches (buffer) {
+  static matches(buffer) {
     return isP2PKHLockScript(buffer)
   }
 
-  static fromAddress (address) {
-    return new P2PKHLockScript(createP2PKHLockScript(Address.from(address).pubkeyhash))
+  static fromAddress(address) {
+    return new P2PKHLockScript(
+      createP2PKHLockScript(Address.from(address).pubkeyhash)
+    )
   }
 
-  toAddress () {
-    return new Address(extractP2PKHLockScriptPubkeyhash(this.buffer), require('../index').testnet)
+  toAddress() {
+    return new Address(
+      extractP2PKHLockScriptPubkeyhash(this.buffer),
+      require('../index').testnet
+    )
   }
 }
 

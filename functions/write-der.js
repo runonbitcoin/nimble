@@ -1,6 +1,8 @@
-function writeDER (writer, signature) {
-  const r = signature.r[0] & 0x80 ? [0x00].concat(Array.from(signature.r)) : signature.r
-  const s = signature.s[0] & 0x80 ? [0x00].concat(Array.from(signature.s)) : signature.s
+function writeDER(writer, signature) {
+  const r =
+    signature.r[0] & 0x80 ? [0x00].concat(Array.from(signature.r)) : signature.r
+  const s =
+    signature.s[0] & 0x80 ? [0x00].concat(Array.from(signature.s)) : signature.s
   const rlength = r.length
   const slength = s.length
   const length = 2 + rlength + 2 + slength

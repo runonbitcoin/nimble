@@ -1,7 +1,7 @@
 const generatePrivateKey = require('./generate-private-key')
 const ecdsaSignWithK = require('./ecdsa-sign-with-k')
 
-function ecdsaSign (hash32, privateKey, publicKey) {
+function ecdsaSign(hash32, privateKey, publicKey) {
   while (true) {
     const k = generatePrivateKey()
 

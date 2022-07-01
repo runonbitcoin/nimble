@@ -1,6 +1,6 @@
 const isBuffer = require('./is-buffer')
 
-function createP2PKHLockScript (pubkeyhash) {
+function createP2PKHLockScript(pubkeyhash) {
   if (!isBuffer(pubkeyhash)) throw new Error('not a buffer')
   const buf = new Uint8Array(25)
   buf[0] = 118 // OP_DUP

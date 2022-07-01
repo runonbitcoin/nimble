@@ -14,6 +14,8 @@ describe('verifyPrivateKey', () => {
   })
 
   it('throws if out of range', () => {
-    expect(() => verifyPrivateKey(new Array(32).fill(255))).to.throw('outside range')
+    expect(() => verifyPrivateKey(new Array(32).fill(255))).to.throw(
+      'outside range'
+    )
   })
 })

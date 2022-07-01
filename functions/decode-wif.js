@@ -1,7 +1,7 @@
 const decodeBase58Check = require('./decode-base58-check')
 const verifyPrivateKey = require('./verify-private-key')
 
-function decodeWIF (privkey) {
+function decodeWIF(privkey) {
   const { version, payload } = decodeBase58Check(privkey)
 
   const testnet = version === 0xef
