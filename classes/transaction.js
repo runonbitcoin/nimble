@@ -1,5 +1,6 @@
 const generateTxSignature = require('../functions/generate-tx-signature')
 const createP2PKHLockScript = require('../functions/create-p2pkh-lock-script')
+const encodeAddress = require('../functions/encode-address')
 const encodeHex = require('../functions/encode-hex')
 const decodeHex = require('../functions/decode-hex')
 const extractP2PKHLockScriptPubkeyhash = require('../functions/extract-p2pkh-lock-script-pubkeyhash')
@@ -165,6 +166,8 @@ class Transaction {
   }
 
   sign (privateKey) {
+    if (Array.isArray(privateKey)) return this.#signMany(privateKey)
+
     if (Object.isFrozen(this)) throw new Error('transaction finalized')
 
     if (typeof privateKey === 'string') { privateKey = PrivateKey.fromString(privateKey) }
@@ -183,6 +186,48 @@ class Transaction {
 
       if (!isP2PKHLockScript(output.script)) continue
       if (!areBuffersEqual(extractP2PKHLockScriptPubkeyhash(output.script), privateKey.toAddress().pubkeyhash)) continue
+
+      const txsignature = generateTxSignature(this, vin, outputScript, outputSatoshis,
+        privateKey.number, privateKey.toPublicKey().point)
+
+      const writer = new BufferWriter()
+      writePushData(writer, txsignature)
+      writePushData(writer, privateKey.toPublicKey().toBuffer())
+      const script = writer.toBuffer()
+
+      input.script = Script.fromBuffer(script)
+    }
+
+    return this
+  }
+
+  #signMany (privateKeys) {
+    if (Object.isFrozen(this)) throw new Error('transaction finalized')
+
+    const keys = {}
+    for (let privateKey of privateKeys) {
+      if (typeof privateKey === 'string') { privateKey = PrivateKey.fromString(privateKey) }
+      if (!(privateKey instanceof PrivateKey)) throw new Error(`not a private key: ${privateKey}`)
+
+      keys[privateKey.toAddress()] = privateKey
+    }
+
+    for (let vin = 0; vin < this.inputs.length; vin++) {
+      const input = this.inputs[vin]
+      const output = input.output
+
+      if (input.script.length) continue
+      if (!output) continue
+
+      const outputScript = output.script
+      const outputSatoshis = output.satoshis
+
+      if (!isP2PKHLockScript(output.script)) continue
+      
+      const inputAddress = encodeAddress(extractP2PKHLockScriptPubkeyhash(output.script))
+      if (keys[inputAddress] === undefined) continue
+      
+      const privateKey = keys[inputAddress]
 
       const txsignature = generateTxSignature(this, vin, outputScript, outputSatoshis,
         privateKey.number, privateKey.toPublicKey().point)

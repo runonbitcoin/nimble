@@ -470,13 +470,16 @@ describe('Transaction', () => {
       const privateKey = PrivateKey.fromRandom()
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000).sign(privateKey)
+      const tx3 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000).sign([privateKey])
       expect(tx2.inputs[0].script.length > 0).to.equal(true)
+      expect(tx3.inputs[0].script.length > 0).to.equal(true)
       nimble.functions.verifyScript(tx2.inputs[0].script, tx1.outputs[0].script, tx2, 0, tx1.outputs[0].satoshis)
     })
 
     it('supports string private key', () => {
       const privateKey = PrivateKey.fromRandom()
       new Transaction().sign(privateKey.toString()) // eslint-disable-line
+      new Transaction().sign([privateKey.toString()]) // eslint-disable-line
     })
 
     it('does not sign different addresses', () => {
@@ -485,8 +488,11 @@ describe('Transaction', () => {
       const tx0 = new Transaction().to(privateKey1.toAddress(), 1000)
       const tx1 = new Transaction().to(privateKey2.toAddress(), 1000)
       const tx2 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey2.toAddress(), 2000).sign(privateKey2)
+      const tx3 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey2.toAddress(), 2000).sign([privateKey2])
       expect(tx2.inputs[0].script.length === 0).to.equal(true)
       expect(tx2.inputs[1].script.length > 0).to.equal(true)
+      expect(tx3.inputs[0].script.length === 0).to.equal(true)
+      expect(tx3.inputs[1].script.length > 0).to.equal(true)
     })
 
     it('does not sign non-p2pkh', () => {
@@ -494,7 +500,9 @@ describe('Transaction', () => {
       const script = Array.from([...nimble.functions.createP2PKHLockScript(privateKey.toAddress().pubkeyhash), 1])
       const utxo = { txid: new Transaction().hash, vout: 0, script, satoshis: 1000 }
       const tx = new Transaction().from(utxo).sign(privateKey)
+      const tx2 = new Transaction().from(utxo).sign([privateKey])
       expect(tx.inputs[0].script.length).to.equal(0)
+      expect(tx2.inputs[0].script.length).to.equal(0)
     })
 
     it('does not sign without previous outputs', () => {
@@ -502,7 +510,9 @@ describe('Transaction', () => {
       const tx1 = new Transaction().to(privateKey.toAddress(), 1000)
       const input = { txid: tx1.hash, vout: 0, script: [], sequence: 0 }
       const tx2 = new Transaction().input(input).to(privateKey.toAddress(), 2000).sign(privateKey)
+      const tx3 = new Transaction().input(input).to(privateKey.toAddress(), 2000).sign([privateKey])
       expect(tx2.inputs[0].script.length).to.equal(0)
+      expect(tx3.inputs[0].script.length).to.equal(0)
     })
 
     it('does not sign if already have sign data', () => {
@@ -511,12 +521,17 @@ describe('Transaction', () => {
       const tx2 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
       tx2.inputs[0].script = [0x01]
       tx2.sign(privateKey)
+      const tx3 = new Transaction().from(tx1.outputs[0]).to(privateKey.toAddress(), 2000)
+      tx3.inputs[0].script = [0x01]
+      tx3.sign([privateKey])
       expect(tx2.inputs[0].script).to.deep.equal([0x01])
+      expect(tx3.inputs[0].script).to.deep.equal([0x01])
     })
 
     it('returns self for chaining', () => {
       const tx = new Transaction()
       expect(tx.sign(PrivateKey.fromRandom())).to.equal(tx)
+      expect(tx.sign([PrivateKey.fromRandom()])).to.equal(tx)
     })
 
     it('throws if private key not provided', () => {
@@ -524,6 +539,24 @@ describe('Transaction', () => {
       expect(() => new Transaction().sign({})).to.throw('not a private key: [object Object]')
       expect(() => new Transaction().sign(123)).to.throw('not a private key: 123')
       expect(() => new Transaction().sign('abc')).to.throw('bad checksum')
+
+      expect(() => new Transaction().sign([new nimble.Script()])).to.throw('not a private key')
+      expect(() => new Transaction().sign([123])).to.throw('not a private key: 123')
+      expect(() => new Transaction().sign(['abc'])).to.throw('bad checksum')
+    })
+
+    it('sign many', () => {
+      const privateKey1 = PrivateKey.fromRandom()
+      const privateKey2 = PrivateKey.fromRandom()
+      const privateKey3 = PrivateKey.fromRandom()
+      const tx0 = new Transaction().to(privateKey1.toAddress(), 1000)
+      const tx1 = new Transaction().to(privateKey2.toAddress(), 1000)
+      const tx2 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey3.toAddress(), 2000).sign([privateKey1, privateKey2])
+      const tx3 = new Transaction().from(tx0.outputs[0]).from(tx1.outputs[0]).to(privateKey3.toAddress(), 2000).sign([privateKey2, privateKey1]) // the order of the private keys should not matter
+      expect(tx2.inputs[0].script.length > 0).to.equal(true)
+      expect(tx2.inputs[1].script.length > 0).to.equal(true)
+      expect(tx3.inputs[0].script.length > 0).to.equal(true)
+      expect(tx3.inputs[1].script.length > 0).to.equal(true)
     })
   })
 
@@ -567,6 +600,7 @@ describe('Transaction', () => {
       expect(() => tx.output({ script: [], satoshis: 0 })).to.throw(err)
       expect(() => tx.change(address)).to.throw(err)
       expect(() => tx.sign(privateKey)).to.throw(err)
+      expect(() => tx.sign([privateKey])).to.throw(err)
 
       tx.n = 1
       expect('n' in tx).to.equal(false)
